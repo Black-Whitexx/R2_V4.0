@@ -1,0 +1,7 @@
+#DSP有时候报错就在加这段话
+add_definitions(-DARM_MATH_CM4 -DARM_MATH_MATRIX_CHECK -DARM_MATH_ROUNDING)
+include_directories("Middlewares/ST/ARM/DSP/Inc")
+link_directories(Middlewares/ST/ARM/DSP/Lib)
+link_libraries(libarm_cortexM4lf_math.a)
+在这段话之前加上面那段
+add_executable(${PROJECT_NAME}.elf ${SOURCES} ${LINKER_SCRIPT})

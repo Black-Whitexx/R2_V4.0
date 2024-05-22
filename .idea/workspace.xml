@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="CMakePresetLoader">{
+  &quot;useNewFormat&quot;: true
+}</component>
+  <component name="CMakeReloadState">
+    <option name="reloaded" value="true" />
+  </component>
+  <component name="CMakeRunConfigurationManager">
+    <generated>
+      <config projectName="R2_Master_V3" targetName="R2_Master_V3.elf" />
+    </generated>
+  </component>
+  <component name="CMakeSettings">
+    <configurations>
+      <configuration PROFILE_NAME="Debug" ENABLED="true" CONFIG_NAME="Debug" />
+    </configurations>
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="a981e9b2-3d56-4cc6-a8d1-14731e6e26d4" name="更改" comment="">
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ClangdSettings">
+    <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="ExecutionTargetManager" SELECTED_TARGET="CMakeBuildProfile:Debug" />
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="file://$PROJECT_DIR$/Core/Inc/TCS34725.h" root0="FORCE_HIGHLIGHTING" />
+  </component>
+  <component name="ProjectApplicationVersion">
+    <option name="ide" value="CLion" />
+    <option name="majorVersion" value="2023" />
+    <option name="minorVersion" value="1.1" />
+  </component>
+  <component name="ProjectId" id="2fWxt4WlTq6DSCK8CpsXEwm8Yts" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
+    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/CLion_STM32_Project/R2_V3/R2_Master_V3&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  }
+}</component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\CLion_STM32_Project\R2_V3\R2_Master_V3" />
+    </key>
+  </component>
+  <component name="RunManager" selected="OpenOCD 下载并运行.R2_Master_V3.elf">
+    <configuration name="R2_Master_V3.elf" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="R2_Master_V3" TARGET_NAME="R2_Master_V3.elf" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="R2_Master_V3" RUN_TARGET_NAME="R2_Master_V3.elf">
+      <method v="2">
+        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="R2_Master_V3.elf" type="com.jetbrains.cidr.embedded.openocd.conf.type" factoryName="com.jetbrains.cidr.embedded.openocd.conf.factory" nameIsGenerated="true" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="R2_Master_V3" TARGET_NAME="R2_Master_V3.elf" CONFIG_NAME="Debug" version="1" RUN_TARGET_PROJECT_NAME="R2_Master_V3" RUN_TARGET_NAME="R2_Master_V3.elf">
+      <openocd version="1" gdb-port="3333" telnet-port="4444" board-config="D:\CLion_STM32_Project\Config\DAP.cfg" reset-type="INIT" download-type="UPDATED_ONLY">
+        <debugger kind="GDB" isBundled="true" />
+      </openocd>
+      <method v="2">
+        <option name="CLION.COMPOUND.BUILD" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="CMake 应用程序.R2_Master_V3.elf" />
+      <item itemvalue="OpenOCD 下载并运行.R2_Master_V3.elf" />
+    </list>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="应用程序级" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="默认任务">
+      <changelist id="a981e9b2-3d56-4cc6-a8d1-14731e6e26d4" name="更改" comment="" />
+      <created>1713930846569</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1713930846569</updated>
+      <workItem from="1713930879919" duration="268000" />
+      <workItem from="1714184060410" duration="4762000" />
+      <workItem from="1714203641844" duration="6945000" />
+      <workItem from="1714539038832" duration="799000" />
+      <workItem from="1714616327751" duration="7000" />
+      <workItem from="1714616818599" duration="811000" />
+      <workItem from="1714617648935" duration="447000" />
+      <workItem from="1714627758030" duration="15162000" />
+      <workItem from="1714703846963" duration="14396000" />
+      <workItem from="1714737744097" duration="4892000" />
+      <workItem from="1714798986286" duration="4968000" />
+      <workItem from="1714808864537" duration="5360000" />
+      <workItem from="1714815991344" duration="322000" />
+      <workItem from="1714816430995" duration="3373000" />
+      <workItem from="1715007131001" duration="17000" />
+      <workItem from="1715159345871" duration="3692000" />
+      <workItem from="1715173700177" duration="346000" />
+      <workItem from="1715226968035" duration="1992000" />
+      <workItem from="1715435445058" duration="52000" />
+      <workItem from="1715592134841" duration="5121000" />
+      <workItem from="1715656012920" duration="13783000" />
+      <workItem from="1715737930103" duration="6794000" />
+      <workItem from="1715756724977" duration="729000" />
+      <workItem from="1715763907037" duration="1213000" />
+      <workItem from="1715847087846" duration="975000" />
+      <workItem from="1716006922007" duration="6705000" />
+      <workItem from="1716022262034" duration="1000" />
+      <workItem from="1716022334347" duration="15171000" />
+      <workItem from="1716106998657" duration="7258000" />
+      <workItem from="1716204460509" duration="3566000" />
+      <workItem from="1716260752368" duration="9703000" />
+      <workItem from="1716303738205" duration="3220000" />
+      <workItem from="1716339983636" duration="1722000" />
+      <workItem from="1716341805392" duration="173000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="VCPKGProject">
+    <isAutomaticEditVcpkgJson value="false" />
+    <isAutomaticCheckingOnLaunch value="false" />
+    <isAutomaticFoundErrors value="true" />
+    <isAutomaticFoundErrors value="true" />
+  </component>
+</project>
