@@ -80,6 +80,5 @@ float PID_Realise(PID_t *PID, float target, float current, float max_output, flo
     else if(PID->PID_total_out < -max_output)//输出限幅 负向
         PID->PID_total_out = -max_output;
 
-//    printf("err:%f,ki:%f,i:%f,i_out:%f,out:%f\n",PID->err,PID->integral,PID->Ki,PID->i_out,PID->PID_total_out);
     return PID->PID_total_out;
 }

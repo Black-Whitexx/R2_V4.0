@@ -19,13 +19,14 @@ float Wheels_vel[4];//轮子转速
 uint8_t AimPoints_Index;//目标点序号
 PointStruct Aim_Points[256];//目标点们
 PID_t Translation_PID, Turn_PID;//平动的PID结构体，转动的PID结构体
+uint8_t cnt;
 /** 用于存储比赛5个放球点 **/
 PointStruct Frame_Points[5]= {
-        {.x = 0.0f,.y = 0.0f,.angle = 0.0f,.num = 0},
-        {.x = 0.0f,.y = 0.0f,.angle = 0.0f,.num = 0},
-        {.x = 0.0f,.y = 0.0f,.angle = 0.0f,.num = 0},
-        {.x = 0.0f,.y = 0.0f,.angle = 0.0f,.num = 0},
-        {.x = 0.0f,.y = 0.0f,.angle = 0.0f,.num = 0}
+        {.x = 0.24f,.y = 0.05f,.angle = 90.0f,.num = 0},
+        {.x = 0.24f,.y = 0.81f,.angle = 90.0f,.num = 0},
+        {.x = 0.23f,.y = 1.55f,.angle = 90.0f,.num = 0},
+        {.x = 0.22f,.y = 2.31f,.angle = 90.0f,.num = 0},
+        {.x = 0.20f,.y = 3.08f,.angle = 90.0f,.num = 0}
 };;
 /** 用于存储比赛开始从1区跑到三区的目标点,有五个点 **/
 PointStruct Run1to3_Points[5] = {
@@ -65,12 +66,25 @@ void Chassis_Move(PointStruct *target_point)
     float err_x = (target_point->x - LiDar.locx);//x差值
     float err_y = (target_point->y - LiDar.locy);//y差值
     float delta_angle = (target_point->angle - LiDar.yaw);//角度差值
+    float max_out = 0.0f,allErr_x = 0.0f,allErr_y = 0.0f;
+    static float all_dis = 0.0f;
 
+    if( cnt == 0 )
+    {
+        allErr_x = (target_point->x - LiDar.locx);
+        allErr_y = (target_point->y - LiDar.locy);
+        arm_sqrt_f32(allErr_x * allErr_x + allErr_y * allErr_y,&all_dis);
+        cnt = 1;
+    }
     //计算向量长度
     arm_sqrt_f32(err_x * err_x + err_y * err_y,&dis);
 
+    if( dis / all_dis >= 0.9 ) max_out = 1.0f;
+    else if( dis / all_dis >= 0.8 && dis / all_dis < 0.9 ) max_out = 2.0f;
+    else if( dis / all_dis >= 0.7 && dis / all_dis < 0.8 ) max_out = 3.0f;
+    else if( dis / all_dis < 0.7 ) max_out = 3.0f;
     //计算平动速度向量
-    vel = PID_Realise(&Translation_PID, 0, -dis, 3.0f, 0.01f);
+    vel = PID_Realise(&Translation_PID, 0, -dis, max_out, 0.01f);
     //速度向量取绝对值
     arm_abs_f32(&vel, &vel, 1);
     //计算角速度

@@ -11,6 +11,7 @@
 #ifndef R2_MASTER_V3_MID360_H
 #define R2_MASTER_V3_MID360_H
 #include "stm32g4xx_hal.h"
+#include "Vision.h"
 
 typedef struct {
     float locx;
@@ -21,7 +22,8 @@ typedef struct {
 
 #define r 0.28432f
 
-void RaDar_Data_Rec(uint8_t* data,RaDar_Data_t* RaDar_data);
+void RaDar_Data_Rec(uint8_t* data,RaDar_Data_t* RaDar_data,VisionStruct* Vision_data);
 
 extern RaDar_Data_t LiDar;
+extern VisionStruct Vision_Data;
 #endif //R2_MASTER_V3_MID360_H

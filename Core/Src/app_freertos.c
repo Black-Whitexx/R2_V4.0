@@ -55,6 +55,8 @@ osThreadId Control_TaskHandle;
 osThreadId HandleBall_TaskHandle;
 osThreadId Suction_TaskHandle;
 osThreadId Run1to3_TaskHandle;
+osThreadId Vision_TaskHandle;
+osThreadId VisionRun_TaskHandle;
 osMessageQId NRF_RX_QueueHandle;
 osMessageQId SuctionSpeed_QueueHandle;
 
@@ -70,6 +72,8 @@ void ControlTask(void const * argument);
 void HandleBallTask(void const * argument);
 void SuctionTask(void const * argument);
 void Run1to3Task(void const * argument);
+void VisionTask(void const * argument);
+void VisionRunTask(void const * argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -137,9 +141,19 @@ void MX_FREERTOS_Init(void) {
   osThreadDef(Run1to3_Task, Run1to3Task, osPriorityNormal, 0, 1024);
   Run1to3_TaskHandle = osThreadCreate(osThread(Run1to3_Task), NULL);
 
+  /* definition and creation of Vision_Task */
+  osThreadDef(Vision_Task, VisionTask, osPriorityNormal, 0, 1024);
+  Vision_TaskHandle = osThreadCreate(osThread(Vision_Task), NULL);
+
+  /* definition and creation of VisionRun_Task */
+  osThreadDef(VisionRun_Task, VisionRunTask, osPriorityNormal, 0, 1024);
+  VisionRun_TaskHandle = osThreadCreate(osThread(VisionRun_Task), NULL);
+
   /* USER CODE BEGIN RTOS_THREADS */
   /* add threads, ... */
   vTaskSuspend(RoboRun_TaskHandle);
+  vTaskSuspend(Vision_TaskHandle);
+  vTaskSuspend(VisionRun_TaskHandle);
 //  vTaskSuspend(NRF_TaskHandle);
 //  vTaskSuspend(Control_TaskHandle);
 //  vTaskSuspend(HandleBall_TaskHandle);
@@ -178,9 +192,13 @@ void DebugTask(void const * argument)
   PID_Set(&Left_Speed_t,3,0.14f,2.2f,10000);
   PID_Set(&Right_Speed_t,3,0.14f,2.2f,10000);
 
-  PID_Set(&Translation_PID,1.70f,0.0f,0.0f,0.0f);
-  PID_Set(&Turn_PID,0.06f,0.0f,0.0f,0.0f);
+  PID_Set(&Translation_PID,1.50f,0.0f,1.0f,0.0f);
+  PID_Set(&Turn_PID,0.04f,0.0f,0.0f,0.0f);
 
+  PID_Set(&VisionRun2,1.50f,0.0f,1.0f,0.0f);
+
+  PID_Set(&VisionPID_X,0.0025f,0.0f,0.0005f,0.0f);
+  //PID_Set(&VisionPID_Y,0.01f,0.0f,0.0f,0.0f);
   /* Infinite loop */
   for(;;)
   {
@@ -189,8 +207,8 @@ void DebugTask(void const * argument)
 //    printf("%f,%f,%f\n",Motor_Info[7].actual_total_angle,Slope_Position_t.target,Slope_Speed_t.PID_total_out);
 //    printf("X:%f,Y:%f,Angle:%f\n",locater.pos_x,locater.pos_y,locater.angle);
 //    printf("err:%f,ki:%f,i:%f,i_out:%f,out:%f\n",Wheels[0].err,Wheels[0].integral,Wheels[0].Ki,Wheels[0].i_out,Wheels[0].PID_total_out);
-    printf("X:%f,Y:%f,Angle:%f\n",LiDar.locx,LiDar.locy,LiDar.yaw);
-//    printf("%d,%d\n",Motor_Info[5].speed,-7000);
+//    printf("X:%f,Y:%f,Angle:%f\n",LiDar.locx,LiDar.locy,LiDar.yaw);
+    //printf("%f,%f,%f,%d,%f,%f\n",LiDar.locx,LiDar.locy,LiDar.yaw,Vision_Data.flag,Vision_Data.vision_x,Vision_Data.vision_y);
     osDelay(100);
   }
   /* USER CODE END DebugTask */
@@ -198,7 +216,7 @@ void DebugTask(void const * argument)
 
 /* USER CODE BEGIN Header_RoboRunTask */
 /**
-* @brief 此任务用于R2跑点或�?�遥�?????
+* @brief 此任务用于R2跑点或�?�遥�???????
 * @param argument: Not used
 * @retval None
 */
@@ -207,51 +225,64 @@ void RoboRunTask(void const * argument)
 {
   /* USER CODE BEGIN RoboRunTask */
     RemoteRXSturct NRFRX_Data;
+    int16_t suctionSpeed = 0;//VESC速度
   /* Infinite loop */
   for(;;)
   {
     if(Control_Mode == AutoRun_Mode)//跑点模式
     {
-        if( Distance_Calc(Aim_Points[AimPoints_Index],LiDar.locx,LiDar.locy) < 0.01f && fabsf(LiDar.yaw - Aim_Points[AimPoints_Index].angle) < 0.5f )
+        /** 过渡点死区判�?? **/
+        if( Aim_Points[AimPoints_Index].num > 0 )
         {
-            if( Aim_Points[AimPoints_Index].num > 0 )
+            if( Distance_Calc(Aim_Points[AimPoints_Index],LiDar.locx,LiDar.locy) < 0.05f && fabsf(LiDar.yaw - Aim_Points[AimPoints_Index].angle) < 0.5f )
             {
+                cnt = 0;
                 Aim_Points[AimPoints_Index].num --;
                 AimPoints_Index ++;
                 Aim_Points[AimPoints_Index].num = Aim_Points[AimPoints_Index-1].num;
             }
             else
             {
+//                printf("X:%f,Y:%f,Angle:%f\n",LiDar.locx,LiDar.locy,LiDar.yaw);
+                printf("%f,%f,%d\n",Aim_Points[AimPoints_Index].x,Aim_Points[AimPoints_Index].y,AimPoints_Index);
+                Chassis_Move(&Aim_Points[AimPoints_Index]);
+            }
+        }
+        /** �??终点死区判断 **/
+        else
+        {
+            if( Distance_Calc(Aim_Points[AimPoints_Index],LiDar.locx,LiDar.locy) < 0.02f && fabsf(LiDar.yaw - Aim_Points[AimPoints_Index].angle) < 0.5f )
+            {
+                cnt = 0;
                 AimPoints_Index ++;
-
                 Wheels_vel[0] = 0;
                 Wheels_vel[1] = 0;
                 Wheels_vel[2] = 0;
                 Wheels_vel[3] = 0;
-                if(State == Run2Get_State)
+                if(State == Run2Get_State) //从黄区到绿区的跑点，用于去找球，到点后启�??5065，开启视觉任�??
                 {
-                    Control_Mode = Manual_Mode;
-                }
-                else if(State == TakeRightBall_State)
-                {
-                    Cmd = 0x01;
-                    HAL_UART_Transmit(&huart3,&Cmd, sizeof(Cmd),0xFFFFF);//发送命令让摄像头回传哪个框
+                    Slope_Pos = Slope_Left;//平台倾斜
+                    Left_TargetSpe = Left_Spe;//�??2006旋转
+                    suctionSpeed = 7000;//5065启动
+                    xQueueOverwrite(SuctionSpeed_QueueHandle,&suctionSpeed);
+                    vTaskResume(Vision_TaskHandle);
                     vTaskSuspend(RoboRun_TaskHandle);
                 }
-                else if(State == Run2Store_State)
+                else if(State == Run2Store_State) //从绿区到黄区的跑点，用于去放球，到点后切换状态为Store_State
                 {
-                    Control_Mode = Manual_Mode;
+                    State = Store_State;
+                    vTaskSuspend(RoboRun_TaskHandle);
                 }
                 else
                 {
                     vTaskSuspend(RoboRun_TaskHandle);
                 }
             }
-        }
-        else
-        {
-            printf("X:%f,Y:%f,Angle:%f\n",LiDar.locx,LiDar.locy,LiDar.yaw);
-            Chassis_Move(&Aim_Points[AimPoints_Index]);
+            else
+            {
+                printf("X:%f,Y:%f,Angle:%f\n",LiDar.locx,LiDar.locy,LiDar.yaw);
+                Chassis_Move(&Aim_Points[AimPoints_Index]);
+            }
         }
     }
     else//遥控模式
@@ -268,7 +299,7 @@ void RoboRunTask(void const * argument)
 
 /* USER CODE BEGIN Header_NRFTask */
 /**
-* @brief 此函数用于接收遥控器的数�?????
+* @brief 此函数用于接收遥控器的数�???????
 * @param argument: Not used
 * @retval None
 */
@@ -285,7 +316,7 @@ void NRFTask(void const * argument)
   {
       if (NRF24L01_RxPacket(rc_data) == 0)  //接收遥控器数据，若收到返0，若没收到返1
       {
-          /** 读取左右摇杆值，限制�???????????-128~128 **/
+          /** 读取左右摇杆值，限制�?????????????-128~128 **/
           RemoteRX.lx = (int16_t)-(rc_data[1] - 128);
           RemoteRX.ly = (int16_t)-(rc_data[2] - 128);
           RemoteRX.rx = (int16_t)-(rc_data[3] - 128);
@@ -307,11 +338,11 @@ void NRFTask(void const * argument)
 
           /** 对遥控器按键命令进行响应 **/
           switch (RemoteRX.command) {
-              case Left_Up_Up:
+              case Left_Up_Up://切换成手动模�??
                   Control_Mode = Manual_Mode;
                   vTaskResume(RoboRun_TaskHandle);
                   break;
-              case Right_Up_Up:
+              case Right_Up_Up://切换成自动模�??
                   Control_Mode = AutoRun_Mode;
                   vTaskResume(RoboRun_TaskHandle);
                   break;
@@ -321,31 +352,30 @@ void NRFTask(void const * argument)
               case Right_Down:
                   State = TakeWrongBall_State;
                   break;
-              case Right_Right:
+              case Left_Left:
                   State = TakeRightBall_State;
                   break;
               case Right_Left:
                   State = TakeWrongBall_State;
                   break;
-              case Left_Up://一键启动开始
+              case Left_Up://�??键启动开�??
                   SUCTION_ON; //伸出吸球机构
                   Toggle_Pos = Toggle_Mid; //夹爪翻到中位
                   osDelay(500);//避免夹爪提前打开
                   CLAW_OFF;
-                  Set_Point(&Aim_Points[AimPoints_Index],-1.37f,1.52f,0,1); //写入一个起始点
-                  Set_Point(&Aim_Points[AimPoints_Index+1],0,0,0,0); //写入一个起始点
                   State = Run2Get_State;
-                  vTaskResume(RoboRun_TaskHandle);
                   break;
               case Left_Down:
-                  Set_Point(&Aim_Points[AimPoints_Index],-1.37f,1.52f,90,0);
+                  Set_Point(&Aim_Points[AimPoints_Index],0.22f,1.52f,90,0);
                   vTaskResume(RoboRun_TaskHandle);
                   break;
               case Left_Right:
                   Set_Point(&Aim_Points[AimPoints_Index],0.0f,0.0f,0,0);
                   vTaskResume(RoboRun_TaskHandle);
                   break;
-              case Left_Left:
+              case Right_Right:
+                  suctionSpeed = 7000;
+                  xQueueOverwrite(SuctionSpeed_QueueHandle,&suctionSpeed);
                   break;
               default:
                   break;
@@ -360,7 +390,7 @@ void NRFTask(void const * argument)
 
 /* USER CODE BEGIN Header_ControlTask */
 /**
-* @brief 此任务用于�?�过运动状�?�的判断切换跑点模式或�?�视觉追踪模�?????
+* @brief 此任务用于�?�过运动状�?�的判断切换跑点模式或�?�视觉追踪模�???????
 * @param argument: Not used
 * @retval None
 */
@@ -372,49 +402,48 @@ void ControlTask(void const * argument)
   /* Infinite loop */
   for(;;)
   {
+      /** 对当前状态做出反�?? **/
         switch (State) {
-            case Run2Get_State:
+            case Default_State:
                 break;
-            case TakeRightBall_State://取正确的球
-                suctionSpeed = 7000;
-                xQueueOverwrite(SuctionSpeed_QueueHandle,&suctionSpeed);
-                Toggle_Pos = Toggle_Down;
-                osDelay(1500);
+            case Run2Get_State:
+                Set_Point(&Aim_Points[AimPoints_Index],-1.25f,1.50f,90,0);
+                vTaskResume(RoboRun_TaskHandle);
+                while( State == Run2Get_State){}
+                break;
+            case Run2Store_State:
+                Set_Point(&Aim_Points[AimPoints_Index],-2.56f,1.72f,90,1);
+                Set_Point(&Aim_Points[AimPoints_Index+1],0.22f,1.52f,90,0);
+                vTaskResume(RoboRun_TaskHandle);
+                while( State == Run2Store_State){}
+                break;
+            case TakeRightBall_State://取正确的�??
+                Slope_Pos = 0;//平台回正
+                osDelay(1000);
                 CLAW_ON;//关闭夹爪
-                suctionSpeed = 0;
+                suctionSpeed = 0;//停下5065
                 xQueueOverwrite(SuctionSpeed_QueueHandle,&suctionSpeed);
-//                Set_Point(&Aim_Points[AimPoints_Index],0,0,0,0);//写入一个目标点
-//                vTaskResume(RoboRun_TaskHandle);
-                Toggle_Pos = Toggle_Up;
+                State = Run2Store_State;//状�?�切换为Run2Store_State
+                Toggle_Pos = Toggle_Up;//夹爪翻上�??
                 osDelay(500);
-                SUCTION_OFF;
-                while (State == TakeRightBall_State){}
+                Slope_Pos = Slope_Left;//平台左�?�斜
+                SUCTION_OFF;//吸球机构推回�??
                 break;
             case TakeWrongBall_State:
-                suctionSpeed = 7000;
-                xQueueOverwrite(SuctionSpeed_QueueHandle,&suctionSpeed);
-                Slope_Pos = Slope_Left;
-                Left_TargetSpe = Left_Spe;
-                osDelay(1500);
-                osDelay(1500);
-                suctionSpeed = 0;
-                xQueueOverwrite(SuctionSpeed_QueueHandle,&suctionSpeed);
-                Slope_Pos = 0;
-                Left_TargetSpe = 0;
+                osDelay(1000);
+                osDelay(1000);
                 State = Default_State;
                 break;
             case Store_State://放球
                 CLAW_OFF;//打开夹爪
-                osDelay(1000);
-//                Set_Point(&Aim_Points[AimPoints_Index],0,0,0,0);//写入一个目标点
-//                vTaskResume(RoboRun_TaskHandle);
-                Toggle_Pos = Toggle_Mid;
-                SUCTION_ON;
-                while(State == Store_State){}
+                osDelay(1000);//等待球滚�??
+                State = Run2Get_State;//状�?�切换为Run2Get_State
+                Toggle_Pos = Toggle_Mid;//夹爪回中�??
+                SUCTION_ON;//吸球机构推出
                 break;
-            //跑到点之�??
+            //跑到点之�????
             case Find_State:
-                //�??启视觉找球任�??
+                //�????启视觉找球任�????
                 SUCTION_ON;
                 break;
             default:
@@ -427,7 +456,7 @@ void ControlTask(void const * argument)
 
 /* USER CODE BEGIN Header_HandleBallTask */
 /**
-* @brief 此任务用于控制电机实现左右拨球或者夹�?????/放球，控�?????3�?????2006和一�?????3508电机、两个气�?????
+* @brief 此任务用于控制电机实现左右拨球或者夹�???????/放球，控�???????3�???????2006和一�???????3508电机、两个气�???????
 * @param argument: Not used
 * @retval None
 */
@@ -459,7 +488,7 @@ void HandleBallTask(void const * argument)
 /* USER CODE BEGIN Header_SuctionTask */
 /**
 * @bri
- * ef 此任务用于吸球，控制VESC电调驱动�?????�?????5065电机
+ * ef 此任务用于吸球，控制VESC电调驱动�???????�???????5065电机
 * @param argument: Not used
 * @retval None
 */
@@ -482,7 +511,7 @@ void SuctionTask(void const * argument)
 
 /* USER CODE BEGIN Header_Run1to3Task */
 /**
-* @brief 此任务用于比赛开始时R2�?????1区跑�?????3�?????
+* @brief 此任务用于比赛开始时R2�???????1区跑�???????3�???????
 * @param argument: Not used
 * @retval None
 */
@@ -514,6 +543,87 @@ void Run1to3Task(void const * argument)
     osDelay(5);
   }
   /* USER CODE END Run1to3Task */
+}
+
+/* USER CODE BEGIN Header_VisionTask */
+/**
+* @brief Function implementing the Vision_Task thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_VisionTask */
+void VisionTask(void const * argument)
+{
+  /* USER CODE BEGIN VisionTask */
+  float Speed_x,omega,str_flag = 0,cor_flag = 0;
+  /* Infinite loop */
+  for(;;)
+  {
+    if( fabsf(Vision_Data.vision_x) < 10.0f && Vision_Data.vision_x != 0 )
+    {
+        str_flag = 1;
+    }
+    if( str_flag == 1 )
+    {
+        Speed_x = -PID_Realise(&VisionPID_X,0,Vision_Data.vision_x,1.0f,3);
+        omega = PID_Realise(&Turn_PID,90,LiDar.yaw,0.5f,0.5f);
+        SGW2Wheels(Speed_x, 0.5f, omega, 0);
+
+        if(Vision_Data.flag == 3)
+        {
+            if( Vision_Data.vision_y == 1 )
+            {
+                Toggle_Pos = Toggle_Down;//放下夹爪
+                Slope_Pos = 0;
+                str_flag = 0;
+                Wheels_vel[0] = 0;
+                Wheels_vel[1] = 0;
+                Wheels_vel[2] = 0;
+                Wheels_vel[3] = 0;
+                State = TakeRightBall_State;
+                osDelay(200);
+                vTaskSuspend(Vision_TaskHandle);
+            }
+            else if( Vision_Data.vision_y == 2)
+            {
+                str_flag = 0;
+                Wheels_vel[0] = 0;
+                Wheels_vel[1] = 0;
+                Wheels_vel[2] = 0;
+                Wheels_vel[3] = 0;
+                State = TakeWrongBall_State;
+                osDelay(2000);
+            }
+        }
+    }
+    else
+    {
+        Speed_x = -PID_Realise(&VisionPID_X,0,Vision_Data.vision_x,1.0f,3);
+        omega = PID_Realise(&Turn_PID,90,LiDar.yaw,0.5f,0.5f);
+        SGW2Wheels(Speed_x, 0, omega, 0);
+    }
+    printf("%f\n",str_flag);
+    osDelay(5);
+  }
+  /* USER CODE END VisionTask */
+}
+
+/* USER CODE BEGIN Header_VisionRunTask */
+/**
+* @brief Function implementing the VisionRun_Task thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_VisionRunTask */
+void VisionRunTask(void const * argument)
+{
+  /* USER CODE BEGIN VisionRunTask */
+  /* Infinite loop */
+  for(;;)
+  {
+    osDelay(1);
+  }
+  /* USER CODE END VisionRunTask */
 }
 
 /* Private application code --------------------------------------------------*/
