@@ -28,6 +28,7 @@ typedef struct
 
 void SGW2Wheels(float vel_x, float vel_y, float omega, float theta);
 void Chassis_Move(PointStruct *target_point);
+void Chassis_Move_OfVision(PointStruct *target_point);
 float Distance_Calc(PointStruct point, float x, float y);
 void Set_Point(PointStruct *point,float x,float y,float angle,uint8_t num);
 

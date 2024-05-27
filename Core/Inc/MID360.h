@@ -23,6 +23,7 @@ typedef struct {
 #define r 0.28432f
 
 void RaDar_Data_Rec(uint8_t* data,RaDar_Data_t* RaDar_data,VisionStruct* Vision_data);
+void Vision_Rec(VisionStruct* visionData);
 
 extern RaDar_Data_t LiDar;
 extern VisionStruct Vision_Data;

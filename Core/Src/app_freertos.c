@@ -138,7 +138,7 @@ void MX_FREERTOS_Init(void) {
   Suction_TaskHandle = osThreadCreate(osThread(Suction_Task), NULL);
 
   /* definition and creation of Run1to3_Task */
-  osThreadDef(Run1to3_Task, Run1to3Task, osPriorityNormal, 0, 1024);
+  osThreadDef(Run1to3_Task, Run1to3Task, osPriorityNormal, 0, 512);
   Run1to3_TaskHandle = osThreadCreate(osThread(Run1to3_Task), NULL);
 
   /* definition and creation of Vision_Task */
@@ -192,10 +192,10 @@ void DebugTask(void const * argument)
   PID_Set(&Left_Speed_t,3,0.14f,2.2f,10000);
   PID_Set(&Right_Speed_t,3,0.14f,2.2f,10000);
 
-  PID_Set(&Translation_PID,1.50f,0.0f,1.0f,0.0f);
-  PID_Set(&Turn_PID,0.04f,0.0f,0.0f,0.0f);
+  PID_Set(&Translation_PID,1.35f,0.0f,2.0f,0.0f);
+  PID_Set(&Turn_PID,0.03f,0.0f,0.0f,0.0f);
 
-  PID_Set(&VisionRun2,1.50f,0.0f,1.0f,0.0f);
+  PID_Set(&VisionRun2,1.40f,0.0f,2.0f,0.0f);
 
   PID_Set(&VisionPID_X,0.0025f,0.0f,0.0005f,0.0f);
   //PID_Set(&VisionPID_Y,0.01f,0.0f,0.0f,0.0f);
@@ -207,7 +207,7 @@ void DebugTask(void const * argument)
 //    printf("%f,%f,%f\n",Motor_Info[7].actual_total_angle,Slope_Position_t.target,Slope_Speed_t.PID_total_out);
 //    printf("X:%f,Y:%f,Angle:%f\n",locater.pos_x,locater.pos_y,locater.angle);
 //    printf("err:%f,ki:%f,i:%f,i_out:%f,out:%f\n",Wheels[0].err,Wheels[0].integral,Wheels[0].Ki,Wheels[0].i_out,Wheels[0].PID_total_out);
-//    printf("X:%f,Y:%f,Angle:%f\n",LiDar.locx,LiDar.locy,LiDar.yaw);
+    printf("X:%f,Y:%f,Angle:%f\n",LiDar.locx,LiDar.locy,LiDar.yaw);
     //printf("%f,%f,%f,%d,%f,%f\n",LiDar.locx,LiDar.locy,LiDar.yaw,Vision_Data.flag,Vision_Data.vision_x,Vision_Data.vision_y);
     osDelay(100);
   }
@@ -234,7 +234,7 @@ void RoboRunTask(void const * argument)
         /** 过渡点死区判�?? **/
         if( Aim_Points[AimPoints_Index].num > 0 )
         {
-            if( Distance_Calc(Aim_Points[AimPoints_Index],LiDar.locx,LiDar.locy) < 0.05f && fabsf(LiDar.yaw - Aim_Points[AimPoints_Index].angle) < 0.5f )
+            if( Distance_Calc(Aim_Points[AimPoints_Index],LiDar.locx,LiDar.locy) < 0.1f && fabsf(LiDar.yaw - Aim_Points[AimPoints_Index].angle) < 0.5f )
             {
                 cnt = 0;
                 Aim_Points[AimPoints_Index].num --;
@@ -259,16 +259,8 @@ void RoboRunTask(void const * argument)
                 Wheels_vel[1] = 0;
                 Wheels_vel[2] = 0;
                 Wheels_vel[3] = 0;
-                if(State == Run2Get_State) //从黄区到绿区的跑点，用于去找球，到点后启�??5065，开启视觉任�??
-                {
-                    Slope_Pos = Slope_Left;//平台倾斜
-                    Left_TargetSpe = Left_Spe;//�??2006旋转
-                    suctionSpeed = 7000;//5065启动
-                    xQueueOverwrite(SuctionSpeed_QueueHandle,&suctionSpeed);
-                    vTaskResume(Vision_TaskHandle);
-                    vTaskSuspend(RoboRun_TaskHandle);
-                }
-                else if(State == Run2Store_State) //从绿区到黄区的跑点，用于去放球，到点后切换状态为Store_State
+
+                if(State == Run2Store_State) //从绿区到黄区的跑点，用于去放球，到点后切换状态为Store_State
                 {
                     State = Store_State;
                     vTaskSuspend(RoboRun_TaskHandle);
@@ -399,6 +391,7 @@ void ControlTask(void const * argument)
 {
   /* USER CODE BEGIN ControlTask */
     int16_t suctionSpeed = 0;//VESC速度
+    uint8_t vision_cmd = 0;
   /* Infinite loop */
   for(;;)
   {
@@ -407,15 +400,17 @@ void ControlTask(void const * argument)
             case Default_State:
                 break;
             case Run2Get_State:
-                Set_Point(&Aim_Points[AimPoints_Index],-1.25f,1.50f,90,0);
-                vTaskResume(RoboRun_TaskHandle);
+                Set_Point(&Vision_Points[0],-1.43f,1.49f,90,0);
+                vision_cmd = 0x01;
+                HAL_UART_Transmit(&huart2,&vision_cmd, sizeof(vision_cmd),0xFFFFF);
+                vTaskResume(VisionRun_TaskHandle);
                 while( State == Run2Get_State){}
                 break;
             case Run2Store_State:
-                Set_Point(&Aim_Points[AimPoints_Index],-2.56f,1.72f,90,1);
-                Set_Point(&Aim_Points[AimPoints_Index+1],0.22f,1.52f,90,0);
+//                Set_Point(&Aim_Points[AimPoints_Index],-1.43f,1.49f,90,1);
+                Set_Point(&Aim_Points[AimPoints_Index],0.30f,1.45f,90,0);
                 vTaskResume(RoboRun_TaskHandle);
-                while( State == Run2Store_State){}
+                while( State == Run2Store_State ){}
                 break;
             case TakeRightBall_State://取正确的�??
                 Slope_Pos = 0;//平台回正
@@ -567,7 +562,7 @@ void VisionTask(void const * argument)
     {
         Speed_x = -PID_Realise(&VisionPID_X,0,Vision_Data.vision_x,1.0f,3);
         omega = PID_Realise(&Turn_PID,90,LiDar.yaw,0.5f,0.5f);
-        SGW2Wheels(Speed_x, 0.5f, omega, 0);
+        SGW2Wheels(Speed_x, 1.0f, omega, 0);
 
         if(Vision_Data.flag == 3)
         {
@@ -598,11 +593,11 @@ void VisionTask(void const * argument)
     }
     else
     {
-        Speed_x = -PID_Realise(&VisionPID_X,0,Vision_Data.vision_x,1.0f,3);
+        Speed_x = -PID_Realise(&VisionPID_X,0,Vision_Data.vision_x,3.0f,3);
         omega = PID_Realise(&Turn_PID,90,LiDar.yaw,0.5f,0.5f);
         SGW2Wheels(Speed_x, 0, omega, 0);
     }
-    printf("%f\n",str_flag);
+//    printf("%f\n",str_flag);
     osDelay(5);
   }
   /* USER CODE END VisionTask */
@@ -618,10 +613,38 @@ void VisionTask(void const * argument)
 void VisionRunTask(void const * argument)
 {
   /* USER CODE BEGIN VisionRunTask */
+  int16_t suctionSpeed=0;
+  uint8_t vision_cmd=0;
   /* Infinite loop */
   for(;;)
   {
-    osDelay(1);
+    if( Distance_Calc(Vision_Points[0],LiDar.locx,LiDar.locy) < 0.10f && fabsf(LiDar.yaw - Vision_Points[0].angle) < 0.5f )
+    {
+        cnt = 0;
+        Wheels_vel[0] = 0;
+        Wheels_vel[1] = 0;
+        Wheels_vel[2] = 0;
+        Wheels_vel[3] = 0;
+
+        vision_cmd = 0x02;
+        HAL_UART_Transmit(&huart2,&vision_cmd, sizeof(vision_cmd),0xFFFFF);
+
+        if(State == Run2Get_State) //从黄区到绿区的跑点，用于去找球，到点后启�??5065，开启视觉任�??
+        {
+            Slope_Pos = Slope_Left;//平台倾斜
+            Left_TargetSpe = Left_Spe;//�??2006旋转
+            suctionSpeed = 7000;//5065启动
+            xQueueOverwrite(SuctionSpeed_QueueHandle,&suctionSpeed);
+            vTaskResume(Vision_TaskHandle);
+            vTaskSuspend(VisionRun_TaskHandle);
+        }
+    }
+    else
+    {
+        printf("%f,%f,%f\n",LiDar.locx,LiDar.locy,LiDar.yaw);
+        Chassis_Move_OfVision(&Vision_Points[0]);
+    }
+    osDelay(5);
   }
   /* USER CODE END VisionRunTask */
 }

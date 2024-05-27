@@ -14,6 +14,8 @@
 #include "Locator.h"
 #include "MID360.h"
 
+extern PID_t VisionRun2;
+
 PID_t Wheels[4];//轮子PID结构体
 float Wheels_vel[4];//轮子转速
 uint8_t AimPoints_Index;//目标点序号
@@ -85,6 +87,50 @@ void Chassis_Move(PointStruct *target_point)
     else if( dis / all_dis < 0.7 ) max_out = 3.0f;
     //计算平动速度向量
     vel = PID_Realise(&Translation_PID, 0, -dis, max_out, 0.01f);
+    //速度向量取绝对值
+    arm_abs_f32(&vel, &vel, 1);
+    //计算角速度
+    omega = PID_Realise(&Turn_PID, 0, -delta_angle, 1.2f, 0.1f);
+
+    //线速度分解为x和y的分量
+    xSpeed = vel * arm_cos_f32(atan2f(err_y, err_x));
+    ySpeed = vel * arm_sin_f32(atan2f(err_y, err_x));
+
+//    printf("%f,%f,%f\n",xSpeed,ySpeed,omega);
+    //将车身x，y速度转换为轮子的x，y速度
+    SGW2Wheels(xSpeed, ySpeed, omega, LiDar.yaw);
+}
+/***
+ * @brief 底盘跑点函数
+ * @param target_point 目标点结构体
+ */
+void Chassis_Move_OfVision(PointStruct *target_point)
+{
+    float xSpeed = 0.0f,ySpeed = 0.0f;
+    float dis = 0.0f;//当前点与目标点的距离
+    float vel = 0.0f, omega = 0.0f;//速度,角速度
+    float err_x = (target_point->x - LiDar.locx);//x差值
+    float err_y = (target_point->y - LiDar.locy);//y差值
+    float delta_angle = (target_point->angle - LiDar.yaw);//角度差值
+    float max_out = 0.0f,allErr_x = 0.0f,allErr_y = 0.0f;
+    static float all_dis = 0.0f;
+
+    if( cnt == 0 )
+    {
+        allErr_x = (target_point->x - LiDar.locx);
+        allErr_y = (target_point->y - LiDar.locy);
+        arm_sqrt_f32(allErr_x * allErr_x + allErr_y * allErr_y,&all_dis);
+        cnt = 1;
+    }
+    //计算向量长度
+    arm_sqrt_f32(err_x * err_x + err_y * err_y,&dis);
+
+    if( dis / all_dis >= 0.9 ) max_out = 1.5f;
+    else if( dis / all_dis >= 0.8 && dis / all_dis < 0.9 ) max_out = 2.5f;
+    else if( dis / all_dis >= 0.7 && dis / all_dis < 0.8 ) max_out = 3.0f;
+    else if( dis / all_dis < 0.7 ) max_out = 3.0f;
+    //计算平动速度向量
+    vel = PID_Realise(&VisionRun2, 0, -dis, max_out, 0.01f);
     //速度向量取绝对值
     arm_abs_f32(&vel, &vel, 1);
     //计算角速度

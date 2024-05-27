@@ -20,18 +20,14 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a981e9b2-3d56-4cc6-a8d1-14731e6e26d4" name="更改" comment="2024-5-22">
+    <list default="true" id="a981e9b2-3d56-4cc6-a8d1-14731e6e26d4" name="更改" comment="2024-5-25">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Core/Inc/Chassis.h" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Inc/Chassis.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Core/Inc/MID360.h" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Inc/MID360.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Core/Inc/main.h" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Inc/main.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Core/Src/Chassis.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/Chassis.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Core/Src/MID360.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/MID360.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Core/Src/PID.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/PID.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Core/Src/app_freertos.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/app_freertos.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Core/Src/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/main.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Core/Src/stm32g4xx_it.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/stm32g4xx_it.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Core/Src/usart.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/usart.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/R2_Master_V3.ioc" beforeDir="false" afterPath="$PROJECT_DIR$/R2_Master_V3.ioc" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -74,23 +70,23 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.cidr.known.project.marker": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "cf.first.check.clang-format": "false",
-    "cidr.known.project.marker": "true",
-    "last_opened_file_path": "D:/CLion_STM32_Project/My_R2_Master",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "settings.editor.selected.configurable": "preferences.lookFeel",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
+    &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;D:/CLion_STM32_Project/My_R2_Master&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="D:\CLion_STM32_Project\R2_V3\R2_Master_V3" />
@@ -98,11 +94,6 @@
   </component>
   <component name="RunManager" selected="OpenOCD 下载并运行.R2_Master_V3.elf">
     <configuration name="R2_Master_V3.elf" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="R2_Master_V3" TARGET_NAME="R2_Master_V3.elf" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="R2_Master_V3" RUN_TARGET_NAME="R2_Master_V3.elf">
-      <method v="2">
-        <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
@@ -168,7 +159,10 @@
       <workItem from="1716464677172" duration="3154000" />
       <workItem from="1716550861840" duration="10628000" />
       <workItem from="1716617919374" duration="13760000" />
-      <workItem from="1716640831772" duration="3704000" />
+      <workItem from="1716640831772" duration="3725000" />
+      <workItem from="1716704427326" duration="13228000" />
+      <workItem from="1716806250669" duration="134000" />
+      <workItem from="1716817153038" duration="1000" />
     </task>
     <task id="LOCAL-00001" summary="2024-5-22">
       <created>1716342016146</created>
@@ -177,7 +171,14 @@
       <option name="project" value="LOCAL" />
       <updated>1716342016146</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="2024-5-25">
+      <created>1716648814362</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1716648814362</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -202,6 +203,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="2024-5-22" />
-    <option name="LAST_COMMIT_MESSAGE" value="2024-5-22" />
+    <MESSAGE value="2024-5-25" />
+    <option name="LAST_COMMIT_MESSAGE" value="2024-5-25" />
   </component>
 </project>
