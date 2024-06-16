@@ -23,6 +23,10 @@
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "usart.h"
+#include "DT35.h"
+#include "FreeRTOS.h"
+#include "queue.h"
+#include "cmsis_os.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -73,7 +77,7 @@ extern UART_HandleTypeDef huart3;
 extern TIM_HandleTypeDef htim7;
 
 /* USER CODE BEGIN EV */
-
+extern osMessageQId SuctionSpeed_QueueHandle;
 /* USER CODE END EV */
 
 /******************************************************************************/
@@ -278,15 +282,15 @@ void TIM2_IRQHandler(void)
 void USART1_IRQHandler(void)
 {
   /* USER CODE BEGIN USART1_IRQn 0 */
-//    if(RESET != __HAL_UART_GET_FLAG(&huart1, UART_FLAG_IDLE))   //判断是否是空闲中�??????????????
+//    if(RESET != __HAL_UART_GET_FLAG(&huart1, UART_FLAG_IDLE))   //判断是否是空闲中�???????????????????
 //    {
-    __HAL_UART_CLEAR_IDLEFLAG(&huart1);                     //清除空闲中断标志（否则会�??????????????直不断进入中断）
+    __HAL_UART_CLEAR_IDLEFLAG(&huart1);                     //清除空闲中断标志（否则会�???????????????????直不断进入中断）
     HAL_UART_DMAStop(&huart1);                        //停止DMA接收
 
-    VOFA_SetPID(&Slope_Speed_t,&Slope_Position_t);          //对串口接收数据进行解�???????????
+    VOFA_SetPID(&Slope_Speed_t,&Slope_Position_t);          //对串口接收数据进行解�????????????????
 
     HAL_UART_Receive_DMA(&huart1, USART1_Buffer, 255);   //重启串口接收中断，开始DMA传输
-    __HAL_UART_ENABLE_IT(&huart1,UART_IT_IDLE);             //重启串口空闲中断，防止被32自动清除标志空闲中断标志�??????????????
+    __HAL_UART_ENABLE_IT(&huart1,UART_IT_IDLE);             //重启串口空闲中断，防止被32自动清除标志空闲中断标志�???????????????????
 //    }
   /* USER CODE END USART1_IRQn 0 */
   HAL_UART_IRQHandler(&huart1);
@@ -301,16 +305,16 @@ void USART1_IRQHandler(void)
 void USART2_IRQHandler(void)
 {
   /* USER CODE BEGIN USART2_IRQn 0 */
-//    if(RESET != __HAL_UART_GET_FLAG(&huart2, UART_FLAG_IDLE))   //判断是否是空闲中�??????????????
-//    {
-    __HAL_UART_CLEAR_IDLEFLAG(&huart2);                     //清除空闲中断标志（否则会�??????????????直不断进入中断）
-    HAL_UART_DMAStop(&huart2);                        //停止DMA接收
+//  if(RESET != __HAL_UART_GET_FLAG(&huart2, UART_FLAG_IDLE))   //判断是否是空闲中�???????????????????
+// {
+      __HAL_UART_CLEAR_IDLEFLAG(&huart2);                     //清除空闲中断标志（否则会�???????????????????直不断进入中断）
+      HAL_UART_DMAStop(&huart2);                        //停止DMA接收
 
-    RaDar_Data_Rec(USART2_Buffer,&LiDar,&Vision_Data);
-//    printf("ok\n");
-    HAL_UART_Receive_DMA(&huart2, USART2_Buffer, 255);   //重启串口接收中断，开始DMA传输
-    __HAL_UART_ENABLE_IT(&huart2,UART_IT_IDLE);             //重启串口空闲中断，防止被32自动清除标志空闲中断标志�??????????????
-//    }
+      RaDar_Data_Rec(USART2_Buffer, &LiDar, &Vision_Data);
+
+      HAL_UART_Receive_DMA(&huart2, USART2_Buffer, 50);   //重启串口接收中断，开始DMA传输
+      __HAL_UART_ENABLE_IT(&huart2, UART_IT_IDLE);             //重启串口空闲中断，防止被32自动清除标志空闲中断标志�???????????????????
+// }
   /* USER CODE END USART2_IRQn 0 */
   HAL_UART_IRQHandler(&huart2);
   /* USER CODE BEGIN USART2_IRQn 1 */
@@ -324,7 +328,11 @@ void USART2_IRQHandler(void)
 void USART3_IRQHandler(void)
 {
   /* USER CODE BEGIN USART3_IRQn 0 */
+    __HAL_UART_CLEAR_IDLEFLAG(&huart3);                     //清除空闲中断标志（否则会�???????????????????直不断进入中断）
+    HAL_UART_DMAStop(&huart3);                        //停止DMA接收
 
+    HAL_UART_Receive_DMA(&huart3, USART3_Buffer, 30);   //重启串口接收中断，开始DMA传输
+    __HAL_UART_ENABLE_IT(&huart3,UART_IT_IDLE);             //重启串口空闲中断，防止被32自动清除标志空闲中断标志�???????????????????
   /* USER CODE END USART3_IRQn 0 */
   HAL_UART_IRQHandler(&huart3);
   /* USER CODE BEGIN USART3_IRQn 1 */
@@ -338,7 +346,16 @@ void USART3_IRQHandler(void)
 void UART4_IRQHandler(void)
 {
   /* USER CODE BEGIN UART4_IRQn 0 */
+    __HAL_UART_CLEAR_IDLEFLAG(&huart4);                     //清除空闲中断标志（否则会�?????直不断进入中断）
+    HAL_UART_DMAStop(&huart4);                        //停止DMA接收
 
+    if( USART4_Buffer[0] == 0x06)
+    {
+        DT35_Rec(USART4_Buffer,&DT35_Data);          //对DT35的数据进行解�?????
+    }
+
+    HAL_UART_Receive_DMA(&huart4, USART4_Buffer, 255);             //重启串口接收中断，开始DMA传输
+    __HAL_UART_ENABLE_IT(&huart4,UART_IT_IDLE);
   /* USER CODE END UART4_IRQn 0 */
   HAL_UART_IRQHandler(&huart4);
   /* USER CODE BEGIN UART4_IRQn 1 */
@@ -352,15 +369,47 @@ void UART4_IRQHandler(void)
 void UART5_IRQHandler(void)
 {
   /* USER CODE BEGIN UART5_IRQn 0 */
-//    if(RESET != __HAL_UART_GET_FLAG(&huart5, UART_FLAG_IDLE))   //判断是否是空闲中�??????????????
+    static uint8_t i=0,j=0,k=0;
+    int16_t suctionSpeed = 0;
+//    if(RESET != __HAL_UART_GET_FLAG(&huart5, UART_FLAG_IDLE))   //判断是否是空闲中�???????????????????
 //    {
-    __HAL_UART_CLEAR_IDLEFLAG(&huart5);                     //清除空闲中断标志（否则会�??????????????直不断进入中断）
+    __HAL_UART_CLEAR_IDLEFLAG(&huart5);                     //清除空闲中断标志（否则会�???????????????????直不断进入中断）
     HAL_UART_DMAStop(&huart5);                        //停止DMA接收
 
-    locater_Data_Rec(USART5_Buffer,&locater);          //对串口接收数据进行解�???????????
+    TOF(USART5_Buffer,&TOF_dis1);
+
+    if(i > 100)
+    {
+        if( HAL_GPIO_ReadPin(SOLE_P1_GPIO_Port,SOLE_N1_Pin) == GPIO_PIN_SET )
+        {
+            if(j>5)
+            {
+                if(TOF_dis1 < 145.0f)
+                {
+                    if(Color == 1)
+                    {
+                        suctionSpeed = 0;
+                        xQueueOverwriteFromISR(SuctionSpeed_QueueHandle,&suctionSpeed,0);
+                        Color = 0;
+                    }
+                    Car_Stop;
+                    VisionFlag = 1;
+                }
+            }
+            else{
+                j++;
+            }
+        }
+        else
+        {
+//            printf("out:%f\n",TOF_dis1);
+        }
+    } else{
+        i++;
+    }
 
     HAL_UART_Receive_DMA(&huart5, USART5_Buffer, 255);   //重启串口接收中断，开始DMA传输
-    __HAL_UART_ENABLE_IT(&huart5,UART_IT_IDLE);             //重启串口空闲中断，防止被32自动清除标志空闲中断标志�??????????????
+    __HAL_UART_ENABLE_IT(&huart5,UART_IT_IDLE);             //重启串口空闲中断，防止被32自动清除标志空闲中断标志�???????????????????
 //    }
   /* USER CODE END UART5_IRQn 0 */
   HAL_UART_IRQHandler(&huart5);

@@ -9,6 +9,14 @@
   */
 #include "VESC.h"
 #include "My_Can.h"
+#include "FreeRTOS.h"
+#include "task.h"
+#include "queue.h"
+#include "cmsis_os.h"
+
+extern osMessageQId SuctionSpeed_QueueHandle;
+
+int16_t suctionSpeed;
 
 void Vesc_SetSpeed(FDCAN_HandleTypeDef *_hcan, uint16_t motor_id, int32_t rpm)
 {
@@ -46,4 +54,22 @@ void Vesc_SetSpeed(FDCAN_HandleTypeDef *_hcan, uint16_t motor_id, int32_t rpm)
 //        printf("Error\n");
         Error_Handler();
     }
+}
+
+void OpenSuction(void)
+{
+    suctionSpeed = 7000; /** 5065启动 **/
+    xQueueOverwrite(SuctionSpeed_QueueHandle, &suctionSpeed);
+}
+
+void CloseSuction(void)
+{
+    suctionSpeed = 0; /** 5065关闭 **/
+    xQueueOverwrite(SuctionSpeed_QueueHandle, &suctionSpeed);
+}
+
+void FanSuction(void)
+{
+    suctionSpeed = -2000; /** 5065关闭 **/
+    xQueueOverwrite(SuctionSpeed_QueueHandle, &suctionSpeed);
 }

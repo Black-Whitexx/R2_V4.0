@@ -21,7 +21,6 @@
 #include "cmsis_os.h"
 #include "dma.h"
 #include "fdcan.h"
-#include "i2c.h"
 #include "spi.h"
 #include "tim.h"
 #include "usart.h"
@@ -52,7 +51,7 @@
 /* USER CODE BEGIN PV */
 int16_t Wheels_VelOut[4];//PID计算存储中间变量
 uint8_t Control_Mode;
-uint8_t State,Cmd;
+uint8_t State,Store_Flag;
 float Left_TargetSpe,Right_TargetSpe,Slope_Pos,Toggle_Pos;
 /* USER CODE END PV */
 
@@ -107,7 +106,6 @@ int main(void)
   MX_USART3_UART_Init();
   MX_UART4_Init();
   MX_UART5_Init();
-  MX_I2C3_Init();
   MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
     /** 打开串口1中断和DMA **/
@@ -115,10 +113,10 @@ int main(void)
     HAL_UART_Receive_DMA(&huart1,USART1_Buffer,256);
     /** 打开串口1中断和DMA **/
     __HAL_UART_ENABLE_IT(&huart2,UART_IT_IDLE);
-    HAL_UART_Receive_DMA(&huart2,USART2_Buffer,256);
+    HAL_UART_Receive_DMA(&huart2,USART2_Buffer,50);
     /** 打开串口1中断和DMA **/
     __HAL_UART_ENABLE_IT(&huart3,UART_IT_IDLE);
-    HAL_UART_Receive_DMA(&huart3,USART3_Buffer,256);
+    HAL_UART_Receive_DMA(&huart3,USART3_Buffer,30);
     /** 打开串口1中断和DMA **/
     __HAL_UART_ENABLE_IT(&huart4,UART_IT_IDLE);
     HAL_UART_Receive_DMA(&huart4,USART4_Buffer,256);
@@ -211,12 +209,12 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
   /* USER CODE BEGIN Callback 0 */
   if (htim->Instance == TIM2 ) {
-      /** 实际�????? **/
+      /** 实际�???????? **/
       Wheels_VelOut[0] = (int16_t)PID_Realise(&Wheels[0],-Wheels_vel[0],Motor_Info[0].speed,M3508_CURRENT_MAX,5);
       Wheels_VelOut[1] = (int16_t)PID_Realise(&Wheels[1],-Wheels_vel[1],Motor_Info[1].speed,M3508_CURRENT_MAX,5);
       Wheels_VelOut[2] = (int16_t)PID_Realise(&Wheels[2],-Wheels_vel[2],Motor_Info[2].speed,M3508_CURRENT_MAX,5);
       Wheels_VelOut[3] = (int16_t)PID_Realise(&Wheels[3],-Wheels_vel[3],Motor_Info[3].speed,M3508_CURRENT_MAX,5);
-      /** 调试�????? **/
+      /** 调试�???????? **/
 //      Wheels_VelOut[0] = PID_Realise(&Wheels[0],Wheels[0].target,Motor_Info[0].speed,M3508_CURRENT_MAX,5);
 //      Wheels_VelOut[1] = PID_Realise(&Wheels[1],Wheels[1].target,Motor_Info[1].speed,M3508_CURRENT_MAX,5);
 //      Wheels_VelOut[2] = PID_Realise(&Wheels[2],Wheels[2].target,Motor_Info[2].speed,M3508_CURRENT_MAX,5);

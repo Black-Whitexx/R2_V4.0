@@ -20,14 +20,38 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a981e9b2-3d56-4cc6-a8d1-14731e6e26d4" name="更改" comment="2024-5-25">
+    <list default="true" id="a84bb48c-cfe0-481c-829d-87f33a41beef" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/Core/Inc/DT35.h" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Core/Src/DT35.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.mxproject" beforeDir="false" afterPath="$PROJECT_DIR$/.mxproject" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Core/Inc/Chassis.h" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Inc/Chassis.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Core/Inc/MID360.h" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Inc/MID360.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Core/Inc/TCS34725.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Core/Inc/VESC.h" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Inc/VESC.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Core/Inc/i2c.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Core/Inc/main.h" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Inc/main.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Core/Inc/stm32g4xx_hal_conf.h" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Inc/stm32g4xx_hal_conf.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Core/Src/Chassis.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/Chassis.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Core/Src/MID360.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/MID360.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Core/Src/PID.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/PID.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Core/Src/TCS34725.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Core/Src/VESC.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/VESC.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Core/Src/app_freertos.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/app_freertos.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Core/Src/i2c.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Core/Src/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/main.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Core/Src/stm32g4xx_it.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/stm32g4xx_it.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Core/Src/usart.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/usart.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_i2c.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_i2c_ex.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_ll_i2c.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_i2c.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_i2c_ex.c" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/R2_Master_V3.ioc" beforeDir="false" afterPath="$PROJECT_DIR$/R2_Master_V3.ioc" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -41,65 +65,46 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory">{
-  &quot;lastFilter&quot;: {
-    &quot;state&quot;: &quot;OPEN&quot;
-  }
-}</component>
-  <component name="GithubPullRequestsUISettings">
-    <option name="selectedUrlAndAccountId">
-      <UrlAndAccount>
-        <option name="accountId" value="b3fdf836-4d7e-4344-ac58-dc8bada0e122" />
-        <option name="url" value="https://github.com/GARFIELD-EE/R2_Master_V3.git" />
-      </UrlAndAccount>
-    </option>
-  </component>
-  <component name="HighlightingSettingsPerFile">
-    <setting file="file://$PROJECT_DIR$/Core/Inc/TCS34725.h" root0="FORCE_HIGHLIGHTING" />
-  </component>
   <component name="ProjectApplicationVersion">
     <option name="ide" value="CLion" />
     <option name="majorVersion" value="2023" />
-    <option name="minorVersion" value="1.1" />
+    <option name="minorVersion" value="3.3" />
   </component>
-  <component name="ProjectId" id="2fWxt4WlTq6DSCK8CpsXEwm8Yts" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
-    <ConfirmationsSetting value="1" id="Add" />
-  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 0
+}</component>
+  <component name="ProjectId" id="2hxHC4blmP8NAiU6OzdHLsru1tC" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
+    &quot;OpenOCD Download &amp; Run.R2_Master_V3.elf.executor&quot;: &quot;Run&quot;,
     &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;RunOnceActivity.readMode.enableVisualFormatting&quot;: &quot;true&quot;,
     &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
     &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;D:/CLion_STM32_Project/My_R2_Master&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;last_opened_file_path&quot;: &quot;E:/RC/R2_Code/R2_Master_V3&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
     &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
 }</component>
-  <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="D:\CLion_STM32_Project\R2_V3\R2_Master_V3" />
-    </key>
-  </component>
-  <component name="RunManager" selected="OpenOCD 下载并运行.R2_Master_V3.elf">
-    <configuration name="R2_Master_V3.elf" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="R2_Master_V3" TARGET_NAME="R2_Master_V3.elf" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="R2_Master_V3" RUN_TARGET_NAME="R2_Master_V3.elf">
+  <component name="RunManager" selected="OpenOCD Download &amp; Run.R2_Master_V3.elf">
+    <configuration name="R2_Master_V3.elf" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="R2_Master_V3" TARGET_NAME="R2_Master_V3.elf" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="R2_Master_V3" RUN_TARGET_NAME="R2_Master_V3.elf">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
       </method>
     </configuration>
-    <configuration name="R2_Master_V3.elf" type="com.jetbrains.cidr.embedded.openocd.conf.type" factoryName="com.jetbrains.cidr.embedded.openocd.conf.factory" nameIsGenerated="true" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="R2_Master_V3" TARGET_NAME="R2_Master_V3.elf" CONFIG_NAME="Debug" version="1" RUN_TARGET_PROJECT_NAME="R2_Master_V3" RUN_TARGET_NAME="R2_Master_V3.elf">
-      <openocd version="1" gdb-port="3333" telnet-port="4444" board-config="D:\CLion_STM32_Project\Config\DAP.cfg" reset-type="INIT" download-type="UPDATED_ONLY">
+    <configuration name="R2_Master_V3.elf" type="com.jetbrains.cidr.embedded.openocd.conf.type" factoryName="com.jetbrains.cidr.embedded.openocd.conf.factory" nameIsGenerated="true" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="R2_Master_V3" TARGET_NAME="R2_Master_V3.elf" CONFIG_NAME="Debug" version="1" RUN_TARGET_PROJECT_NAME="R2_Master_V3" RUN_TARGET_NAME="R2_Master_V3.elf">
+      <openocd version="1" gdb-port="3333" telnet-port="4444" board-config="E:\EmbeddedDevelopment\openocd-cfg\daplink-g4.cfg" reset-type="INIT" download-type="UPDATED_ONLY">
         <debugger kind="GDB" isBundled="true" />
       </openocd>
       <method v="2">
@@ -107,103 +112,31 @@
       </method>
     </configuration>
     <list>
-      <item itemvalue="CMake 应用程序.R2_Master_V3.elf" />
-      <item itemvalue="OpenOCD 下载并运行.R2_Master_V3.elf" />
+      <item itemvalue="CMake Application.R2_Master_V3.elf" />
+      <item itemvalue="OpenOCD Download &amp; Run.R2_Master_V3.elf" />
     </list>
   </component>
-  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="应用程序级" UseSingleDictionary="true" transferred="true" />
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
-    <task active="true" id="Default" summary="默认任务">
-      <changelist id="a981e9b2-3d56-4cc6-a8d1-14731e6e26d4" name="更改" comment="" />
-      <created>1713930846569</created>
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="a84bb48c-cfe0-481c-829d-87f33a41beef" name="Changes" comment="" />
+      <created>1718528677849</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1713930846569</updated>
-      <workItem from="1713930879919" duration="268000" />
-      <workItem from="1714184060410" duration="4762000" />
-      <workItem from="1714203641844" duration="6945000" />
-      <workItem from="1714539038832" duration="799000" />
-      <workItem from="1714616327751" duration="7000" />
-      <workItem from="1714616818599" duration="811000" />
-      <workItem from="1714617648935" duration="447000" />
-      <workItem from="1714627758030" duration="15162000" />
-      <workItem from="1714703846963" duration="14396000" />
-      <workItem from="1714737744097" duration="4892000" />
-      <workItem from="1714798986286" duration="4968000" />
-      <workItem from="1714808864537" duration="5360000" />
-      <workItem from="1714815991344" duration="322000" />
-      <workItem from="1714816430995" duration="3373000" />
-      <workItem from="1715007131001" duration="17000" />
-      <workItem from="1715159345871" duration="3692000" />
-      <workItem from="1715173700177" duration="346000" />
-      <workItem from="1715226968035" duration="1992000" />
-      <workItem from="1715435445058" duration="52000" />
-      <workItem from="1715592134841" duration="5121000" />
-      <workItem from="1715656012920" duration="13783000" />
-      <workItem from="1715737930103" duration="6794000" />
-      <workItem from="1715756724977" duration="729000" />
-      <workItem from="1715763907037" duration="1213000" />
-      <workItem from="1715847087846" duration="975000" />
-      <workItem from="1716006922007" duration="6705000" />
-      <workItem from="1716022262034" duration="1000" />
-      <workItem from="1716022334347" duration="15171000" />
-      <workItem from="1716106998657" duration="7258000" />
-      <workItem from="1716204460509" duration="3566000" />
-      <workItem from="1716260752368" duration="9703000" />
-      <workItem from="1716303738205" duration="3220000" />
-      <workItem from="1716339983636" duration="1722000" />
-      <workItem from="1716341805392" duration="1939000" />
-      <workItem from="1716375002944" duration="2405000" />
-      <workItem from="1716449581800" duration="4471000" />
-      <workItem from="1716462646058" duration="192000" />
-      <workItem from="1716464677172" duration="3154000" />
-      <workItem from="1716550861840" duration="10628000" />
-      <workItem from="1716617919374" duration="13760000" />
-      <workItem from="1716640831772" duration="3725000" />
-      <workItem from="1716704427326" duration="13228000" />
-      <workItem from="1716806250669" duration="134000" />
-      <workItem from="1716817153038" duration="1000" />
+      <updated>1718528677849</updated>
+      <workItem from="1718528679024" duration="517000" />
+      <workItem from="1718529260204" duration="529000" />
+      <workItem from="1718529854608" duration="2015000" />
+      <workItem from="1718538150845" duration="3000" />
     </task>
-    <task id="LOCAL-00001" summary="2024-5-22">
-      <created>1716342016146</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1716342016146</updated>
-    </task>
-    <task id="LOCAL-00002" summary="2024-5-25">
-      <created>1716648814362</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1716648814362</updated>
-    </task>
-    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
   </component>
   <component name="VCPKGProject">
-    <isAutomaticEditVcpkgJson value="false" />
     <isAutomaticCheckingOnLaunch value="false" />
     <isAutomaticFoundErrors value="true" />
-    <isAutomaticFoundErrors value="true" />
-  </component>
-  <component name="Vcs.Log.Tabs.Properties">
-    <option name="TAB_STATES">
-      <map>
-        <entry key="MAIN">
-          <value>
-            <State />
-          </value>
-        </entry>
-      </map>
-    </option>
-  </component>
-  <component name="VcsManagerConfiguration">
-    <MESSAGE value="2024-5-22" />
-    <MESSAGE value="2024-5-25" />
-    <option name="LAST_COMMIT_MESSAGE" value="2024-5-25" />
+    <isAutomaticReloadCMake value="true" />
   </component>
 </project>
