@@ -20,38 +20,9 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a84bb48c-cfe0-481c-829d-87f33a41beef" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Core/Inc/DT35.h" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Core/Src/DT35.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+    <list default="true" id="a84bb48c-cfe0-481c-829d-87f33a41beef" name="Changes" comment="init">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.mxproject" beforeDir="false" afterPath="$PROJECT_DIR$/.mxproject" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Core/Inc/Chassis.h" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Inc/Chassis.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Core/Inc/MID360.h" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Inc/MID360.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Core/Inc/TCS34725.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Core/Inc/VESC.h" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Inc/VESC.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Core/Inc/i2c.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Core/Inc/main.h" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Inc/main.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Core/Inc/stm32g4xx_hal_conf.h" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Inc/stm32g4xx_hal_conf.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Core/Src/Chassis.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/Chassis.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Core/Src/MID360.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/MID360.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Core/Src/PID.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/PID.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Core/Src/TCS34725.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Core/Src/VESC.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/VESC.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Core/Src/app_freertos.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/app_freertos.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Core/Src/i2c.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Core/Src/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/main.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Core/Src/stm32g4xx_it.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/stm32g4xx_it.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Core/Src/usart.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/usart.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_i2c.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_i2c_ex.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_ll_i2c.h" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_i2c.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_i2c_ex.c" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/R2_Master_V3.ioc" beforeDir="false" afterPath="$PROJECT_DIR$/R2_Master_V3.ioc" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -127,8 +98,25 @@
       <workItem from="1718528679024" duration="517000" />
       <workItem from="1718529260204" duration="529000" />
       <workItem from="1718529854608" duration="2015000" />
-      <workItem from="1718538150845" duration="3000" />
+      <workItem from="1718538150845" duration="1415000" />
     </task>
+    <task id="LOCAL-00001" summary="init">
+      <option name="closed" value="true" />
+      <created>1718538210789</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1718538210789</updated>
+    </task>
+    <task id="LOCAL-00002" summary="init">
+      <option name="closed" value="true" />
+      <created>1718538325015</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1718538325015</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -138,5 +126,20 @@
     <isAutomaticCheckingOnLaunch value="false" />
     <isAutomaticFoundErrors value="true" />
     <isAutomaticReloadCMake value="true" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="init" />
+    <option name="LAST_COMMIT_MESSAGE" value="init" />
   </component>
 </project>

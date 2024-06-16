@@ -194,6 +194,7 @@ void DebugTask(void const * argument)
 {
   /* USER CODE BEGIN DebugTask */
   /** 等待NRF校准 **/
+  //包含一部分初始化内容
   while (NRF24L01_Check())
   {
       printf("no\n");
