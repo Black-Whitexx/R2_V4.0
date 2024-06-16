@@ -209,12 +209,12 @@ void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
   /* USER CODE BEGIN Callback 0 */
   if (htim->Instance == TIM2 ) {
-      /** 实际�???????? **/
-      Wheels_VelOut[0] = (int16_t)PID_Realise(&Wheels[0],-Wheels_vel[0],Motor_Info[0].speed,M3508_CURRENT_MAX,5);
-      Wheels_VelOut[1] = (int16_t)PID_Realise(&Wheels[1],-Wheels_vel[1],Motor_Info[1].speed,M3508_CURRENT_MAX,5);
-      Wheels_VelOut[2] = (int16_t)PID_Realise(&Wheels[2],-Wheels_vel[2],Motor_Info[2].speed,M3508_CURRENT_MAX,5);
-      Wheels_VelOut[3] = (int16_t)PID_Realise(&Wheels[3],-Wheels_vel[3],Motor_Info[3].speed,M3508_CURRENT_MAX,5);
-      /** 调试�???????? **/
+      /** 实际�????????? **/
+//      Wheels_VelOut[0] = (int16_t)PID_Realise(&Wheels[0],-Wheels_vel[0],Motor_Info[0].speed,M3508_CURRENT_MAX,5);
+//      Wheels_VelOut[1] = (int16_t)PID_Realise(&Wheels[1],-Wheels_vel[1],Motor_Info[1].speed,M3508_CURRENT_MAX,5);
+//      Wheels_VelOut[2] = (int16_t)PID_Realise(&Wheels[2],-Wheels_vel[2],Motor_Info[2].speed,M3508_CURRENT_MAX,5);
+//      Wheels_VelOut[3] = (int16_t)PID_Realise(&Wheels[3],-Wheels_vel[3],Motor_Info[3].speed,M3508_CURRENT_MAX,5);
+      /** 调试�????????? **/
 //      Wheels_VelOut[0] = PID_Realise(&Wheels[0],Wheels[0].target,Motor_Info[0].speed,M3508_CURRENT_MAX,5);
 //      Wheels_VelOut[1] = PID_Realise(&Wheels[1],Wheels[1].target,Motor_Info[1].speed,M3508_CURRENT_MAX,5);
 //      Wheels_VelOut[2] = PID_Realise(&Wheels[2],Wheels[2].target,Motor_Info[2].speed,M3508_CURRENT_MAX,5);

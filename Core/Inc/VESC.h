@@ -77,8 +77,8 @@ typedef enum {
 }CAN_ID_Packet;
 
 void Vesc_SetSpeed(FDCAN_HandleTypeDef *_hcan, uint16_t motor_id, int32_t rpm);
-void OpenSuction(void);
-void CloseSuction(void);
+void OpenVESC(void);
+void StopVESC(void);
 void FanSuction(void);
 
 #endif //R2_MECHANISM_V3_VESC_H

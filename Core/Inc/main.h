@@ -55,23 +55,23 @@ extern uint8_t USART5_Buffer[256];
 
 extern PID_t Wheels[4];//轮子转�??
 extern float Wheels_vel[4];//轮子转�??
-extern PID_t Translation_PID, Turn_PID;//平动的PID结构体，转动的PID结构�???????????
+extern PID_t Translation_PID, Turn_PID;//平动的PID结构体，转动的PID结构�?????????????
 
 extern PointStruct Aim_Points[256],Frame_Points[5];//目标点们
-extern uint8_t AimPoints_Index;//目标点序�??????????
+extern uint8_t AimPoints_Index;//目标点序�????????????
 
-extern MotorInfo_t Motor_Info[MOTOR_NUM];//大疆电机返回的数据数�?????????????
+extern MotorInfo_t Motor_Info[MOTOR_NUM];//大疆电机返回的数据数�???????????????
 
 extern uint8_t Control_Mode;
 extern uint8_t State,Vision_State,VisionFlag,Color;
 
 extern uint8_t cnt;
 
-extern PointStruct Run1to3_Points[4];//用于存储比赛�??????????始从1区跑到三区的目标�??????????,有五个点
+extern PointStruct Run1to3_Points[4];//用于存储比赛�????????????始从1区跑到三区的目标�????????????,有五个点
 
 extern PID_t Slope_Speed_t,Slope_Position_t,Toggle_Speed_t,Toggle_Position_t;
 
-extern float Slope_Pos,Toggle_Pos;
+//extern float Slope_Pos,Toggle_Pos;
 
 extern PID_t VisionPID_X,VisionRun2,DT35_Run;
 
@@ -114,10 +114,10 @@ void Error_Handler(void);
 #define SOLE_N2_GPIO_Port GPIOD
 
 /* USER CODE BEGIN Private defines */
-#define SUCTION_ON   HAL_GPIO_WritePin(SOLE_P1_GPIO_Port,SOLE_N1_Pin,GPIO_PIN_SET)
-#define SUCTION_OFF  HAL_GPIO_WritePin(SOLE_P1_GPIO_Port,SOLE_N1_Pin,GPIO_PIN_RESET)
-#define CLAW_ON      HAL_GPIO_WritePin(SOLE_P1_GPIO_Port,SOLE_P1_Pin,GPIO_PIN_RESET)
-#define CLAW_OFF     HAL_GPIO_WritePin(SOLE_P1_GPIO_Port,SOLE_P1_Pin,GPIO_PIN_SET)
+//#define SUCTION_ON   HAL_GPIO_WritePin(SOLE_P1_GPIO_Port,SOLE_N1_Pin,GPIO_PIN_SET)
+//#define SUCTION_OFF  HAL_GPIO_WritePin(SOLE_P1_GPIO_Port,SOLE_N1_Pin,GPIO_PIN_RESET)
+//#define CLAW_ON      HAL_GPIO_WritePin(SOLE_P1_GPIO_Port,SOLE_P1_Pin,GPIO_PIN_RESET)
+//#define CLAW_OFF     HAL_GPIO_WritePin(SOLE_P1_GPIO_Port,SOLE_P1_Pin,GPIO_PIN_SET)
 
 #define LED0_Flashing HAL_GPIO_TogglePin(LED0_GPIO_Port,LED0_Pin)
 
@@ -135,14 +135,39 @@ void Error_Handler(void);
 #define Store_State 0xFB
 #define TakeWrongBall_State 0xFA
 
-#define Toggle_Down 0 //夹爪翻下�???????
-#define Toggle_Mid 1300 //夹爪归中
-#define Toggle_Up 3100 //夹爪翻上�???????
-#define Slope_ON 1500 //平台向左倾斜
-#define Slope_OFF 0 //平台向右倾斜
+//#define Toggle_Down 0 //夹爪翻下�?????????
+//#define Toggle_Mid 1300 //夹爪归中
+//#define Toggle_Up 3100 //夹爪翻上�?????????
+//#define Slope_ON 1500 //平台向左倾斜
+//#define Slope_OFF 0 //平台向右倾斜
 
 #define Vision_Delay 0x01
 #define Vision_FindBall 0x02
+//�����궨��
+#define SUCTION_ON 1
+#define SUCTION_OFF 2
+#define Slope_ON   3
+#define Slope_OFF   4
+#define OpenVESC 5
+#define StopVESC 6
+#define CLAW_ON 7
+#define CLAW_OFF 8
+#define Toggle_Mid   9
+#define Toggle_Up 10
+#define Toggle_Down 11
+#define SetDefault 12
+#define CloseLoop_MID360 13
+#define CloseLoop_DT35 14
+#define CloseLoop_Left 15
+#define CloseLoop_Right 16
+#define CloseLoop_Middle 17
+#define GoForwardSlowly 18
+//�Ӿ�����궨��
+#define V_START 1
+#define V_GoPoint 2
+#define V_RightBall 3
+#define V_RightBallIn 4
+#define V_BasketNumber 5
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus
