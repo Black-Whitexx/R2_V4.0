@@ -150,8 +150,8 @@ void Error_Handler(void);
 #define Slope_OFF   4
 #define OpenVESC 5
 #define StopVESC 6
-#define CLAW_ON 7
-#define CLAW_OFF 8
+#define CLAW_OPEN 7
+#define CLAW_CLOSE 8
 #define Toggle_Mid   9
 #define Toggle_Up 10
 #define Toggle_Down 11
@@ -163,11 +163,13 @@ void Error_Handler(void);
 #define CloseLoop_Middle 17
 #define GoForwardSlowly 18
 // ”æı√¸¡Ó∫Í∂®“Â
-#define V_START 1
-#define V_GoPoint 2
-#define V_RightBall 3
-#define V_RightBallIn 4
-#define V_BasketNumber 5
+#define V_START 0
+#define V_GoPoint 1
+#define V_RightBall 2
+#define V_BallIn 3
+#define V_BasketNumber 4
+#define V_GoPoint_Left 5
+#define V_GoPoint_Right 6
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

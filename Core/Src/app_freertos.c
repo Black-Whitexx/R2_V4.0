@@ -346,12 +346,12 @@ void NRFTask(void const *argument) {
                     QueueBuffer = SUCTION_ON;
                     xQueueCRSend(ControlQueueHandle, &QueueBuffer, 100);  /** 伸出吸球机构 **/
                     QueueBuffer = Toggle_Mid; /** 夹爪翻到中位 **/
-                    xQueueCRSend(ControlQueueHandle, &QueueBuffer, 100);  /** 伸出吸球机构 **/
+                    xQueueCRSend(ControlQueueHandle, &QueueBuffer, 100);
                     osDelay(500);     /** 避免夹爪提前打开 **/
-                    QueueBuffer = CLAW_OFF;
-                    xQueueCRSend(ControlQueueHandle, &QueueBuffer, 100);  /** 伸出吸球机构 **//** 打开夹爪 **/
+                    QueueBuffer = CLAW_OPEN;
+                    xQueueCRSend(ControlQueueHandle, &QueueBuffer, 100);
                     QueueBuffer = Slope_ON;
-                    xQueueCRSend(ControlQueueHandle, &QueueBuffer, 100);  /** 伸出吸球机构 **/
+                    xQueueCRSend(ControlQueueHandle, &QueueBuffer, 100);
                     QueueBuffer = 0;
                     vTaskResume(Start_TaskHandle);
                     break;
@@ -413,44 +413,44 @@ void ControlTask(void const *argument) {
     /* Infinite loop */
     for (;;) {
         /** 对当前状态做出反�??????? **/
-        switch (State) {
-            case Default_State:
-                break;
-            case Run2Get_State:
-                Vision_State = 0;
-                VisionFlag = 0;
-                Set_Point(&Vision_Points[0], 3.19f, 9.60f, 90);
-                vTaskResume(VisionRun_TaskHandle);
-                Vision_Send(0x02);
-                while (State == Run2Get_State) { osDelay(1); }
-                break;
-            case Run2Store_State:
-                break;
-            case TakeRightBall_State:/** 取正确的�????????? **/
-                osDelay(500);
-                CLAW_ON;//关闭夹爪
-                suctionSpeed = -1000; /** 5065启动 **/
-                xQueueOverwrite(SuctionSpeed_QueueHandle, &suctionSpeed);
-                cnt = 0;
-                Set_Point(&Aim_Points[AimPoints_Index], 3.19f, 9.60f, 90);
-                vTaskResume(RoboRun_TaskHandle);
-                State = Run2Store_State;//状�?�切换为Run2Store_State
-                Toggle_Pos = Toggle_Up;//夹爪翻上
-                osDelay(500);
-                SUCTION_OFF;//吸球机构推回
-                while (State == Run2Store_State) { osDelay(1); }
-                break;
-            case Store_State://放球
-                CLAW_OFF;//打开夹爪
-                osDelay(1000);//等待球滚出去
-                State = Run2Get_State;//状�?�切换为Run2Get_State
-                Toggle_Pos = Toggle_Mid;//夹爪回中�?????????
-                SUCTION_ON;//吸球机构推出
-                Slope_Pos = Slope_ON;
-                break;
-            default:
-                break;
-        }
+//        switch (State) {
+//            case Default_State:
+//                break;
+//            case Run2Get_State:
+//                Vision_State = 0;
+//                VisionFlag = 0;
+//                Set_Point(&Vision_Points[0], 3.19f, 9.60f, 90);
+//                vTaskResume(VisionRun_TaskHandle);
+//                Vision_Send(0x02);
+//                while (State == Run2Get_State) { osDelay(1); }
+//                break;
+//            case Run2Store_State:
+//                break;
+//            case TakeRightBall_State:/** 取正确的�????????? **/
+//                osDelay(500);
+//                CLAW_OPEN;//关闭夹爪
+//                suctionSpeed = -1000; /** 5065启动 **/
+//                xQueueOverwrite(SuctionSpeed_QueueHandle, &suctionSpeed);
+//                cnt = 0;
+//                Set_Point(&Aim_Points[AimPoints_Index], 3.19f, 9.60f, 90);
+//                vTaskResume(RoboRun_TaskHandle);
+//                State = Run2Store_State;//状�?�切换为Run2Store_State
+//                Toggle_Pos = Toggle_Up;//夹爪翻上
+//                osDelay(500);
+//                SUCTION_OFF;//吸球机构推回
+//                while (State == Run2Store_State) { osDelay(1); }
+//                break;
+//            case Store_State://放球
+//                CLAW_CLOSE;//打开夹爪
+//                osDelay(1000);//等待球滚出去
+//                State = Run2Get_State;//状�?�切换为Run2Get_State
+//                Toggle_Pos = Toggle_Mid;//夹爪回中�?????????
+//                SUCTION_ON;//吸球机构推出
+//                Slope_Pos = Slope_ON;
+//                break;
+//            default:
+//                break;
+//        }
         osDelay(10);
     }
     /* USER CODE END ControlTask */
@@ -469,13 +469,13 @@ void HandleBallTask(void const *argument) {
     float Slope_Temp, Toggle_Temp;
     /* Infinite loop */
     for (;;) {
-        Slope_Temp = PID_Realise(&Slope_Position_t, Slope_Pos, Motor_Info[6].actual_total_angle, 2000, 10.0f);
-        Slope_Speed = (int16_t) PID_Realise(&Slope_Speed_t, Slope_Temp, Motor_Info[6].speed, M2006_CURRENT_MAX, 5);
-
-        Toggle_Temp = PID_Realise(&Toggle_Position_t, Toggle_Pos, Motor_Info[7].actual_total_angle, 1000, 5.0f);
-        Toggle_Speed = (int16_t) PID_Realise(&Toggle_Speed_t, Toggle_Temp, Motor_Info[7].speed, M3508_CURRENT_MAX, 5);
-
-        Set_Current(&hfdcan2, 0x1FF, 0, 0, Slope_Speed, Toggle_Speed);
+//        Slope_Temp = PID_Realise(&Slope_Position_t, Slope_Pos, Motor_Info[6].actual_total_angle, 2000, 10.0f);
+//        Slope_Speed = (int16_t) PID_Realise(&Slope_Speed_t, Slope_Temp, Motor_Info[6].speed, M2006_CURRENT_MAX, 5);
+//
+//        Toggle_Temp = PID_Realise(&Toggle_Position_t, Toggle_Pos, Motor_Info[7].actual_total_angle, 1000, 5.0f);
+//        Toggle_Speed = (int16_t) PID_Realise(&Toggle_Speed_t, Toggle_Temp, Motor_Info[7].speed, M3508_CURRENT_MAX, 5);
+//
+//        Set_Current(&hfdcan2, 0x1FF, 0, 0, Slope_Speed, Toggle_Speed);
         osDelay(10);
     }
 
@@ -495,9 +495,9 @@ void SuctionTask(void const *argument) {
     int16_t suctionSpeed = 0;//VESC速度
     /* Infinite loop */
     for (;;) {
-        if (xQueuePeek(SuctionSpeed_QueueHandle, &suctionSpeed, 0) == pdTRUE) {
-            Vesc_SetSpeed(&hfdcan1, VESC_ID, suctionSpeed);
-        }
+//        if (xQueuePeek(SuctionSpeed_QueueHandle, &suctionSpeed, 0) == pdTRUE) {
+//            Vesc_SetSpeed(&hfdcan1, VESC_ID, suctionSpeed);
+//        }
         osDelay(5);
     }
     /* USER CODE END SuctionTask */
@@ -515,22 +515,22 @@ void Run1to3Task(void const *argument) {
     uint8_t index = 0;
     /* Infinite loop */
     for (;;) {
-        if (Distance_Calc(Run1to3_Points[index], LiDar.locx, LiDar.locy) < 0.08f &&
-            fabsf(LiDar.yaw - Run1to3_Points[index].angle) < 0.5f) {
-            cnt = 0;
-            Car_Stop;
-            index++;
-            if (index == 4) {
-                SUCTION_ON;  /** 伸出吸球机构 **/
-                Toggle_Pos = Toggle_Mid; /** 夹爪翻到中位 **/
-                osDelay(500);     /** 避免夹爪提前打开 **/
-                CLAW_OFF;                /** 打开夹爪 **/
-                vTaskResume(Start_TaskHandle);
-                vTaskSuspend(Run1to3_TaskHandle);
-            }
-        } else {
-            Chassis_Move(&Run1to3_Points[index]);
-        }
+//        if (Distance_Calc(Run1to3_Points[index], LiDar.locx, LiDar.locy) < 0.08f &&
+//            fabsf(LiDar.yaw - Run1to3_Points[index].angle) < 0.5f) {
+//            cnt = 0;
+//            Car_Stop;
+//            index++;
+//            if (index == 4) {
+//                SUCTION_ON;  /** 伸出吸球机构 **/
+//                Toggle_Pos = Toggle_Mid; /** 夹爪翻到中位 **/
+//                osDelay(500);     /** 避免夹爪提前打开 **/
+//                CLAW_CLOSE;                /** 打开夹爪 **/
+//                vTaskResume(Start_TaskHandle);
+//                vTaskSuspend(Run1to3_TaskHandle);
+//            }
+//        } else {
+//            Chassis_Move(&Run1to3_Points[index]);
+//        }
         osDelay(5);
     }
     /* USER CODE END Run1to3Task */
@@ -551,144 +551,144 @@ void VisionTask(void const *argument) {
     uint8_t turn_flag = 0;
     /* Infinite loop */
     for (;;) {
-        if (xQueueReceive(VisionData_QueueHandle, &visiondata, 0) == pdTRUE) {
-            if (visiondata.flag == 1 && VisionFlag != 1)//在黄区找到球�?????,位于中区，不用转�?????
-            {
-                printf("1,1\n");
-                cnt = 0;
-                turn_flag = 1;
-                State = Run2Get_State2;//更新状�??
-                Set_Point(&Vision_Points[0], -visiondata.vision_y / 1000.0f + LiDar.locx,
-                          visiondata.vision_x / 1000.0f + LiDar.locy, 90);//更新VisionPoint结构�?????
-                vTaskSuspend(Vision_TaskHandle);
-                vTaskResume(VisionRun_TaskHandle);
-            } else if (visiondata.flag == 5 && VisionFlag != 1) {
-                printf("5,1\n");
-                cnt = 0;
-                turn_flag = 5;
-                State = Run2Get_State2;//更新状�??
-                Set_Point(&Vision_Points[0], -visiondata.vision_y / 1000.0f + LiDar.locx,
-                          visiondata.vision_x / 1000.0f + LiDar.locy + 0.40863f * 0.707f, 135);//更新VisionPoint结构�?????
-                vTaskSuspend(Vision_TaskHandle);
-                vTaskResume(VisionRun_TaskHandle);
-            } else if (visiondata.flag == 6 && VisionFlag != 1) {
-                printf("6,1\n");
-                cnt = 0;
-                turn_flag = 6;
-                State = Run2Get_State2;//更新状�??
-                Set_Point(&Vision_Points[0], -visiondata.vision_y / 1000.0f + LiDar.locx,
-                          visiondata.vision_x / 1000.0f + LiDar.locy - 0.40863f * 0.707f, 45);//更新VisionPoint结构�?????
-                vTaskSuspend(Vision_TaskHandle);
-                vTaskResume(VisionRun_TaskHandle);
-            } else if (visiondata.flag == 2 && VisionFlag != 1) {
-                switch ((int16_t) (visiondata.vision_y)) {
-                    case 1:/** 看到蓝色球了，平台回正，把夹爪放下去 **/
-                        if (Vision_State != Vision_Delay) {
-                            printf("2,1\n");
-                            Color = 1;
-                            Slope_Pos = Slope_OFF;
-                            Toggle_Pos = Toggle_Down;/** 夹爪放下来，平台回正 **/
-                            OpenVESC();
-                            if (turn_flag == 1) {
-                                omega = PID_Realise(&Turn_PID, 90, LiDar.yaw, 0.5f, 0.5f);
-                            } else if (turn_flag == 5) {
-                                omega = PID_Realise(&Turn_PID, 135, LiDar.yaw, 0.5f, 0.5f);
-                            } else if (turn_flag == 6) {
-                                omega = PID_Realise(&Turn_PID, 45, LiDar.yaw, 0.5f, 0.5f);
-                            }
-                            SGW2Wheels(0, 0.2f, omega, 0);
-                        }
-                        break;
-                    case 0:/** 跟踪�?????? **/
-                        OpenVESC();
-                        Slope_Pos = Slope_ON;
-                        if (Vision_State != Vision_Delay) {
-                            if (str_flag == 1)/** 对球完毕 **/
-                            {
-                                Speed_x = -PID_Realise(&VisionPID_X, 0, Vision_Data.vision_x, 1.0f, 3);
-                                if (turn_flag == 1) {
-                                    omega = PID_Realise(&Turn_PID, 90, LiDar.yaw, 0.5f, 0.5f);
-                                } else if (turn_flag == 5) {
-                                    omega = PID_Realise(&Turn_PID, 135, LiDar.yaw, 0.5f, 0.5f);
-                                } else if (turn_flag == 6) {
-                                    omega = PID_Realise(&Turn_PID, 45, LiDar.yaw, 0.5f, 0.5f);
-                                }
-                                SGW2Wheels(Speed_x, 0.5f, omega, 0);
-                            } else /** 还没对好 **/
-                            {
-                                if (turn_flag == 1) {
-                                    float Speed_xy = -PID_Realise(&VisionPID_X, 0, Vision_Data.vision_x, 1.0f, 3);
-                                    omega = PID_Realise(&Turn_PID, 90, LiDar.yaw, 0.5f, 0.5f);
-                                    Speed_x = Speed_xy;
-                                    Speed_y = 0;
-                                } else if (turn_flag == 5) {
-                                    float Speed_xy = -PID_Realise(&VisionPID_X, 0, Vision_Data.vision_x, 1.0f, 3);
-                                    omega = PID_Realise(&Turn_PID, 135, LiDar.yaw, 0.5f, 0.5f);
-                                    Speed_x = Speed_xy;
-                                    Speed_y = Speed_xy;
-                                } else if (turn_flag == 6) {
-                                    float Speed_xy = -PID_Realise(&VisionPID_X, 0, Vision_Data.vision_x, 1.0f, 3);
-                                    omega = PID_Realise(&Turn_PID, 45, LiDar.yaw, 0.5f, 0.5f);
-                                    Speed_x = Speed_xy;
-                                    Speed_y = -Speed_xy;
-                                }
-                                SGW2Wheels(Speed_x, Speed_y, omega, 0);
-                                if (fabsf(Vision_Data.vision_x) < 8.0f) {
-                                    str_flag = 1;
-                                }
-                            }
-                        }
-                        break;
-                    default:
-                        break;
-                }
-            } else if (visiondata.flag == 3) {
-                switch ((int16_t) (visiondata.vision_y)) {
-                    case 6:/** 进来的是有效球，进入TakeRightBall_State **/
-                        printf("3,6\n");
-                        Car_Stop;
-                        Vision_State = 0;
-                        str_flag = 0;
-                        VisionFlag = 0;
-                        Slope_Pos = Slope_OFF;
-                        State = TakeRightBall_State;
-                        vTaskSuspend(VisionRun_TaskHandle);
-                        break;
-                    case 7:/** 车内没球 **/
-                        if (Vision_State == Vision_Delay) {
-                            printf("Back!\n");
-                            OpenVESC();
-                            Vision_State = 0;
-                            VisionFlag = 0;
-                        }
-                        break;
-                    case 2:/** 紫球还在里面 **/
-                        printf("3,2\n");
-                        str_flag = 0;
-                        Vision_State = Vision_Delay;
-                        break;
-                    case 3:/** 视野里没有球，向后�?? **/
-                        printf("3,3\n");
-                        VisionFlag = 0;
-                        Vision_State = Vision_FindBall;
-                        State = Run2Get_State2;
-                        Set_Point(&Vision_Points[0], 3.19f, 9.60f, 90);
-                        vTaskResume(VisionRun_TaskHandle);
-                        break;
-                    default:
-                        break;
-                }
-            } else if (visiondata.flag == 4) {
-                index = (uint8_t) visiondata.vision_x - 1;
-                printf("4.%d\n", index);
-                cnt = 0;
-                State = Run2Store_State;
-                SetStore_Points(&Aim_Points[AimPoints_Index], &Frame_Points[index]);
-                SetStore_Points(&DT32_Points, &DT32_AimPoints[index]);
-                vTaskResume(RoboRun_TaskHandle);
-            }
-            visiondata.flag = 0;
-        }
+//        if (xQueueReceive(VisionData_QueueHandle, &visiondata, 0) == pdTRUE) {
+//            if (visiondata.flag == 1 && VisionFlag != 1)//在黄区找到球�?????,位于中区，不用转�?????
+//            {
+//                printf("1,1\n");
+//                cnt = 0;
+//                turn_flag = 1;
+//                State = Run2Get_State2;//更新状�??
+//                Set_Point(&Vision_Points[0], -visiondata.vision_y / 1000.0f + LiDar.locx,
+//                          visiondata.vision_x / 1000.0f + LiDar.locy, 90);//更新VisionPoint结构�?????
+//                vTaskSuspend(Vision_TaskHandle);
+//                vTaskResume(VisionRun_TaskHandle);
+//            } else if (visiondata.flag == 5 && VisionFlag != 1) {
+//                printf("5,1\n");
+//                cnt = 0;
+//                turn_flag = 5;
+//                State = Run2Get_State2;//更新状�??
+//                Set_Point(&Vision_Points[0], -visiondata.vision_y / 1000.0f + LiDar.locx,
+//                          visiondata.vision_x / 1000.0f + LiDar.locy + 0.40863f * 0.707f, 135);//更新VisionPoint结构�?????
+//                vTaskSuspend(Vision_TaskHandle);
+//                vTaskResume(VisionRun_TaskHandle);
+//            } else if (visiondata.flag == 6 && VisionFlag != 1) {
+//                printf("6,1\n");
+//                cnt = 0;
+//                turn_flag = 6;
+//                State = Run2Get_State2;//更新状�??
+//                Set_Point(&Vision_Points[0], -visiondata.vision_y / 1000.0f + LiDar.locx,
+//                          visiondata.vision_x / 1000.0f + LiDar.locy - 0.40863f * 0.707f, 45);//更新VisionPoint结构�?????
+//                vTaskSuspend(Vision_TaskHandle);
+//                vTaskResume(VisionRun_TaskHandle);
+//            } else if (visiondata.flag == 2 && VisionFlag != 1) {
+//                switch ((int16_t) (visiondata.vision_y)) {
+//                    case 1:/** 看到蓝色球了，平台回正，把夹爪放下去 **/
+//                        if (Vision_State != Vision_Delay) {
+//                            printf("2,1\n");
+//                            Color = 1;
+//                            Slope_Pos = Slope_OFF;
+//                            Toggle_Pos = Toggle_Down;/** 夹爪放下来，平台回正 **/
+//                            OpenVESC();
+//                            if (turn_flag == 1) {
+//                                omega = PID_Realise(&Turn_PID, 90, LiDar.yaw, 0.5f, 0.5f);
+//                            } else if (turn_flag == 5) {
+//                                omega = PID_Realise(&Turn_PID, 135, LiDar.yaw, 0.5f, 0.5f);
+//                            } else if (turn_flag == 6) {
+//                                omega = PID_Realise(&Turn_PID, 45, LiDar.yaw, 0.5f, 0.5f);
+//                            }
+//                            SGW2Wheels(0, 0.2f, omega, 0);
+//                        }
+//                        break;
+//                    case 0:/** 跟踪�?????? **/
+//                        OpenVESC();
+//                        Slope_Pos = Slope_ON;
+//                        if (Vision_State != Vision_Delay) {
+//                            if (str_flag == 1)/** 对球完毕 **/
+//                            {
+//                                Speed_x = -PID_Realise(&VisionPID_X, 0, Vision_Data.vision_x, 1.0f, 3);
+//                                if (turn_flag == 1) {
+//                                    omega = PID_Realise(&Turn_PID, 90, LiDar.yaw, 0.5f, 0.5f);
+//                                } else if (turn_flag == 5) {
+//                                    omega = PID_Realise(&Turn_PID, 135, LiDar.yaw, 0.5f, 0.5f);
+//                                } else if (turn_flag == 6) {
+//                                    omega = PID_Realise(&Turn_PID, 45, LiDar.yaw, 0.5f, 0.5f);
+//                                }
+//                                SGW2Wheels(Speed_x, 0.5f, omega, 0);
+//                            } else /** 还没对好 **/
+//                            {
+//                                if (turn_flag == 1) {
+//                                    float Speed_xy = -PID_Realise(&VisionPID_X, 0, Vision_Data.vision_x, 1.0f, 3);
+//                                    omega = PID_Realise(&Turn_PID, 90, LiDar.yaw, 0.5f, 0.5f);
+//                                    Speed_x = Speed_xy;
+//                                    Speed_y = 0;
+//                                } else if (turn_flag == 5) {
+//                                    float Speed_xy = -PID_Realise(&VisionPID_X, 0, Vision_Data.vision_x, 1.0f, 3);
+//                                    omega = PID_Realise(&Turn_PID, 135, LiDar.yaw, 0.5f, 0.5f);
+//                                    Speed_x = Speed_xy;
+//                                    Speed_y = Speed_xy;
+//                                } else if (turn_flag == 6) {
+//                                    float Speed_xy = -PID_Realise(&VisionPID_X, 0, Vision_Data.vision_x, 1.0f, 3);
+//                                    omega = PID_Realise(&Turn_PID, 45, LiDar.yaw, 0.5f, 0.5f);
+//                                    Speed_x = Speed_xy;
+//                                    Speed_y = -Speed_xy;
+//                                }
+//                                SGW2Wheels(Speed_x, Speed_y, omega, 0);
+//                                if (fabsf(Vision_Data.vision_x) < 8.0f) {
+//                                    str_flag = 1;
+//                                }
+//                            }
+//                        }
+//                        break;
+//                    default:
+//                        break;
+//                }
+//            } else if (visiondata.flag == 3) {
+//                switch ((int16_t) (visiondata.vision_y)) {
+//                    case 6:/** 进来的是有效球，进入TakeRightBall_State **/
+//                        printf("3,6\n");
+//                        Car_Stop;
+//                        Vision_State = 0;
+//                        str_flag = 0;
+//                        VisionFlag = 0;
+//                        Slope_Pos = Slope_OFF;
+//                        State = TakeRightBall_State;
+//                        vTaskSuspend(VisionRun_TaskHandle);
+//                        break;
+//                    case 7:/** 车内没球 **/
+//                        if (Vision_State == Vision_Delay) {
+//                            printf("Back!\n");
+//                            OpenVESC();
+//                            Vision_State = 0;
+//                            VisionFlag = 0;
+//                        }
+//                        break;
+//                    case 2:/** 紫球还在里面 **/
+//                        printf("3,2\n");
+//                        str_flag = 0;
+//                        Vision_State = Vision_Delay;
+//                        break;
+//                    case 3:/** 视野里没有球，向后�?? **/
+//                        printf("3,3\n");
+//                        VisionFlag = 0;
+//                        Vision_State = Vision_FindBall;
+//                        State = Run2Get_State2;
+//                        Set_Point(&Vision_Points[0], 3.19f, 9.60f, 90);
+//                        vTaskResume(VisionRun_TaskHandle);
+//                        break;
+//                    default:
+//                        break;
+//                }
+//            } else if (visiondata.flag == 4) {
+//                index = (uint8_t) visiondata.vision_x - 1;
+//                printf("4.%d\n", index);
+//                cnt = 0;
+//                State = Run2Store_State;
+//                SetStore_Points(&Aim_Points[AimPoints_Index], &Frame_Points[index]);
+//                SetStore_Points(&DT32_Points, &DT32_AimPoints[index]);
+//                vTaskResume(RoboRun_TaskHandle);
+//            }
+//            visiondata.flag = 0;
+//        }
         osDelay(5);
     }
     /* USER CODE END VisionTask */
@@ -706,29 +706,29 @@ void VisionRunTask(void const *argument) {
     uint8_t vision_cmd = 0;
     /* Infinite loop */
     for (;;) {
-        if (Distance_Calc(Vision_Points[0], LiDar.locx, LiDar.locy) < 0.08f &&
-            fabsf(LiDar.yaw - Vision_Points[0].angle) < 1.0f) {
-            cnt = 0;
-            Car_Stop;
-            if ((Vision_State == Vision_FindBall) || (State == Run2Get_State) ||
-                State == (Run2Get_State2)) /** 从黄区到绿区的跑点，用于去找球，到点后启�??????5065，开启视觉任�?????? **/
-            {
-                OpenVESC();
-                if (State != Run2Get_State) {
-                    vision_cmd = 0x02;
-                    HAL_UART_Transmit(&huart2, &vision_cmd, sizeof(vision_cmd), 0xFFFFF);
-                    printf("send:%d\n", vision_cmd);
-                }
-
-                State = 0;
-                Vision_State = 0;
-                VisionFlag = 0;
-
-                vTaskSuspend(VisionRun_TaskHandle);
-            }
-        } else {
-            Chassis_Move_OfVision(&Vision_Points[0]);
-        }
+//        if (Distance_Calc(Vision_Points[0], LiDar.locx, LiDar.locy) < 0.08f &&
+//            fabsf(LiDar.yaw - Vision_Points[0].angle) < 1.0f) {
+//            cnt = 0;
+//            Car_Stop;
+//            if ((Vision_State == Vision_FindBall) || (State == Run2Get_State) ||
+//                State == (Run2Get_State2)) /** 从黄区到绿区的跑点，用于去找球，到点后启�??????5065，开启视觉任�?????? **/
+//            {
+//                OpenVESC();
+//                if (State != Run2Get_State) {
+//                    vision_cmd = 0x02;
+//                    HAL_UART_Transmit(&huart2, &vision_cmd, sizeof(vision_cmd), 0xFFFFF);
+//                    printf("send:%d\n", vision_cmd);
+//                }
+//
+//                State = 0;
+//                Vision_State = 0;
+//                VisionFlag = 0;
+//
+//                vTaskSuspend(VisionRun_TaskHandle);
+//            }
+//        } else {
+//            Chassis_Move_OfVision(&Vision_Points[0]);
+//        }
         osDelay(5);
     }
     /* USER CODE END VisionRunTask */
@@ -747,18 +747,18 @@ void StartTask(void const *argument) {
     PointStruct Start_Point = {.x = 1.62f, .y = 9.63f, .angle = 90.0f};
     /* Infinite loop */
     for (;;) {
-        if (Distance_Calc(Start_Point, LiDar.locx, LiDar.locy) < 0.1f && fabsf(LiDar.yaw - Start_Point.angle) < 0.5f) {
-            cnt = 0;
-            Car_Stop;    /** 停车 **/
-            OpenVESC();   /** 滚筒旋转 **/
-            vTaskResume(Vision_TaskHandle);
-            /** 发一个信号给摄像�?????? **/
-            Vision_Send(0x01);
-            /** 挂起自己 **/
-            vTaskSuspend(Start_TaskHandle);
-        } else {
-            Chassis_Move_OfVision(&Start_Point);
-        }
+//        if (Distance_Calc(Start_Point, LiDar.locx, LiDar.locy) < 0.1f && fabsf(LiDar.yaw - Start_Point.angle) < 0.5f) {
+//            cnt = 0;
+//            Car_Stop;    /** 停车 **/
+//            OpenVESC();   /** 滚筒旋转 **/
+//            vTaskResume(Vision_TaskHandle);
+//            /** 发一个信号给摄像�?????? **/
+//            Vision_Send(0x01);
+//            /** 挂起自己 **/
+//            vTaskSuspend(Start_TaskHandle);
+//        } else {
+//            Chassis_Move_OfVision(&Start_Point);
+//        }
         osDelay(5);
     }
     /* USER CODE END StartTask */
@@ -775,18 +775,18 @@ void DT35Task(void const *argument) {
     /* USER CODE BEGIN DT35Task */
     /* Infinite loop */
     for (;;) {
-        if (Distance_Calc(DT32_Points, DT35_Data.Right, DT35_Data.forward) < 2.0f &&
-            fabsf(LiDar.yaw - DT32_Points.angle) < 0.5f) {
-            cnt = 0;
-            Car_Stop;
-            if (State == Run2Store_State) //从绿区到黄区的跑点，用于去放球，到点后切换状态为Store_State
-            {
-                State = Store_State;
-            }
-            vTaskSuspend(DT35_TaskHandle);
-        } else {
-            Chassis_Move_OfDT35(&DT32_Points);
-        }
+//        if (Distance_Calc(DT32_Points, DT35_Data.Right, DT35_Data.forward) < 2.0f &&
+//            fabsf(LiDar.yaw - DT32_Points.angle) < 0.5f) {
+//            cnt = 0;
+//            Car_Stop;
+//            if (State == Run2Store_State) //从绿区到黄区的跑点，用于去放球，到点后切换状态为Store_State
+//            {
+//                State = Store_State;
+//            }
+//            vTaskSuspend(DT35_TaskHandle);
+//        } else {
+//            Chassis_Move_OfDT35(&DT32_Points);
+//        }
         osDelay(5);
     }
     /* USER CODE END DT35Task */
@@ -837,10 +837,10 @@ void basecontrol(void const *argument) {
                 case StopVESC:
                     VESC_Speed = 0;
                     break;
-                case CLAW_ON:
+                case CLAW_OPEN:
                     HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_RESET);
                     break;
-                case CLAW_OFF:
+                case CLAW_CLOSE:
                     HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_SET);
                     break;
                 case Toggle_Mid:
@@ -876,11 +876,30 @@ void basecontrol(void const *argument) {
         }
         /** 闭环程序 **/
         /**跑点位置闭环 **/
-        if(CloseLoopStatus == CloseLoop_MID360){
+        if (CloseLoopStatus == CloseLoop_MID360) {
             Chassis_Move_OfVision(&Target_Point);
-        }
-        else if(CloseLoopStatus == CloseLoop_DT35){
+        } else if (CloseLoopStatus == CloseLoop_DT35) {
             Chassis_Move_OfDT35(&Target_Point);
+        }
+            /** 对球闭环 **/
+        else if (CloseLoopStatus == CloseLoop_Left) {
+            float Speed_xy = -PID_Realise(&VisionPID_X, 0, Vision_Data.vision_x, 1.0f, 3);
+            float omega = PID_Realise(&Turn_PID, 135, LiDar.yaw, 0.5f, 0.5f);
+            float Speed_x = Speed_xy;
+            float Speed_y = Speed_xy;
+            SGW2Wheels(Speed_x, Speed_y, omega, 0);
+        } else if (CloseLoopStatus == CloseLoop_Right) {
+            float Speed_xy = -PID_Realise(&VisionPID_X, 0, Vision_Data.vision_x, 1.0f, 3);
+            float omega = PID_Realise(&Turn_PID, 45, LiDar.yaw, 0.5f, 0.5f);
+            float Speed_x = Speed_xy;
+            float Speed_y = -Speed_xy;
+            SGW2Wheels(Speed_x, Speed_y, omega, 0);
+        } else if (CloseLoopStatus == CloseLoop_Middle) {
+            float Speed_xy = -PID_Realise(&VisionPID_X, 0, Vision_Data.vision_x, 1.0f, 3);
+            float omega = PID_Realise(&Turn_PID, 135, LiDar.yaw, 0.5f, 0.5f);
+            float Speed_x = Speed_xy;
+            SGW2Wheels(Speed_x, 0, omega, 0);
+
         }
         /** 四轮闭环**/
         Wheels_VelOut[0] = (int16_t) PID_Realise(&Wheels[0], -Wheels_vel[0], Motor_Info[0].speed, M3508_CURRENT_MAX, 5);
@@ -915,13 +934,13 @@ void dispatch(void const *argument) {
     /* USER CODE BEGIN dispatch */
     /** R2可能所处的状态枚举**/
     enum {
-        Zone1To3_Running = 1,
+        To3Ready_Running = 1,
         RunAndAlignToGetBall_Left,
         RunAndAlignToGetBall_Middle,
         RunAndAlignToGetBall_Right,
         DownAndOpenClaw,
         CloseClaw_RunToPutBall_UpClaw,
-        RunToRightBasket_GoForwardSlowly_OpenClaw_RunToReady,
+        RunToRightBasket_OpenClaw_RunToReady,
     } Struction_Status;
     VisionStruct visiondata;
     uint16_t QueueBuffer;
@@ -935,49 +954,142 @@ void dispatch(void const *argument) {
             v_x = visiondata.vision_x;
             v_y = visiondata.vision_y;
             if (visiondata.flag == V_START) {
+                status = 0;
                 Struction_Status = Zone1To3_Running;
-                Set_Point(&Target_Point ,Start_Point.x, Start_Point.y, Start_Point.angle);//并不是从1到3，在3区调试用
-            } else if (visiondata.flag == V_GoPoint) {
+                Set_Point(&Target_Point, Start_Point.x, Start_Point.y, Start_Point.angle);//并不是从1到3，在3区调试用
+                QueueBuffer = CloseLoop_MID360;
+                xQueueCRSend(ControlQueueHandle, &QueueBuffer, 100);
+                QueueBuffer = 0;
+            } else if (visiondata.flag == V_GoPoint_Left) {
+                status = 0;
                 Struction_Status = RunAndAlignToGetBall_Left;
                 Set_Point(&Target_Point, -visiondata.vision_y / 1000.0f + LiDar.locx,
-                          visiondata.vision_x / 1000.0f + LiDar.locy, 90);
-            }
-            else if (visiondata.flag == V_GoPoint) {
+                          visiondata.vision_x / 1000.0f + LiDar.locy, 135);
+                QueueBuffer = CloseLoop_MID360;
+                xQueueCRSend(ControlQueueHandle, &QueueBuffer, 100);
+                QueueBuffer = 0;
+            } else if (visiondata.flag == V_GoPoint) {
+                status = 0;
                 Struction_Status = RunAndAlignToGetBall_Middle;
                 Set_Point(&Target_Point, -visiondata.vision_y / 1000.0f + LiDar.locx,
                           visiondata.vision_x / 1000.0f + LiDar.locy, 90);
-            }else if (visiondata.flag == V_GoPoint) {
-                    Struction_Status = RunAndAlignToGetBall_Right;
-                    Set_Point(&Target_Point, -visiondata.vision_y / 1000.0f + LiDar.locx,
-                              visiondata.vision_x / 1000.0f + LiDar.locy, 90);
-                }
-                    else if (visiondata.flag == V_RightBall)
+            } else if (visiondata.flag == V_GoPoint_Right) {
+                status = 0;
+                Struction_Status = RunAndAlignToGetBall_Right;
+                Set_Point(&Target_Point, -visiondata.vision_y / 1000.0f + LiDar.locx,
+                          visiondata.vision_x / 1000.0f + LiDar.locy, 45);
+            } else if (visiondata.flag == V_RightBall) {
+                status = 0;
                 Struction_Status = DownAndOpenClaw;
-        } else if (visiondata.flag == V_RightBallIn) {
-            Struction_Status = CloseClaw_RunToPutBall_UpClaw;
-        } else if (visiondata.flag == V_BasketNumber) {
-            Struction_Status = RunToRightBasket_GoForwardSlowly_OpenClaw_RunToReady;
-        }
-        //根据状态进行行动
-        if (Struction_Status == Zone1To3_Running) {
-            if (Distance_Calc(Target_Point, LiDar.locx, LiDar.locy) < 0.1f){
-                Vision_Send(0x01);
-                Car_Stop;
-            }
-        }
-        else if(Struction_Status == RunAndAlignToGetBall_Left){
-            /** 跑到点了 **/
-            if (Distance_Calc(Target_Point, LiDar.locx, LiDar.locy) < 0.1f && status == 0){
-                status = 1;
-                QueueBuffer = CloseLoop_Left;
-                xQueueCRSend(ControlQueueHandle,&QueueBuffer,100);
+                QueueBuffer = Slope_OFF;
+                xQueueCRSend(ControlQueueHandle, &QueueBuffer, 100);
+                QueueBuffer = CLAW_OPEN;
+                xQueueCRSend(ControlQueueHandle, &QueueBuffer, 100);
+                QueueBuffer = Toggle_Down;
+                xQueueCRSend(ControlQueueHandle, &QueueBuffer, 100);
                 QueueBuffer = 0;
+            } else if (visiondata.flag == V_BallIn) {
+                status = 0;
+                if(visiondata.vision_y == 6){
+                    Struction_Status = CloseClaw_RunToPutBall_UpClaw;
+                    QueueBuffer = CLAW_CLOSE;
+                    xQueueCRSend(ControlQueueHandle, &QueueBuffer, 100);
+                    Set_Point(&Target_Point,Frame_Points[2].x,Frame_Points[2].y,Frame_Points[2].angle);
+                    QueueBuffer = CloseLoop_MID360;
+                    xQueueCRSend(ControlQueueHandle, &QueueBuffer, 100);
+                    QueueBuffer = 0;
+                    QueueBuffer = Toggle_Up;
+                    xQueueCRSend(ControlQueueHandle, &QueueBuffer, 100);
+                    QueueBuffer = 0;
+                }
+                else if(visiondata.vision_y == 3){
+                    Struction_Status = To3Ready_Running;
+                    Set_Point(&Target_Point, Start_Point.x, Start_Point.y, Start_Point.angle);//并不是从1到3，在3区调试用
+                    QueueBuffer = CloseLoop_MID360;
+                    xQueueCRSend(ControlQueueHandle, &QueueBuffer, 100);
+                    QueueBuffer = 0;
+                }
+                else if(visiondata.vision_y == 2){
+                    osDelay(500);
+                }
+            } else if (visiondata.flag == V_BasketNumber) {
+                status = 0;
+                Struction_Status = RunToRightBasket_OpenClaw_RunToReady;
+                Set_Point(&Target_Point,Frame_Points[(int)v_y].x,Frame_Points[(int)v_y].y,Frame_Points[(int)v_y].angle);
+                QueueBuffer = CloseLoop_DT35;
+                xQueueCRSend(ControlQueueHandle, &QueueBuffer, 100);
             }
-            else if(Distance_Calc(Target_Point, LiDar.locx, LiDar.locy) < 0.1f && status == 1){
-                status = 2;
+            //根据状态进行行动
+            if (Struction_Status == To3Ready_Running) {
+                if (Distance_Calc(Target_Point, LiDar.locx, LiDar.locy) < 0.1f) {
+                    Vision_Send(0x01);
+                    Car_Stop;
+                }
+            } else if (Struction_Status == RunAndAlignToGetBall_Left) {
+                /** 跑到点了 **/
+                if (Distance_Calc(Target_Point, LiDar.locx, LiDar.locy) < 0.1f && status == 0) {
+                    status = 1;
+                    QueueBuffer = CloseLoop_Left;
+                    xQueueCRSend(ControlQueueHandle, &QueueBuffer, 100);
+                    QueueBuffer = 0;
+                }
+                    /** 球对正了 **/
+                else if (v_x < 100 && status == 1) {
+                    status = 2;
+                    QueueBuffer = GoForwardSlowly;
+                    xQueueCRSend(ControlQueueHandle, &QueueBuffer, 100);
+                    QueueBuffer = 0;
+                }
+            } else if (Struction_Status == RunAndAlignToGetBall_Right) {
+                /** 跑到点了 **/
+                if (Distance_Calc(Target_Point, LiDar.locx, LiDar.locy) < 0.1f && status == 0) {
+                    status = 1;
+                    QueueBuffer = CloseLoop_Right;
+                    xQueueCRSend(ControlQueueHandle, &QueueBuffer, 100);
+                    QueueBuffer = 0;
+                }
+                    /** 球对正了 **/
+                else if (v_x < 100 && status == 1) {
+                    status = 2;
+                    QueueBuffer = GoForwardSlowly;
+                    xQueueCRSend(ControlQueueHandle, &QueueBuffer, 100);
+                    QueueBuffer = 0;
+                }
+            } else if (Struction_Status == RunAndAlignToGetBall_Middle) {
+                /** 跑到点了 **/
+                if (Distance_Calc(Target_Point, LiDar.locx, LiDar.locy) < 0.1f && status == 0) {
+                    status = 1;
+                    QueueBuffer = CloseLoop_Middle;
+                    xQueueCRSend(ControlQueueHandle, &QueueBuffer, 100);
+                    QueueBuffer = 0;
+                }
+                    /** 球对正了 **/
+                else if (v_x < 100 && status == 1) {
+                    status = 2;
+                    QueueBuffer = GoForwardSlowly;
+                    xQueueCRSend(ControlQueueHandle, &QueueBuffer, 100);
+                    QueueBuffer = 0;
+                }
+            } else if (Struction_Status == DownAndOpenClaw) {
+
+            } else if (Struction_Status == CloseClaw_RunToPutBall_UpClaw) {
 
             }
+            else if(Struction_Status == RunToRightBasket_OpenClaw_RunToReady){
+                if(Distance_Calc(Target_Point, LiDar.locx, LiDar.locy) < 0.01f && status == 0){
+                    QueueBuffer = CLAW_OPEN;
+                    xQueueCRSend(ControlQueueHandle, &QueueBuffer, 100);
+                    osDelay(500);
+                    Set_Point(&Target_Point,Start_Point.x,Start_Point.y,Start_Point.angle);
+                    QueueBuffer = CloseLoop_MID360;
+                    xQueueCRSend(ControlQueueHandle, &QueueBuffer, 100);
+                    QueueBuffer = 0;
+                    status = 1;
+                }
+            }
+
         }
+
         osDelay(1);
     }
     /* USER CODE END dispatch */
