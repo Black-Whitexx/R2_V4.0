@@ -56,17 +56,17 @@ void Vesc_SetSpeed(FDCAN_HandleTypeDef *_hcan, uint16_t motor_id, int32_t rpm)
     }
 }
 
-void OpenVESC(void)
-{
-    suctionSpeed = 7000; /** 5065启动 **/
-    xQueueOverwrite(SuctionSpeed_QueueHandle, &suctionSpeed);
-}
-
-void StopVESC(void)
-{
-    suctionSpeed = 0; /** 5065关闭 **/
-    xQueueOverwrite(SuctionSpeed_QueueHandle, &suctionSpeed);
-}
+//void OpenVESC(void)
+//{
+//    suctionSpeed = 7000; /** 5065启动 **/
+//    xQueueOverwrite(SuctionSpeed_QueueHandle, &suctionSpeed);
+//}
+//
+//void StopVESC(void)
+//{
+//    suctionSpeed = 0; /** 5065关闭 **/
+//    xQueueOverwrite(SuctionSpeed_QueueHandle, &suctionSpeed);
+//}
 
 void FanSuction(void)
 {
