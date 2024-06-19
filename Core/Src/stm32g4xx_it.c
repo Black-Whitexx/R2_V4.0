@@ -389,10 +389,10 @@ void UART5_IRQHandler(void)
                     if(Color == 1)
                     {
                         suctionSpeed = 0;
-                        xQueueOverwriteFromISR(SuctionSpeed_QueueHandle,&suctionSpeed,0);
+                        //xQueueOverwriteFromISR(SuctionSpeed_QueueHandle,&suctionSpeed,0);
                         Color = 0;
                     }
-                    Car_Stop;
+                    //Car_Stop;
                     VisionFlag = 1;
                 }
             }

@@ -194,7 +194,22 @@ void SystemClock_Config(void)
 }
 
 /* USER CODE BEGIN 4 */
-
+void ControlMsgSet(ControlMsgStruct *ControlQueueBuf,uint8_t device, uint8_t command, float data1, float data2, float data3, float data4){
+    ControlQueueBuf->Device = device;
+    ControlQueueBuf->Command = command;
+    ControlQueueBuf->data[0] = data1;
+    ControlQueueBuf->data[1] = data2;
+    ControlQueueBuf->data[2] = data3;
+    ControlQueueBuf->data[3] = data4;
+}
+void ControlMsgInit(ControlMsgStruct *ControlQueueBuf){
+    ControlQueueBuf->Device = 0;
+    ControlQueueBuf->Command = 0;
+    ControlQueueBuf->data[0] = 0;
+    ControlQueueBuf->data[1] = 0;
+    ControlQueueBuf->data[2] = 0;
+    ControlQueueBuf->data[3] = 0;
+}
 /* USER CODE END 4 */
 
 /**

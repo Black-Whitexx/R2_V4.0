@@ -143,33 +143,52 @@ void Error_Handler(void);
 
 #define Vision_Delay 0x01
 #define Vision_FindBall 0x02
+//设备代号宏
+#define CHASSIS 1
+#define CLAW 2
+#define SUCTION 3
 //动作宏定义
+//CHASSIS:
+#define CloseLoop_MID360 1
+#define CloseLoop_DT35 2
+#define CloseLoop_Left 3
+#define CloseLoop_Right 4
+#define CloseLoop_Middle 5
+#define GoForwardSlowly 6
+#define CHASSIS_STOP 7
+#define CHASSIS_RUN 8
+//CLAW:
+#define CLAW_OPEN 1
+#define CLAW_CLOSE 2
+#define Toggle_Mid 3
+#define Toggle_Up 4
+#define Toggle_Down 5
+//Suction:
 #define SUCTION_ON 1
 #define SUCTION_OFF 2
 #define Slope_ON   3
 #define Slope_OFF   4
-#define OpenVESC 5
-#define StopVESC 6
-#define CLAW_OPEN 7
-#define CLAW_CLOSE 8
-#define Toggle_Mid   9
-#define Toggle_Up 10
-#define Toggle_Down 11
-#define SetDefault 12
-#define CloseLoop_MID360 13
-#define CloseLoop_DT35 14
-#define CloseLoop_Left 15
-#define CloseLoop_Right 16
-#define CloseLoop_Middle 17
-#define GoForwardSlowly 18
+#define Slope_OUT 5
+#define OpenVESC 6
+#define StopVESC 7
+
+#define SetDefault 1
+
 //视觉命令宏定义
-#define V_START 0
-#define V_GoPoint 1
-#define V_RightBall 2
-#define V_BallIn 3
-#define V_BasketNumber 4
-#define V_GoPoint_Left 5
-#define V_GoPoint_Right 6
+#define START 0
+#define GoPoint 1
+#define RightBall 2
+#define BallIn 3
+#define BasketNumber 4
+#define GoPoint_Left 5
+#define GoPoint_Right 6
+typedef struct {
+    uint16_t Device;
+    uint16_t Command;
+    float data[4];
+}ControlMsgStruct;
+void ControlMsgSet(ControlMsgStruct *ControlQueueBuf,uint8_t device, uint8_t command, float data1, float data2, float data3, float data4);
+void ControlMsgInit(ControlMsgStruct *ControlQueueBuf);
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus
