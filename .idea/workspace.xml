@@ -20,13 +20,9 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a84bb48c-cfe0-481c-829d-87f33a41beef" name="Changes" comment="6.29">
+    <list default="true" id="a84bb48c-cfe0-481c-829d-87f33a41beef" name="Changes" comment="6.29 完成侧向取球，速度调大">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Core/Inc/main.h" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Inc/main.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Core/Src/Chassis.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/Chassis.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Core/Src/DT35.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/DT35.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Core/Src/app_freertos.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/app_freertos.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Core/Src/stm32g4xx_it.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/stm32g4xx_it.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -138,7 +134,8 @@
       <workItem from="1719623629006" duration="3111000" />
       <workItem from="1719632703530" duration="60000" />
       <workItem from="1719633271272" duration="366000" />
-      <workItem from="1719641778201" duration="22580000" />
+      <workItem from="1719641778201" duration="22997000" />
+      <workItem from="1719676757989" duration="1814000" />
     </task>
     <task id="LOCAL-00001" summary="init">
       <option name="closed" value="true" />
@@ -196,7 +193,23 @@
       <option name="project" value="LOCAL" />
       <updated>1719632748265</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="6.29 完成侧向取球，速度调大">
+      <option name="closed" value="true" />
+      <created>1719669606855</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1719669606855</updated>
+    </task>
+    <task id="LOCAL-00009" summary="6.29 完成侧向取球，速度调大">
+      <option name="closed" value="true" />
+      <created>1719669618034</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1719669618034</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -221,6 +234,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="init" />
     <MESSAGE value="6.29" />
-    <option name="LAST_COMMIT_MESSAGE" value="6.29" />
+    <MESSAGE value="6.29 完成侧向取球，速度调大" />
+    <option name="LAST_COMMIT_MESSAGE" value="6.29 完成侧向取球，速度调大" />
   </component>
 </project>

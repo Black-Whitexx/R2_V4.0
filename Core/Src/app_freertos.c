@@ -369,14 +369,55 @@ void chassis(void const *argument) {
                 }
             }
         }
-        /** 闭环程序 **/
-        /**跑点位置闭环 **/
+        /** 判断程序**/
+        /** 这一部分是奥里给 **/
         if (Stop_Flag == 1) {
             Car_Stop;
         }
         else {
             if (!(target_point.x == 0 && target_point.y == 0 && target_point.angle == 0)) {
-
+                if(CloseLoopStatus == CloseLoop_START){
+                    Chassis_Move_OfDT35(&target_point);
+                    if(StartPointNumber == 0){
+                        if (Distance_Calc(target_point,LiDar.locx,LiDar.locy) < 0.3f &&
+                            fabsf(LiDar.yaw - target_point.angle) < 3) {
+                            ControlMsgSet(&ControlQueueBuf, CHASSIS, CloseLoop_START, Run1to3_Points[1].x, Run1to3_Points[1].y, 0, 0);
+                            xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
+                            ControlMsgInit(&ControlQueueBuf);
+                            StartPointNumber = 1;
+                        }
+                        else if(StartPointNumber == 1) {
+                            if (Distance_Calc(target_point, LiDar.locx, LiDar.locy) < 0.3f &&
+                                fabsf(LiDar.yaw - target_point.angle) < 3) {
+                                ControlMsgSet(&ControlQueueBuf, CHASSIS, CloseLoop_START, Run1to3_Points[2].x,
+                                              Run1to3_Points[2].y, 0, 0);
+                                xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
+                                ControlMsgInit(&ControlQueueBuf);
+                                StartPointNumber = 2;
+                            }
+                        }
+                        else if(StartPointNumber == 2) {
+                            if (Distance_Calc(target_point, LiDar.locx, LiDar.locy) < 0.3f &&
+                                fabsf(LiDar.yaw - target_point.angle) < 3) {
+                                ControlMsgSet(&ControlQueueBuf, CHASSIS, CloseLoop_START, Run1to3_Points[3].x,
+                                              Run1to3_Points[3].y, 0, 0);
+                                xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
+                                ControlMsgInit(&ControlQueueBuf);
+                                StartPointNumber = 3;
+                            }
+                        }
+                        else if(StartPointNumber == 3) {
+                            if (Distance_Calc(target_point, LiDar.locx, LiDar.locy) < 0.3f &&
+                                fabsf(LiDar.yaw - target_point.angle) < 3) {
+                                ControlMsgSet(&ControlQueueBuf, CHASSIS, CloseLoop_MID360, Start_Point.x,
+                                              Start_Point.y, 90, 0);
+                                xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
+                                ControlMsgInit(&ControlQueueBuf);
+                                StartPointNumber = 4;
+                            }
+                        }
+                    }
+                }
                 if (CloseLoopStatus == CloseLoop_MID360) {
                     Chassis_Move_OfVision(&target_point);
                     if (fabsf(target_point.x-LiDar.locx) < 0.3f &&
@@ -388,7 +429,8 @@ void chassis(void const *argument) {
                         xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
                         ControlMsgInit(&ControlQueueBuf);
                     }
-                } else if (CloseLoopStatus == CloseLoop_Mid360AndDT35) {
+                }
+                else if (CloseLoopStatus == CloseLoop_Mid360AndDT35) {
                     Chassis_Move_OfVision(&target_point);
                     //printf("MAD");
                     if (fabsf(target_point.x- LiDar.locx) < 1.f &&
@@ -398,7 +440,8 @@ void chassis(void const *argument) {
                         xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
                         ControlMsgInit(&ControlQueueBuf);
                     }
-                } else if (CloseLoopStatus == CloseLoop_DT35) {
+                }
+                else if (CloseLoopStatus == CloseLoop_DT35) {
                     Chassis_Move_OfDT35(&target_point);
                     //printf("%f %f",DT35_Data.back,DT35_Data.Right);
                     //Chassis_Move_OfDT35(&target_point);
@@ -583,8 +626,8 @@ void visioncom(void const *argument) {
                 if (visiondata.flag == 0) {
                     //并不是从1�?????????3，在3区调试用
                     printf("0\n");
-                    ControlMsgSet(&ControlQueueBuf, CHASSIS, CloseLoop_MID360, Start_Point.x, Start_Point.y,
-                                  Watch_Point.angle, 0);
+                    ControlMsgSet(&ControlQueueBuf, CHASSIS, CloseLoop_START, Run1to3_Points[0].x, Run1to3_Points[0].y,
+                                  0, 0);
                     xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
                     ControlMsgSet(&ControlQueueBuf, CHASSIS, CHASSIS_RUN, 0, 0, 0, 0);
                     xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
