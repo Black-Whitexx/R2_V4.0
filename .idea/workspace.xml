@@ -21,11 +21,13 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a84bb48c-cfe0-481c-829d-87f33a41beef" name="Changes" comment="init">
+      <change afterPath="$PROJECT_DIR$/开发日志.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Core/Inc/DT35.h" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Inc/DT35.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Core/Inc/main.h" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Inc/main.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Core/Src/Chassis.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/Chassis.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Core/Src/DT35.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/DT35.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Core/Src/app_freertos.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/app_freertos.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Core/Src/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/main.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Core/Src/stm32g4xx_it.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/stm32g4xx_it.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/R2_Master_V3.ioc" beforeDir="false" afterPath="$PROJECT_DIR$/R2_Master_V3.ioc" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -46,6 +48,9 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="RESET_MODE" value="HARD" />
   </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
   <component name="ProjectApplicationVersion">
     <option name="ide" value="CLion" />
     <option name="majorVersion" value="2023" />
@@ -55,6 +60,9 @@
   &quot;associatedIndex&quot;: 0
 }</component>
   <component name="ProjectId" id="2hxHC4blmP8NAiU6OzdHLsru1tC" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -69,7 +77,7 @@
     &quot;cf.first.check.clang-format&quot;: &quot;false&quot;,
     &quot;cidr.known.project.marker&quot;: &quot;true&quot;,
     &quot;git-widget-placeholder&quot;: &quot;master&quot;,
-    &quot;last_opened_file_path&quot;: &quot;E:/RC/R2_Code/R2_Master_V3&quot;,
+    &quot;last_opened_file_path&quot;: &quot;E:/RC/R2_Code/R2_Master_V4&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
@@ -79,11 +87,6 @@
   }
 }</component>
   <component name="RunManager" selected="OpenOCD Download &amp; Run.R2_Master_V3.elf">
-    <configuration default="true" type="CLionExternalRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true">
-      <method v="2">
-        <option name="CLION.EXTERNAL.BUILD" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="R2_Master_V3.elf" type="CMakeRunConfiguration" factoryName="Application" REDIRECT_INPUT="false" ELEVATE="false" USE_EXTERNAL_CONSOLE="false" EMULATE_TERMINAL="false" PASS_PARENT_ENVS_2="true" PROJECT_NAME="R2_Master_V3" TARGET_NAME="R2_Master_V3.elf" CONFIG_NAME="Debug" RUN_TARGET_PROJECT_NAME="R2_Master_V3" RUN_TARGET_NAME="R2_Master_V3.elf">
       <method v="2">
         <option name="com.jetbrains.cidr.execution.CidrBuildBeforeRunTaskProvider$BuildBeforeRunTask" enabled="true" />
@@ -116,6 +119,26 @@
       <workItem from="1718538150845" duration="12478000" />
       <workItem from="1718586947199" duration="6344000" />
       <workItem from="1718598502159" duration="2621000" />
+      <workItem from="1718856925742" duration="8810000" />
+      <workItem from="1718872277106" duration="920000" />
+      <workItem from="1718874767086" duration="10907000" />
+      <workItem from="1718904571102" duration="3000" />
+      <workItem from="1718936910041" duration="41000" />
+      <workItem from="1718936956982" duration="42000" />
+      <workItem from="1718938152502" duration="12000" />
+      <workItem from="1718946049204" duration="7334000" />
+      <workItem from="1718959796098" duration="155000" />
+      <workItem from="1719113245961" duration="392000" />
+      <workItem from="1719126599434" duration="3000" />
+      <workItem from="1719133649549" duration="3062000" />
+      <workItem from="1719137166337" duration="12027000" />
+      <workItem from="1719327880187" duration="2000" />
+      <workItem from="1719420746472" duration="912000" />
+      <workItem from="1719537594099" duration="1676000" />
+      <workItem from="1719559417755" duration="5630000" />
+      <workItem from="1719567384076" duration="6804000" />
+      <workItem from="1719623629006" duration="3111000" />
+      <workItem from="1719632703530" duration="3000" />
     </task>
     <task id="LOCAL-00001" summary="init">
       <option name="closed" value="true" />
@@ -157,7 +180,15 @@
       <option name="project" value="LOCAL" />
       <updated>1718592530079</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="init">
+      <option name="closed" value="true" />
+      <created>1718786148951</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1718786148951</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

@@ -75,7 +75,7 @@ extern PID_t Slope_Speed_t,Slope_Position_t,Toggle_Speed_t,Toggle_Position_t;
 
 extern PID_t VisionPID_X,VisionRun2,DT35_Run;
 
-extern PointStruct Vision_Points[256], DT32_Points,DT32_AimPoints[5];
+extern PointStruct Vision_Points[256], DT32_Points,DT35_AimPoints[5];
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/
@@ -150,13 +150,15 @@ void Error_Handler(void);
 //动作宏定义
 //CHASSIS:
 #define CloseLoop_MID360 1
-#define CloseLoop_DT35 2
-#define CloseLoop_Left 3
-#define CloseLoop_Right 4
-#define CloseLoop_Middle 5
-#define GoForwardSlowly 6
-#define CHASSIS_STOP 7
-#define CHASSIS_RUN 8
+#define CloseLoop_Mid360AndDT35 2
+#define CloseLoop_DT35 3
+#define CloseLoop_Left 4
+#define CloseLoop_Right 5
+#define CloseLoop_Ball 6
+#define GoForwardSlowly 7
+#define CHASSIS_STOP 8
+#define CHASSIS_RUN 9
+#define CHASSIS_TURN 10
 //CLAW:
 #define CLAW_OPEN 1
 #define CLAW_CLOSE 2

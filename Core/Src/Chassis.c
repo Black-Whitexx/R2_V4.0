@@ -125,11 +125,11 @@ void Chassis_Move_OfVision(PointStruct *target_point)
     //计算向量长度
     arm_sqrt_f32(err_x * err_x + err_y * err_y,&dis);
 
-    if( dis / all_dis >= 0.9 ) max_out = 1.5f;
-    else if( dis / all_dis >= 0.8 && dis / all_dis < 0.9 ) max_out = 2.0f;
-    else if( dis / all_dis >= 0.7 && dis / all_dis < 0.8 ) max_out = 2.5f;
-    else if( dis / all_dis < 0.7 ) max_out = 3.0f;
-
+//    if( dis / all_dis >= 0.9 ) max_out = 1.5f;
+//    else if( dis / all_dis >= 0.8 && dis / all_dis < 0.9 ) max_out = 2.0f;
+//    else if( dis / all_dis >= 0.7 && dis / all_dis < 0.8 ) max_out = 2.5f;
+//    else if( dis / all_dis < 0.7 ) max_out = 3.0f;
+        max_out = 3.0f;
     //计算平动速度向量
     vel = PID_Realise(&VisionRun2, 0, -dis, max_out, 0.01f);
     //速度向量取绝对值
@@ -154,18 +154,14 @@ void Chassis_Move_OfDT35(PointStruct *target_point)
     float dis = 0.0f;//当前点与目标点的距离
     float vel = 0.0f, omega = 0.0f;//速度,角速度
     float err_x = (target_point->x - DT35_Data.Right);//x差值
-    float err_y = (target_point->y - DT35_Data.forward);//y差值
+    float err_y = (target_point->y - DT35_Data.back);//y差值
     float delta_angle = (target_point->angle - LiDar.yaw);//角度差值
     float max_out = 0.0f,allErr_x = 0.0f,allErr_y = 0.0f;
     static float all_dis = 0.0f;
-
-    if( cnt == 0 )
-    {
         allErr_x = (target_point->x - DT35_Data.Right);
-        allErr_y = (target_point->y - DT35_Data.forward);
+        allErr_y = (target_point->y - DT35_Data.back);
         arm_sqrt_f32(allErr_x * allErr_x + allErr_y * allErr_y,&all_dis);
         cnt = 1;
-    }
     //计算向量长度
     arm_sqrt_f32(err_x * err_x + err_y * err_y,&dis);
 
