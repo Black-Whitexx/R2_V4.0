@@ -159,6 +159,7 @@ void Error_Handler(void);
 #define CHASSIS_STOP 8
 #define CHASSIS_RUN 9
 #define CHASSIS_TURN 10
+#define CloseLoop_START 11
 //CLAW:
 #define CLAW_OPEN 1
 #define CLAW_CLOSE 2

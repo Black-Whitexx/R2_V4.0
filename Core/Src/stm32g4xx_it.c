@@ -378,35 +378,35 @@ void UART5_IRQHandler(void)
 
     TOF(USART5_Buffer,&TOF_dis1);
 
-    if(i > 100)
-    {
-        if( HAL_GPIO_ReadPin(SOLE_P1_GPIO_Port,SOLE_N1_Pin) == GPIO_PIN_SET )
-        {
-            if(j>5)
-            {
-                if(TOF_dis1 < 145.0f)
-                {
-                    if(Color == 1)
-                    {
-                        suctionSpeed = 0;
-                        //xQueueOverwriteFromISR(SuctionSpeed_QueueHandle,&suctionSpeed,0);
-                        Color = 0;
-                    }
-                    //Car_Stop;
-                    VisionFlag = 1;
-                }
-            }
-            else{
-                j++;
-            }
-        }
-        else
-        {
-//            printf("out:%f\n",TOF_dis1);
-        }
-    } else{
-        i++;
-    }
+//    if(i > 100)
+//    {
+//        if( HAL_GPIO_ReadPin(SOLE_P1_GPIO_Port,SOLE_N1_Pin) == GPIO_PIN_SET )
+//        {
+//            if(j>5)
+//            {
+//                if(TOF_dis1 < 145.0f)
+//                {
+//                    if(Color == 1)
+//                    {
+//                        suctionSpeed = 0;
+//                        //xQueueOverwriteFromISR(SuctionSpeed_QueueHandle,&suctionSpeed,0);
+//                        Color = 0;
+//                    }
+//                    //Car_Stop;
+//                    VisionFlag = 1;
+//                }
+//            }
+//            else{
+//                j++;
+//            }
+//        }
+//        else
+//        {
+////            printf("out:%f\n",TOF_dis1);
+//        }
+//    } else{
+//        i++;
+//    }
 
     HAL_UART_Receive_DMA(&huart5, USART5_Buffer, 255);   //重启串口接收中断，开始DMA传输
     __HAL_UART_ENABLE_IT(&huart5,UART_IT_IDLE);             //重启串口空闲中断，防止被32自动清除标志空闲中断标志�???????????????????

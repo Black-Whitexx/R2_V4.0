@@ -125,13 +125,8 @@ void Chassis_Move_OfVision(PointStruct *target_point)
     //计算向量长度
     arm_sqrt_f32(err_x * err_x + err_y * err_y,&dis);
 
-//    if( dis / all_dis >= 0.9 ) max_out = 1.5f;
-//    else if( dis / all_dis >= 0.8 && dis / all_dis < 0.9 ) max_out = 2.0f;
-//    else if( dis / all_dis >= 0.7 && dis / all_dis < 0.8 ) max_out = 2.5f;
-//    else if( dis / all_dis < 0.7 ) max_out = 3.0f;
-        max_out = 3.0f;
     //计算平动速度向量
-    vel = PID_Realise(&VisionRun2, 0, -dis, max_out, 0.01f);
+    vel = PID_Realise(&VisionRun2, 0, -dis, 3.0f, 0.01f);
     //速度向量取绝对值
     arm_abs_f32(&vel, &vel, 1);
     //计算角速度
@@ -169,7 +164,7 @@ void Chassis_Move_OfDT35(PointStruct *target_point)
     else if( dis / all_dis >= 0.8 && dis / all_dis < 0.9 ) max_out = 2.0f;
     else if( dis / all_dis >= 0.7 && dis / all_dis < 0.8 ) max_out = 2.5f;
     else if( dis / all_dis < 0.7 ) max_out = 3.0f;
-
+        //max_out = 0.1f;
     //计算平动速度向量
     vel = PID_Realise(&DT35_Run, 0, -dis, max_out, 0.01f);
     //速度向量取绝对值
