@@ -126,7 +126,7 @@ int main(void)
     /** 初始化Printf函数 **/
     RetargetInit(&huart1);
     /** 初始化定时器中断 **/
-    HAL_TIM_Base_Start_IT(&htim2);
+    //HAL_TIM_Base_Start_IT(&htim2);
   /* USER CODE END 2 */
 
   /* Call init function for freertos objects (in cmsis_os2.c) */

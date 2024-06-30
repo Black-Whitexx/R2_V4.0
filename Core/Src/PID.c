@@ -11,7 +11,7 @@
 #include "math.h"
 #include "retarget.h"
 
-PID_t Slope_Speed_t,Slope_Position_t,Toggle_Speed_t,Toggle_Position_t;
+PID_t Slope_Speed_t,Slope_Position_t,Toggle_Speed_t,Toggle_Position_t,Chassis_GetBall_PID;
 /**
   * @brief  PID参数设置，全是float，去除了积分分离，感觉有点冗余而且不会用
   * @param  *PID 要设置的目标PID结构体地址

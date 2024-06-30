@@ -17,9 +17,9 @@
 typedef struct
 {
     float offset;
-    float back;
-    float Left;
     float Right;
+    float Back;
+    float Forward;
 }DT35_Struct;
 
 extern DT35_Struct DT35_Data;

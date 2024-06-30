@@ -24,8 +24,10 @@
 /* USER CODE BEGIN Includes */
 #include "usart.h"
 #include "DT35.h"
+#include "Locator.h"
 #include "FreeRTOS.h"
 #include "queue.h"
+#include "fdcan.h"
 #include "cmsis_os.h"
 /* USER CODE END Includes */
 
@@ -41,12 +43,19 @@
 
 /* Private macro -------------------------------------------------------------*/
 /* USER CODE BEGIN PM */
-
+//float LiDar_x_last,LiDar_y_last = 0;
+//float Locator_Start[2];
+//float MutiPos_x;
+//float MutiPos_y;
+//float Locator_Addup[2];
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
 /* USER CODE BEGIN PV */
-
+extern int16_t Wheels_VelOut[0];
+extern int16_t Toggle_Pos;
+extern int16_t Slope_Pos;
+extern int32_t VESC_Speed;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -56,6 +65,46 @@
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
+//void Motor_CLoseloop(){
+//    Wheels_VelOut[0] = (int16_t) PID_Realise(&Wheels[0], -Wheels_vel[0], Motor_Info[0].speed, M3508_CURRENT_MAX, 5);
+//    Wheels_VelOut[1] = (int16_t) PID_Realise(&Wheels[1], -Wheels_vel[1], Motor_Info[1].speed, M3508_CURRENT_MAX, 5);
+//    Wheels_VelOut[2] = (int16_t) PID_Realise(&Wheels[2], -Wheels_vel[2], Motor_Info[2].speed, M3508_CURRENT_MAX, 5);
+//    Wheels_VelOut[3] = (int16_t) PID_Realise(&Wheels[3], -Wheels_vel[3], Motor_Info[3].speed, M3508_CURRENT_MAX, 5);
+//    Set_Current(&hfdcan1, 0x200, Wheels_VelOut[0], Wheels_VelOut[1], Wheels_VelOut[2], Wheels_VelOut[3]);
+//    /** ¼Ð×¦ºÍ·ÖÇò°å±Õ»·**/
+//    float Slope_Position = PID_Realise(&Slope_Position_t, Slope_Pos, Motor_Info[6].actual_total_angle, 2000, 10.0f);
+//    int16_t Slope_Speed = (int16_t) PID_Realise(&Slope_Speed_t, Slope_Position, Motor_Info[6].speed,
+//                                                M2006_CURRENT_MAX, 5);
+//    float Toggle_Position = PID_Realise(&Toggle_Position_t, Toggle_Pos, Motor_Info[7].actual_total_angle, 1000,
+//                                        5.0f);
+//    int16_t Toggle_Speed = (int16_t) PID_Realise(&Toggle_Speed_t, Toggle_Position, Motor_Info[7].speed,
+//                                                 M3508_CURRENT_MAX, 5);
+//    Set_Current(&hfdcan2, 0x1FF, 0, 0, Slope_Speed, Toggle_Speed);
+//    Vesc_SetSpeed(&hfdcan1, VESC_ID, VESC_Speed);
+//}
+
+//void Position_InterPolation(){
+//    float LiDar_x = LiDar.locx;
+//    float LiDar_y = LiDar.locy;
+//    float Locator_x = locater.pos_x/100.f;
+//    float Locator_y = locater.pos_y/100.f;
+//    if(!(LiDar_x == LiDar_x_last && LiDar_y == LiDar_y_last)){
+//        /** ¸Ã¸üÐÂÁË **/
+//        /** ÂëÅÌÆðÊ¼ÖØÖÃ **/
+//        Locator_Addup[0] = 0;
+//        Locator_Addup[1] = 0;
+//        Locator_Start[0] = Locator_x;
+//        Locator_Start[1] = Locator_y;
+//    }
+//    /** ÂëÅÌ²åÖµ **/
+//    Locator_Addup[0] = Locator_x - Locator_Start[0];
+//    Locator_Addup[1] = Locator_y - Locator_Start[1];
+//    MutiPos_x = LiDar_x + Locator_Addup[0];
+//    MutiPos_y = LiDar_y + Locator_Addup[1];
+//    MutiPos_x = 1;
+//    MutiPos_y = LiDar_y + Locator_Addup[1];
+//
+//}
 
 /* USER CODE END 0 */
 
@@ -268,7 +317,8 @@ void FDCAN1_IT0_IRQHandler(void)
 void TIM2_IRQHandler(void)
 {
   /* USER CODE BEGIN TIM2_IRQn 0 */
-
+//    Motor_CLoseloop();
+//    Position_InterPolation();
   /* USER CODE END TIM2_IRQn 0 */
   HAL_TIM_IRQHandler(&htim2);
   /* USER CODE BEGIN TIM2_IRQn 1 */
@@ -377,36 +427,7 @@ void UART5_IRQHandler(void)
     HAL_UART_DMAStop(&huart5);                        //åœæ­¢DMAæŽ¥æ”¶
 
     TOF(USART5_Buffer,&TOF_dis1);
-
-//    if(i > 100)
-//    {
-//        if( HAL_GPIO_ReadPin(SOLE_P1_GPIO_Port,SOLE_N1_Pin) == GPIO_PIN_SET )
-//        {
-//            if(j>5)
-//            {
-//                if(TOF_dis1 < 145.0f)
-//                {
-//                    if(Color == 1)
-//                    {
-//                        suctionSpeed = 0;
-//                        //xQueueOverwriteFromISR(SuctionSpeed_QueueHandle,&suctionSpeed,0);
-//                        Color = 0;
-//                    }
-//                    //Car_Stop;
-//                    VisionFlag = 1;
-//                }
-//            }
-//            else{
-//                j++;
-//            }
-//        }
-//        else
-//        {
-////            printf("out:%f\n",TOF_dis1);
-//        }
-//    } else{
-//        i++;
-//    }
+    locater_Data_Rec(USART5_Buffer,&locater);
 
     HAL_UART_Receive_DMA(&huart5, USART5_Buffer, 255);   //é‡å¯ä¸²å£æŽ¥æ”¶ä¸­æ–­ï¼Œå¼€å§‹DMAä¼ è¾“
     __HAL_UART_ENABLE_IT(&huart5,UART_IT_IDLE);             //é‡å¯ä¸²å£ç©ºé—²ä¸­æ–­ï¼Œé˜²æ­¢è¢«32è‡ªåŠ¨æ¸…é™¤æ ‡å¿—ç©ºé—²ä¸­æ–­æ ‡å¿—ï¿???????????????????
@@ -461,5 +482,8 @@ void FDCAN3_IT0_IRQHandler(void)
 }
 
 /* USER CODE BEGIN 1 */
-
+void HAL_TIM_IC_CaptureCallback(TIM_HandleTypeDef *htim){
+    if(htim->Instance == htim2.Instance){
+    }
+}
 /* USER CODE END 1 */

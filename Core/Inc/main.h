@@ -67,9 +67,9 @@ extern uint8_t State,Vision_State,VisionFlag,Color;
 
 extern uint8_t cnt;
 
-extern PointStruct Run1to3_Points[4];//用于存储比赛�????????????始从1区跑到三区的目标�????????????,有五个点
+extern PointStruct Run1to3_Points[3];//用于存储比赛�????????????始从1区跑到三区的目标�????????????,有五个点
 
-extern PID_t Slope_Speed_t,Slope_Position_t,Toggle_Speed_t,Toggle_Position_t;
+extern PID_t Slope_Speed_t,Slope_Position_t,Toggle_Speed_t,Toggle_Position_t,Chassis_GetBall_PID;
 
 //extern float Slope_Pos,Toggle_Pos;
 
@@ -185,6 +185,9 @@ void Error_Handler(void);
 #define BasketNumber 4
 #define GoPoint_Left 5
 #define GoPoint_Right 6
+//��Ӫ
+#define RED 0
+#define BLUE 1
 typedef struct {
     uint16_t Device;
     uint16_t Command;

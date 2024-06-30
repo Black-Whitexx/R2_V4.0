@@ -20,7 +20,7 @@ locater_def locater = {.pos_x_base=0.0f,.pos_y_base=0.0f};  // 上电在坐标�
 void locater_Data_Rec(uint8_t *data, locater_def *loc)
 {
     loc_Receive_Union Union_loc;
-    if(data[0] == 'P' && data[1] == 'G')
+    if(data[0] == 0xBB && data[1] == 0xCC)
     {
         loc->pos_x_last = loc->pos_x;
         loc->pos_y_last = loc->pos_y;
