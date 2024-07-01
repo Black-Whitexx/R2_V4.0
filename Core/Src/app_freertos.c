@@ -471,7 +471,7 @@ void chassis(void const * argument)
                 }
                 if (CloseLoopStatus == CloseLoop_MID360) {
                     Chassis_Move_OfVision(&target_point,&Chassis_GetBall_PID,1.f);
-                    printf("%f %f\n",MutiPos_x,MutiPos_y);
+                    //printf("%f %f\n",MutiPos_x,MutiPos_y);
                     if (Distance_Calc(target_point,MutiPos_x,MutiPos_y) < 0.3f &&
                         fabsf(LiDar.yaw - target_point.angle) < 3) {
                         printf("send1normal\n");
@@ -500,8 +500,8 @@ void chassis(void const * argument)
                     //printf("InDT\n");
 //                    printf("%f %f",DT35_Data.back,DT35_Data.Right);
                     //Chassis_Move_OfDT35(&target_point);
-                    //printf("%f",Distance_Calc(target_point, DT35_Data.DT35_3, DT35_Data.DT35_1));
-                    if (Distance_Calc(target_point, DT35_Data.DT35_3, DT35_Data.DT35_1) < 5.0f) {
+                    printf("%f\n",Distance_Calc(target_point, DT35_Data.DT35_1, DT35_Data.DT35_2));
+                    if (Distance_Calc(target_point, DT35_Data.DT35_1, DT35_Data.DT35_2) < 5.0f) {
                         ControlMsgSet(&ControlQueueBuf, CLAW, CLAW_OPEN, 0, 0, 0, 0);
                         xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
                         ControlMsgSet(&ControlQueueBuf, CHASSIS, CHASSIS_STOP, 0, 0, 0, 0);

@@ -22,8 +22,6 @@
   <component name="ChangeListManager">
     <list default="true" id="a84bb48c-cfe0-481c-829d-87f33a41beef" name="Changes" comment="6.30 完成红蓝区取球">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Core/Src/Chassis.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/Chassis.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Core/Src/DT35.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/DT35.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Core/Src/app_freertos.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/app_freertos.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -144,7 +142,7 @@
       <workItem from="1719641778201" duration="22997000" />
       <workItem from="1719676757989" duration="1814000" />
       <workItem from="1719710089357" duration="88558000" />
-      <workItem from="1719849498696" duration="2386000" />
+      <workItem from="1719849498696" duration="2972000" />
     </task>
     <task id="LOCAL-00001" summary="init">
       <option name="closed" value="true" />
@@ -242,7 +240,15 @@
       <option name="project" value="LOCAL" />
       <updated>1719843583619</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="6.30 完成红蓝区取球">
+      <option name="closed" value="true" />
+      <created>1719851904145</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1719851904145</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
