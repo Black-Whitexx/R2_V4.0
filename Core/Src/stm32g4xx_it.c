@@ -56,6 +56,7 @@ extern int16_t Wheels_VelOut[0];
 extern int16_t Toggle_Pos;
 extern int16_t Slope_Pos;
 extern int32_t VESC_Speed;
+//extern locater_def locater;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -426,8 +427,8 @@ void UART5_IRQHandler(void)
     __HAL_UART_CLEAR_IDLEFLAG(&huart5);                     //清除空闲中断标志（否则会�???????????????????直不断进入中断）
     HAL_UART_DMAStop(&huart5);                        //停止DMA接收
 
-    TOF(USART5_Buffer,&TOF_dis1);
-    locater_Data_Rec(USART5_Buffer,&locater);
+    locatorAndToF_Data_Rec(USART5_Buffer, &locater,&TOF_dis1);
+    //printf("%.2f,%.2f,%.2f,%.4f\n",locater.pos_x,locater.pos_y,locater.angle,locater.Tof_dis);
 
     HAL_UART_Receive_DMA(&huart5, USART5_Buffer, 255);   //重启串口接收中断，开始DMA传输
     __HAL_UART_ENABLE_IT(&huart5,UART_IT_IDLE);             //重启串口空闲中断，防止被32自动清除标志空闲中断标志�???????????????????

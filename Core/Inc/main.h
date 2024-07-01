@@ -52,11 +52,10 @@ extern uint8_t USART2_Buffer[50];
 extern uint8_t USART3_Buffer[30];
 extern uint8_t USART4_Buffer[256];
 extern uint8_t USART5_Buffer[256];
-
+extern locater_def locater;
 extern PID_t Wheels[4];//轮子转�??
 extern float Wheels_vel[4];//轮子转�??
 extern PID_t Translation_PID, Turn_PID;//平动的PID结构体，转动的PID结构�?????????????
-
 extern PointStruct Aim_Points[256],Frame_Points[5];//目标点们
 extern uint8_t AimPoints_Index;//目标点序�????????????
 
@@ -160,6 +159,7 @@ void Error_Handler(void);
 #define CHASSIS_RUN 9
 #define CHASSIS_TURN 10
 #define CloseLoop_START 11
+#define CloseLoop_Restart 12
 //CLAW:
 #define CLAW_OPEN 1
 #define CLAW_CLOSE 2

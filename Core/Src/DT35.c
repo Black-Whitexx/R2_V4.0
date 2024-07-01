@@ -26,8 +26,8 @@ PointStruct DT35_AimPoints[5]= {
 float DT35_Area2 = 161.f;
 void DT35_Rec(uint8_t *data,DT35_Struct *DT35_data)
 {
-    DT35_data->Back = (float)(data[1] << 24 | data[2] << 16 | data[3] << 8 | data[4] ) / 10000;
-    DT35_data->Right = (float)(data[5] << 24 | data[6] << 16 | data[7] << 8 | data[8] ) / 10000;
-    DT35_data->Forward = (float)(data[9] << 24 | data[10] << 16 | data[11] << 8 | data[12] ) / 10000;
+    DT35_data->DT35_2 = (float)(data[1] << 24 | data[2] << 16 | data[3] << 8 | data[4] ) / 10000;
+    DT35_data->DT35_1 = (float)(data[5] << 24 | data[6] << 16 | data[7] << 8 | data[8] ) / 10000;
+    DT35_data->DT35_3 = (float)(data[9] << 24 | data[10] << 16 | data[11] << 8 | data[12] ) / 10000;
 //    printf("%f,%f,%f\n",DT35_data->forward,DT35_data->Left,DT35_data->Right);
 }

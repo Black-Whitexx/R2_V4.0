@@ -20,20 +20,19 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a84bb48c-cfe0-481c-829d-87f33a41beef" name="Changes" comment="6.29 完成侧向取球，速度调大">
+    <list default="true" id="a84bb48c-cfe0-481c-829d-87f33a41beef" name="Changes" comment="6.30 完成红蓝区">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Core/Inc/Chassis.h" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Inc/Chassis.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Core/Inc/DT35.h" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Inc/DT35.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Core/Inc/Locator.h" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Inc/Locator.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Core/Inc/VL53-100.h" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Inc/VL53-100.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Core/Inc/main.h" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Inc/main.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Core/Src/Chassis.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/Chassis.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Core/Src/DT35.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/DT35.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Core/Src/Locator.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/Locator.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Core/Src/MID360.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/MID360.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Core/Src/PID.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/PID.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Core/Src/VL53-100.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/VL53-100.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Core/Src/app_freertos.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/app_freertos.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Core/Src/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/main.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Core/Src/stm32g4xx_it.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/stm32g4xx_it.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Core/Src/tim.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/tim.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Core/Src/usart.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/usart.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/R2_Master_V3.ioc" beforeDir="false" afterPath="$PROJECT_DIR$/R2_Master_V3.ioc" afterDir="false" />
     </list>
@@ -154,7 +153,7 @@
       <workItem from="1719633271272" duration="366000" />
       <workItem from="1719641778201" duration="22997000" />
       <workItem from="1719676757989" duration="1814000" />
-      <workItem from="1719710089357" duration="52256000" />
+      <workItem from="1719710089357" duration="84991000" />
     </task>
     <task id="LOCAL-00001" summary="init">
       <option name="closed" value="true" />
@@ -228,7 +227,23 @@
       <option name="project" value="LOCAL" />
       <updated>1719669618034</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="6.30 完成红蓝区">
+      <option name="closed" value="true" />
+      <created>1719774037987</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1719774037987</updated>
+    </task>
+    <task id="LOCAL-00011" summary="6.30 完成红蓝区">
+      <option name="closed" value="true" />
+      <created>1719774047228</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1719774047228</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -254,6 +269,7 @@
     <MESSAGE value="init" />
     <MESSAGE value="6.29" />
     <MESSAGE value="6.29 完成侧向取球，速度调大" />
-    <option name="LAST_COMMIT_MESSAGE" value="6.29 完成侧向取球，速度调大" />
+    <MESSAGE value="6.30 完成红蓝区" />
+    <option name="LAST_COMMIT_MESSAGE" value="6.30 完成红蓝区" />
   </component>
 </project>

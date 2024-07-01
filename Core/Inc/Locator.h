@@ -34,16 +34,17 @@ typedef struct
     float pos_x_base;
     float pos_y_base;
 
+    float Tof_dis;
 }locater_def;
 
 typedef union
 {
-    uint8_t data_8[12];
-    int32_t data_32[3];
-    float data_f[3];
+    uint8_t data_8[16];
+    int32_t data_32[4];
+    float data_f[4];
 }loc_Receive_Union;
 
-extern locater_def locater;
 
-void locater_Data_Rec(uint8_t *data, locater_def *loc);
+
+void locatorAndToF_Data_Rec(uint8_t *data, locater_def *loc,float *TOF_Distance);
 #endif //R2_MASTER_V3_LOCATOR_H

@@ -35,15 +35,23 @@ void  RaDar_Data_Rec(uint8_t* data,RaDar_Data_t* RaDar_data,VisionStruct* Vision
 //        RaDar_data->locx = RaDar_data->locx - r * arm_sin_f32(RaDar_data->yaw * 3.1415926f / 180.0f);
 
         //新版MID距离
-        if(Camp == RED) {
+//        if(Camp == RED) {
+//            RaDar_data->locy = (locx - r * arm_cos_f32(yaw * 3.1415926f / 180.0f) + r);
+//            RaDar_data->locx = -(locy + r * arm_sin_f32(yaw * 3.1415926f / 180.0f));
+//        }
+//        else if(Camp == BLUE){
+//            RaDar_data->locy = (locx - r * arm_cos_f32(yaw * 3.1415926f / 180.0f) + r);
+//            RaDar_data->locx = -(locy + r * arm_sin_f32(yaw * 3.1415926f / 180.0f));
+//        }
+        if(Camp == RED){
             RaDar_data->locy = (locx - r * arm_cos_f32(yaw * 3.1415926f / 180.0f) + r);
-            RaDar_data->locx = -(locy + r * arm_sin_f32(yaw * 3.1415926f / 180.0f));
         }
         else if(Camp == BLUE){
-            RaDar_data->locy = (locx - r * arm_cos_f32(yaw * 3.1415926f / 180.0f) + r);
-            RaDar_data->locx = -(locy + r * arm_sin_f32(yaw * 3.1415926f / 180.0f));
+            RaDar_data->locy = -(locx - r * arm_cos_f32(yaw * 3.1415926f / 180.0f) + r);
+
         }
         RaDar_data->yaw = yaw;
+        RaDar_data->locx = -(locy + r * arm_sin_f32(yaw * 3.1415926f / 180.0f));
         Vision_data->flag = data[13];
         Vision_data->vision_x = (float)( data[17] | data[18] << 8 | data[19] << 16 | data[20] << 24 );
         Vision_data->vision_y = (float)( data[21] | data[22] << 8 | data[23] << 16 | data[24] << 24 );

@@ -4,7 +4,8 @@
 
 #include "VL53-100.h"
 
-float TOF_Dis[10],TOF_dis1;
+float TOF_Dis[10];
+float TOF_dis1;
 
 void TOF(uint8_t *data,float *dis)
 {

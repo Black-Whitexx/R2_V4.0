@@ -6,7 +6,8 @@
 #define PROJECT_VL53_100_H
 #include "main.h"
 
-extern float TOF_Dis[10],TOF_dis1;
+extern float TOF_Dis[10];
+extern float TOF_dis1;
 
 void TOF(uint8_t *data,float *dis);
 
