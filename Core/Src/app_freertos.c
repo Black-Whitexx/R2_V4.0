@@ -208,7 +208,7 @@ void DebugTask(void const * argument)
     PID_Set(&Chassis_GetBall_PID, 1.05f, 0.0f, 0.3f, 0.0f);
     /* Infinite loop */
     for (;;) {
-        printf("%.2f %.2f %.2f\n", DT35_Data.DT35_1, DT35_Data.DT35_2,DT35_Data.DT35_3);
+        //printf("%.2f %.2f %.2f\n", DT35_Data.DT35_2, DT35_Data.DT35_3,DT35_Data.DT35_1);
 //        printf("%.2f %.2f \n", locater.pos_x, locater.pos_y);
 //        printf("%.3f %.3f\n", LiDar.locx, LiDar.locy);
         //printf("%f %f\n",MutiPos_x,MutiPos_y);
@@ -371,6 +371,7 @@ void chassis(void const * argument)
                         number = (int) ControlQueueBuf.data[3];
                         break;
                     case CloseLoop_DT35:
+                        printf("CLDT35_GET");
                         CloseLoopStatus = CloseLoop_DT35;
                         target_point.x = ControlQueueBuf.data[0];
                         target_point.y = ControlQueueBuf.data[1];
@@ -470,6 +471,7 @@ void chassis(void const * argument)
                 }
                 if (CloseLoopStatus == CloseLoop_MID360) {
                     Chassis_Move_OfVision(&target_point,&Chassis_GetBall_PID,1.f);
+                    printf("%f %f\n",MutiPos_x,MutiPos_y);
                     if (Distance_Calc(target_point,MutiPos_x,MutiPos_y) < 0.3f &&
                         fabsf(LiDar.yaw - target_point.angle) < 3) {
                         printf("send1normal\n");
@@ -486,11 +488,11 @@ void chassis(void const * argument)
                     //printf("MAD");
                     if (fabsf(target_point.x - LiDar.locx) < 1.f &&
                         fabsf(LiDar.yaw - target_point.angle) < 3.f) {
-                        printf("MID2DT,ok\n");
                         ControlMsgSet(&ControlQueueBuf, CHASSIS, CloseLoop_DT35, DT35_AimPoints[number - 1].x,
                                       DT35_AimPoints[number - 1].y, 0, 0);
                         xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
                         ControlMsgInit(&ControlQueueBuf);
+                        printf("MID2DT,ok\n");
                     }
                 }
                 else if (CloseLoopStatus == CloseLoop_DT35) {
@@ -498,7 +500,7 @@ void chassis(void const * argument)
                     //printf("InDT\n");
 //                    printf("%f %f",DT35_Data.back,DT35_Data.Right);
                     //Chassis_Move_OfDT35(&target_point);
-                    printf("%f",Distance_Calc(target_point, DT35_Data.DT35_3, DT35_Data.DT35_1));
+                    //printf("%f",Distance_Calc(target_point, DT35_Data.DT35_3, DT35_Data.DT35_1));
                     if (Distance_Calc(target_point, DT35_Data.DT35_3, DT35_Data.DT35_1) < 5.0f) {
                         ControlMsgSet(&ControlQueueBuf, CLAW, CLAW_OPEN, 0, 0, 0, 0);
                         xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);

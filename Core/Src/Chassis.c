@@ -166,8 +166,8 @@ void Chassis_Move_OfDT35(PointStruct *target_point)
     float xSpeed = 0.0f,ySpeed = 0.0f;
     float dis = 0.0f;//当前点与目标点的距离
     float vel = 0.0f, omega = 0.0f;//速度,角速度
-    float err_x = -(target_point->x - forward);//x差值
-    float err_y = -(target_point->y - close_ball);//y差值
+    float err_y = (target_point->y - forward);//x差值
+    float err_x = (target_point->x - close_ball);//y差值
     float delta_angle = (target_point->angle - LiDar.yaw);//角度差值
     float max_out = 0.0f,allErr_x = 0.0f,allErr_y = 0.0f;
 //    static float all_dis = 0.0f;
@@ -195,7 +195,14 @@ void Chassis_Move_OfDT35(PointStruct *target_point)
     ySpeed = vel * arm_sin_f32(atan2f(err_y, err_x));
 
     //将车身x，y速度转换为轮子的x，y速度
-    SGW2Wheels(xSpeed, ySpeed, omega, 0);
+    if(Camp == BLUE){
+        SGW2Wheels(-xSpeed, -ySpeed, omega, 0);
+    }
+    else if(Camp == RED){
+        SGW2Wheels(-ySpeed, -xSpeed, omega, 0);
+    }
+
+    //printf("%f %f",forward,close_ball);
 }
 /**
  * @brief 计算两点间距离
