@@ -72,7 +72,7 @@ extern PID_t Slope_Speed_t,Slope_Position_t,Toggle_Speed_t,Toggle_Position_t,Cha
 
 //extern float Slope_Pos,Toggle_Pos;
 
-extern PID_t VisionPID_X,VisionRun2,DT35_Run;
+extern PID_t VisionPID_X,VisionRun1,VisionRun2,DT35_Run;
 
 extern PointStruct Vision_Points[256], DT32_Points,DT35_AimPoints[5];
 /* USER CODE END ET */

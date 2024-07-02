@@ -28,6 +28,7 @@
 #include "FreeRTOS.h"
 #include "queue.h"
 #include "fdcan.h"
+#include "Screen.h"
 #include "cmsis_os.h"
 /* USER CODE END Includes */
 
@@ -381,12 +382,12 @@ void USART3_IRQHandler(void)
   /* USER CODE BEGIN USART3_IRQn 0 */
     __HAL_UART_CLEAR_IDLEFLAG(&huart3);                     //清除空闲中断标志（否则会�???????????????????直不断进入中断）
     HAL_UART_DMAStop(&huart3);                        //停止DMA接收
-
+    Unpack_Screen_CMD(USART3_Buffer);
     HAL_UART_Receive_DMA(&huart3, USART3_Buffer, 30);   //重启串口接收中断，开始DMA传输
     __HAL_UART_ENABLE_IT(&huart3,UART_IT_IDLE);             //重启串口空闲中断，防止被32自动清除标志空闲中断标志�???????????????????
   /* USER CODE END USART3_IRQn 0 */
   HAL_UART_IRQHandler(&huart3);
-  /* USER CODE BEGIN USART3_IRQn 1 */
+  /* USER CODE BEGIN USART3_IRQn 1 *;
 
   /* USER CODE END USART3_IRQn 1 */
 }

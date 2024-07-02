@@ -36,6 +36,6 @@ typedef struct {
 }PID_t;
 
 void PID_Set(PID_t *PID, float kp, float ki, float kd, float integral_limit);
-float PID_Realise(PID_t *PID, float target, float current, float max_output, float DeadZone);
+float PID_Realise(PID_t *PID, float target, float current, float max_output, float DeadZone, float ki_gain);
 
 #endif //R2_MASTER_V3_PID_H

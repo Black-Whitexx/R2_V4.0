@@ -19,7 +19,7 @@
 #include "main.h"
 
 VisionStruct Vision_Data;
-PID_t VisionPID_X,VisionRun2;
+PID_t VisionPID_X,VisionRun1,VisionRun2;
 PointStruct Vision_Points[256];
 uint8_t Vision_State,VisionFlag,Color;
 

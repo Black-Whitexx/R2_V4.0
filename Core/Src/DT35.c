@@ -17,11 +17,11 @@ PointStruct DT32_Points;
 /** 用于存储比赛5个放球点 **/
 PointStruct DT35_AimPoints[5]= {
         //TODO:修改表达
-        {.y = 46.46f,.x = 35.8f,.angle = 0.0f},
-        {.y = 124.3f,.x = 35.8f,.angle = 0.0f},
-        {.y = 199.7f,.x = 35.8f,.angle = 0.0f},
-        {.y = 274.2f,.x = 35.8f,.angle = 0.0f},
-        {.y = 349.60f,.x = 35.8f,.angle = 0.0f}
+        {.y = 46.46f,.x = 34.f,.angle = 0.0f},
+        {.y = 124.3f,.x = 34.f,.angle = 0.0f},
+        {.y = 199.7f,.x = 34.f,.angle = 0.0f},
+        {.y = 275.2f,.x = 34.f,.angle = 0.0f},
+        {.y = 349.60f,.x = 34.f,.angle = 0.0f}
 };
 float DT35_Area2 = 161.f;
 void DT35_Rec(uint8_t *data,DT35_Struct *DT35_data)

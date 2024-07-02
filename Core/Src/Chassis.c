@@ -96,11 +96,11 @@ void Chassis_Move(PointStruct *target_point)
     else if( dis / all_dis < 0.7 ) max_out = 3.0f;
 
     //计算平动速度向量
-    vel = PID_Realise(&Translation_PID, 0, -dis, max_out, 0.01f);
+    //vel = PID_Realise(&Translation_PID, 0, -dis, max_out, 0.01f);
     //速度向量取绝对值
     arm_abs_f32(&vel, &vel, 1);
     //计算角速度
-    omega = PID_Realise(&Turn_PID, 0, -delta_angle, 1.3f, 0.1f);
+    //omega = PID_Realise(&Turn_PID, 0, -delta_angle, 1.3f, 0.1f);
 
     //线速度分解为x和y的分量
     xSpeed = vel * arm_cos_f32(atan2f(err_y, err_x));
@@ -123,24 +123,22 @@ void Chassis_Move_OfVision(PointStruct *target_point,PID_t *pid,float max)
     float delta_angle = (target_point->angle - LiDar.yaw);//角度差值
     float max_out = 0.0f,allErr_x = 0.0f,allErr_y = 0.0f;
     static float all_dis = 0.0f;
-
-    if( cnt == 0 )
-    {
-        allErr_x = (target_point->x -MutiPos_x);
-        allErr_y = (target_point->y - MutiPos_y);
-        arm_sqrt_f32(allErr_x * allErr_x + allErr_y * allErr_y,&all_dis);
-        cnt = 1;
-    }
+    float ki_gain_threshold =1.5f ;
+    float ki_gain = 1;
     //计算向量长度
     arm_sqrt_f32(err_x * err_x + err_y * err_y,&dis);
-    if( dis / all_dis >= 0.95 ) max_out = 2.f;
-    else if( dis / all_dis < 0.95 ) max_out = max;
     //计算平动速度向量
-    vel = PID_Realise(pid, 0, -dis, 2.5f, 0.01f);
+    if(dis>ki_gain_threshold){
+        ki_gain = 0;
+    }
+    else if(dis<=ki_gain_threshold){
+        ki_gain = 1 - dis/ki_gain_threshold;
+    }
+    vel = PID_Realise(pid, 0, -dis, 2.f, 0.01f,ki_gain);
     //速度向量取绝对值
     arm_abs_f32(&vel, &vel, 1);
     //计算角速度
-    omega = PID_Realise(&Turn_PID, 0, -delta_angle, 1.2f, 0.1f);
+    omega = PID_Realise(&Turn_PID, 0, -delta_angle, 1.2f, 0.1f,1);
 
     //线速度分解为x和y的分量
     xSpeed = vel * arm_cos_f32(atan2f(err_y, err_x));
@@ -170,6 +168,8 @@ void Chassis_Move_OfDT35(PointStruct *target_point)
     float err_x = (target_point->x - close_ball);//y差值
     float delta_angle = (target_point->angle - LiDar.yaw);//角度差值
     float max_out = 0.0f,allErr_x = 0.0f,allErr_y = 0.0f;
+    float ki_gain_threshold =1.5f ;
+    float ki_gain = 1;
 //    static float all_dis = 0.0f;
 //        allErr_x = (target_point->x - DT35_Data.Right);
 //        allErr_y = (target_point->y - DT35_Data.Forward);
@@ -184,23 +184,24 @@ void Chassis_Move_OfDT35(PointStruct *target_point)
         //max_out = 0.1f;
     arm_sqrt_f32(err_x * err_x + err_y * err_y,&dis);
     //计算平动速度向量
-    vel = PID_Realise(&DT35_Run, 0, -dis, 0.5f, 0.01f);
+    if(dis>ki_gain_threshold){
+        ki_gain = 0;
+    }
+    else if(dis<=ki_gain_threshold){
+        ki_gain = 1 - dis/ki_gain_threshold;
+    }
+    vel = PID_Realise(&DT35_Run, 0, -dis, 2.5f, 0.01f,ki_gain);
     //速度向量取绝对值
     arm_abs_f32(&vel, &vel, 1);
     //计算角速度
-    omega = PID_Realise(&Turn_PID, 0, -delta_angle, 1.2f, 0.1f);
+    omega = PID_Realise(&Turn_PID, 0, -delta_angle, 1.2f, 0.1f,1);
 
     //线速度分解为x和y的分量
     xSpeed = vel * arm_cos_f32(atan2f(err_y, err_x));
     ySpeed = vel * arm_sin_f32(atan2f(err_y, err_x));
 
     //将车身x，y速度转换为轮子的x，y速度
-    if(Camp == BLUE){
-        SGW2Wheels(-xSpeed, -ySpeed, omega, 0);
-    }
-    else if(Camp == RED){
-        SGW2Wheels(-ySpeed, -xSpeed, omega, 0);
-    }
+    SGW2Wheels(-xSpeed, -ySpeed, omega, 0);
 
     //printf("%f %f",forward,close_ball);
 }

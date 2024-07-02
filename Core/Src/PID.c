@@ -42,12 +42,11 @@ void PID_Set(PID_t *PID, float kp, float ki, float kd, float integral_limit)
   * @param  max_output PID输出限幅（绝对值）
   * @return PID输出
   */
-float PID_Realise(PID_t *PID, float target, float current, float max_output, float DeadZone)
+float PID_Realise(PID_t *PID, float target, float current, float max_output, float DeadZone, float ki_gain)
 {
     PID->target = target;
     PID->current = current;
     PID->err = (PID->target - PID->current);
-
     //输入死区控制
     if(fabsf(PID->err) < DeadZone)
         PID->err = 0;
@@ -69,7 +68,7 @@ float PID_Realise(PID_t *PID, float target, float current, float max_output, flo
     PID->i_out = PID->Ki * PID->integral;
     PID->d_out = PID->Kd * PID->differentiation;
 
-    PID->PID_total_out = PID->p_out + PID->i_out + PID->d_out;
+    PID->PID_total_out = PID->p_out + PID->i_out * ki_gain + PID->d_out;
 
     PID->err_last = PID->err;
 
