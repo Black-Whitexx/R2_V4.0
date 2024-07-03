@@ -33,9 +33,12 @@ typedef struct {
     float differentiation;//定义微分值
 /*-----------------------积分限幅---------------------------*/
     float integral_limit;//定义积分限幅值
+    float FB_Now;
+    float FB_Last;
+    float FB_Gain;
 }PID_t;
 
-void PID_Set(PID_t *PID, float kp, float ki, float kd, float integral_limit);
+void PID_Set(PID_t *PID, float kp, float ki, float kd, float integral_limit,float FB_Gain);
 float PID_Realise(PID_t *PID, float target, float current, float max_output, float DeadZone, float ki_gain);
 
 #endif //R2_MASTER_V3_PID_H

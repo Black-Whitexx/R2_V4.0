@@ -13,6 +13,14 @@ void Write_Screen_CMD(uint8_t buffer){
 void Unpack_Screen_CMD(const uint8_t USART_BUFFER[]){
     if(USART_BUFFER[0] == 0xAC && USART_BUFFER[2] == 0xFF){
         if(USART_BUFFER[1] == 0x01){
+            Screen_CMD = DEBUG_MODE;
+        }
+        else if(USART_BUFFER[1] == 0x02){
+            Screen_CMD = COMPTITION_MODE;
+        }
+    }
+    if(USART_BUFFER[0] == 0xAC && USART_BUFFER[2] == 0xFF){
+        if(USART_BUFFER[1] == 0x01){
             Screen_CMD = RED;
         }
         else if(USART_BUFFER[1] == 0x02){
@@ -21,6 +29,16 @@ void Unpack_Screen_CMD(const uint8_t USART_BUFFER[]){
     }
     if(USART_BUFFER[0] == 0xAE && USART_BUFFER[1] == 0xFF){
         Screen_CMD = START;
+    }
+    if(USART_BUFFER[0] == 0xAF && USART_BUFFER[2] == 0xFF){
+        switch(USART_BUFFER[1]){
+            case 0x01:
+                Screen_CMD = DEBUG_SUCTION;
+                break;
+            case 0x02:
+                Screen_CMD = DEBUG_CLAW;
+                break;
+        }
     }
 
 }

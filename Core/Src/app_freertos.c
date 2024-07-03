@@ -67,8 +67,8 @@ extern float DT35_Forward,DT35_CloseBall;
 uint8_t Camp = RED;
 
 //extern locater_def locater;
-PointStruct Start_Point = {.x = 2.68f, .y = 9.7f, .angle = 0.0f};//3区调试用�???????????????
-PointStruct Watch_Point = {.x = 5.03f, .y = 9.7f, .angle = 0.0f};//3区调试用�???????????????
+PointStruct Start_Point = {.x = 0.88f, .y = 9.7f, .angle = 0.0f};//3区调试用�???????????????
+PointStruct Watch_Point = {.x = 4.03f, .y = 9.7f, .angle = 0.0f};//3区调试用�???????????????
 //定义环类型，用于�???????�取不同数据作为反馈�?????????????????????-
 
 /* USER CODE END Variables */
@@ -201,7 +201,7 @@ void DebugTask(void const * argument)
         //printf("%.2f %.2f %.2f\n", DT35_Data.DT35_2, DT35_Data.DT35_3,DT35_Data.DT35_1);
 //        printf("%.2f %.2f \n", locater.pos_x, locater.pos_y);
 //        printf("%.3f %.3f\n", LiDar.locx, LiDar.locy);
-        //printf("%f %f\n",MutiPos_x,MutiPos_y);
+        printf("%f %f\n",MutiPos_x,MutiPos_y);
 //        printf("%s\n", USART5_Buffer);
 //        printf("%f\n", LiDar.yaw);
         //printf("%.2f,%.2f,%.2f,%.4f\n",locater.pos_x,locater.pos_y,locater.angle,locater.Tof_dis);
@@ -211,6 +211,7 @@ void DebugTask(void const * argument)
         //printf("%f\n",LiDar.yaw );
         //printf("TOF: %f\n",TOF_dis1 );
         //printf("%d",Camp);
+
         osDelay(1000);
     }
   /* USER CODE END DebugTask */
@@ -433,7 +434,7 @@ void chassis(void const * argument)
                     }
                     /**纵向 **/
                     else if(StartPointNumber == 2) {
-                        Chassis_Move_OfVision(&target_point,&VisionRun1,2.5f);
+                        Chassis_Move_OfVision(&target_point,&VisionRun1,3.f);
                         //printf("%f %f",target_point.x,target_point.y);
                         if ((target_point.y -MutiPos_y) < 0.1f &&
                             fabsf(LiDar.yaw - target_point.angle) < 3) {
@@ -459,13 +460,13 @@ void chassis(void const * argument)
                     }
                 }
                 if (CloseLoopStatus == CloseLoop_MID360) {
-                    Chassis_Move_OfVision(&target_point,&Chassis_GetBall_PID,2.5f);
+                    Chassis_Move_OfVision(&target_point,&Chassis_GetBall_PID,3.f);
                     //printf("%f %f\n",MutiPos_x,MutiPos_y);
                     if (Distance_Calc(target_point,MutiPos_x,MutiPos_y) < 0.3f &&
                         fabsf(LiDar.yaw - target_point.angle) < 3) {
                         //printf("%f",LiDar.yaw );
                         //Sheild_Flag = 0;
-                        Vision_Send(0xCC);
+                        //Vision_Send(0xCC);
                         ControlMsgSet(&ControlQueueBuf, CHASSIS, CHASSIS_STOP, 0, 0, 0, 0);
                         xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
                         ControlMsgInit(&ControlQueueBuf);
@@ -473,7 +474,7 @@ void chassis(void const * argument)
                     }
                 }
                 else if (CloseLoopStatus == CloseLoop_Mid360AndDT35) {
-                    Chassis_Move_OfVision(&target_point,&VisionRun2,2.5f);
+                    Chassis_Move_OfVision(&target_point,&VisionRun2,3.f);
                     //printf("MAD");
                     if (fabsf(target_point.x - LiDar.locx) < 1.f &&
                         fabsf(LiDar.yaw - target_point.angle) < 3.f) {
@@ -491,7 +492,7 @@ void chassis(void const * argument)
                         xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
                         ControlMsgSet(&ControlQueueBuf, CHASSIS, CHASSIS_STOP, 0, 0, 0, 0);
                         xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
-                        osDelay(500);
+                        osDelay(300);
                         ControlMsgSet(&ControlQueueBuf, CHASSIS, CloseLoop_MID360, Watch_Point.x, Watch_Point.y,
                                       Watch_Point.angle, 0);
                         xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
@@ -515,7 +516,7 @@ void chassis(void const * argument)
                 else if (CloseLoopStatus == CloseLoop_Ball) {
                     if(AlignStatus == 1) {
                         float go_speed;
-                        float Speed_xy = -PID_Realise(&VisionPID_X, 0, offset_x, 1.0f, 3,1);
+                        float Speed_xy = -PID_Realise(&VisionPID_X, 0, offset_x, 2.f, 3,1);
                         float omega = PID_Realise(&Turn_PID, 0, LiDar.yaw, 0.5f, 0.5f,1);
                         float Speed_y = Speed_xy;
                         if (fabsf(offset_x) < 30) {
@@ -529,7 +530,7 @@ void chassis(void const * argument)
                     }
                     else if (AlignStatus == 5){
                         float go_speed;
-                        float Speed_xy = -PID_Realise(&VisionPID_X, 0, offset_x, 1.0f, 3,1);
+                        float Speed_xy = -PID_Realise(&VisionPID_X, 0, offset_x, 2.f, 3,1);
                         float omega = PID_Realise(&Turn_PID, offset_angle, LiDar.yaw, 0.5f, 0.5f,1);
                         if (fabsf(offset_x) < 15) {
                             go_speed = 0.5f;
@@ -543,7 +544,7 @@ void chassis(void const * argument)
                     }
                     else if (AlignStatus == 6){
                         float go_speed;
-                        float Speed_xy = -PID_Realise(&VisionPID_X, 0, offset_x, 1.0f, 3,1);
+                        float Speed_xy = -PID_Realise(&VisionPID_X, 0, offset_x, 2.f, 3,1);
                         float omega = PID_Realise(&Turn_PID, -offset_angle, LiDar.yaw, 0.5f, 0.5f,1);
                         if (fabsf(offset_x) < 15) {
                                 go_speed = 0.5f;
@@ -851,7 +852,6 @@ void visioncom(void const * argument)
 //                        ControlMsgSet(&ControlQueueBuf, CHASSIS, GoForwardSlowly, 0, 0, 0, 0);
 //                        xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
                         printf("NoBallGoBack\n");
-                        osDelay(1000);
                         ControlMsgSet(&ControlQueueBuf, CHASSIS, CloseLoop_MID360, Watch_Point.x, Watch_Point.y,
                                       Watch_Point.angle, 0);
                         xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
@@ -969,63 +969,78 @@ void init(void const * argument)
   /* USER CODE BEGIN init */
   /* Infinite loop */
     uint8_t Screen_Buffer;
+    ControlMsgStruct ControlQueueBuf;
     vTaskSuspend(NRF_TaskHandle);
-    vTaskSuspend(Debug_TaskHandle);
-    vTaskSuspend(ChassisTaskHandle);
+    //vTaskSuspend(Debug_TaskHandle);
+    //vTaskSuspend(ChassisTaskHandle);
     vTaskSuspend(ClawTaskHandle);
     vTaskSuspend(SuctionTaskHandle);
     vTaskSuspend(VisionComTaskHandle);
-    vTaskSuspend(CloseLoopTaskHandle);
-    PID_Set(&Wheels[0], 7.2f, 0.1f, 1.0f, 10000);
-    PID_Set(&Wheels[1], 7.2f, 0.1f, 1.0f, 10000);
-    PID_Set(&Wheels[2], 7.2f, 0.1f, 1.0f, 10000);
-    PID_Set(&Wheels[3], 7.2f, 0.1f, 1.0f, 10000);
+    //vTaskSuspend(CloseLoopTaskHandle);
+    PID_Set(&Wheels[0], 7.2f, 0.1f, 1.0f, 10000,0);
+    PID_Set(&Wheels[1], 7.2f, 0.1f, 1.0f, 10000,0);
+    PID_Set(&Wheels[2], 7.2f, 0.1f, 1.0f, 10000,0);
+    PID_Set(&Wheels[3], 7.2f, 0.1f, 1.0f, 10000,0);
 
-    PID_Set(&Slope_Speed_t, 4.7f, 0.08f, 0.2f, 10000);
-    PID_Set(&Slope_Position_t, 2.2f, 0, 0.0f, 0);
-    PID_Set(&Toggle_Speed_t, 7.2f, 0.5f, 2.0f, 10000);
-    PID_Set(&Toggle_Position_t, 0.8f, 0, 0.8f, 0);
+    PID_Set(&Slope_Speed_t, 4.7f, 0.08f, 0.2f, 10000,0);
+    PID_Set(&Slope_Position_t, 2.2f, 0, 0.0f, 0,0);
+    PID_Set(&Toggle_Speed_t, 7.2f, 0.5f, 2.0f, 10000,0);
+    PID_Set(&Toggle_Position_t, 0.8f, 0, 0.8f, 0,0);
 
-    PID_Set(&Translation_PID, 1.80f, 0.0f, 0.8f, 0.0f);
-    PID_Set(&Turn_PID, 0.035f, 0.0f, 0.2f, 0.0f);
+    PID_Set(&Translation_PID, 1.80f, 0.0f, 0.8f, 0.0f,0);
+    PID_Set(&Turn_PID, 0.035f, 0.0f, 0.2f, 0.0f,0);
 
-    PID_Set(&VisionRun1, 2.1f, 0.000f, 0.f, 0.0f);//�???进PID
-    PID_Set(&VisionRun2, 1.5f, 0.0000f, 0.f, 0.0f);//保守PID
-    PID_Set(&DT35_Run, 0.01f, 0.0f, 0.0f, 0.0f);
+    PID_Set(&VisionRun1, 1.8f, 0.000f, 0.f, 0.0f,0.0f);//�???进PID
+    PID_Set(&VisionRun2, 2.f, 0.0000f, 0.f, 0.0f,0.01f);//保守PID
+    PID_Set(&DT35_Run, 0.01f, 0.0f, 0.0f, 0.0f,0);
 
-    PID_Set(&VisionPID_X, 0.0020f, 0.0f, 0.001f, 0.0f);
-    PID_Set(&Chassis_GetBall_PID, 1.05f, 0.0f, 0.3f, 0.0f);
+    PID_Set(&VisionPID_X, 0.0025f, 0.0f, 0.002f, 0.0f,0.0006f);
+    PID_Set(&Chassis_GetBall_PID, 0.8f, 0.0f, 0.f, 0.0f,0);
   for(;;)
   {
       Read_Screen_CMD(&Screen_Buffer);
       if(Screen_Buffer == BLUE){
           Camp = BLUE;
+          osDelay(1000);
+          ControlMsgSet(&ControlQueueBuf, CHASSIS, CloseLoop_MID360, Watch_Point.x, Watch_Point.y,
+                        Watch_Point.angle, 0);
+          xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
+          ControlMsgSet(&ControlQueueBuf, CHASSIS, CHASSIS_RUN, 0, 0, 0, 0);
+          xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
+          ControlMsgInit(&ControlQueueBuf);
       }
       if(Screen_Buffer == RED){
           Camp = RED;
+          osDelay(1000);
+          ControlMsgSet(&ControlQueueBuf, CHASSIS, CloseLoop_MID360, Start_Point.x, Start_Point.y,
+                        Watch_Point.angle, 0);
+          xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
+          ControlMsgSet(&ControlQueueBuf, CHASSIS, CHASSIS_RUN, 0, 0, 0, 0);
+          xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
+          ControlMsgInit(&ControlQueueBuf);
       }
       if(Screen_Buffer == START) {
           if(Camp == RED){
-              Vision_Send(0xAA);
+              //Vision_Send(0xAA);
               offset_angle = 45;
           }
           if(Camp == BLUE){
-              Vision_Send(0xBB);
+              //Vision_Send(0xBB);
               offset_angle = -45;
           }
 
           uint8_t QueueBuffer;
           osDelay(3000);
           QueueBuffer = 0;
-          xQueueSend(VisionData_QueueHandle, &QueueBuffer, 100);
-          vTaskResume(NRF_TaskHandle);
-          vTaskResume(Debug_TaskHandle);
-          vTaskResume(ChassisTaskHandle);
-          vTaskResume(ClawTaskHandle);
-          vTaskResume(SuctionTaskHandle);
-          vTaskResume(VisionComTaskHandle);
-          vTaskResume(CloseLoopTaskHandle);
-          vTaskDelete(InitTaskHandle);
+          //xQueueSend(VisionData_QueueHandle, &QueueBuffer, 100);
+          //vTaskResume(NRF_TaskHandle);
+          //vTaskResume(Debug_TaskHandle);
+          //vTaskResume(ChassisTaskHandle);
+          //vTaskResume(ClawTaskHandle);
+          //vTaskResume(SuctionTaskHandle);
+          //vTaskResume(VisionComTaskHandle);
+          //vTaskResume(CloseLoopTaskHandle);
+          //vTaskDelete(InitTaskHandle);
       }
       osDelay(100);
   }
