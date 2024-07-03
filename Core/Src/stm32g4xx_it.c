@@ -387,7 +387,7 @@ void USART3_IRQHandler(void)
     __HAL_UART_ENABLE_IT(&huart3,UART_IT_IDLE);             //重启串口空闲中断，防止被32自动清除标志空闲中断标志�???????????????????
   /* USER CODE END USART3_IRQn 0 */
   HAL_UART_IRQHandler(&huart3);
-  /* USER CODE BEGIN USART3_IRQn 1 *;
+  /* USER CODE BEGIN USART3_IRQn 1 */
 
   /* USER CODE END USART3_IRQn 1 */
 }

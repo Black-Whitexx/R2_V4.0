@@ -23,7 +23,7 @@ RaDar_Data_t LiDar;
 
 void  RaDar_Data_Rec(uint8_t* data,RaDar_Data_t* RaDar_data,VisionStruct* Vision_data)
 {
-    if(data[0] == 0xAE)
+    if(data[0] == 0xAE && data[25] == 0xEE)
     {
         float locx = (float)(data[1] | data[2] << 8 | data[3] << 16 | data[4] << 24) / 1000.0f;
         float locy = (float)(data[5] | data[6] << 8 | data[7] << 16 | data[8] << 24) / 1000.0f;

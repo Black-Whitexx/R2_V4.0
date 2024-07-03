@@ -63,13 +63,13 @@ float MutiPos_x;
 float MutiPos_y;
 float Locator_Addup[2];
 float offset_angle = 0;
-
+extern float DT35_Forward,DT35_CloseBall;
 uint8_t Camp = RED;
 
 //extern locater_def locater;
-PointStruct Start_Point = {.x = 2.68f, .y = 9.62f, .angle = 0.0f};//3区调试用�????????????
-PointStruct Watch_Point = {.x = 4.03f, .y = 9.62f, .angle = 0.0f};//3区调试用�????????????
-//定义环类型，用于�????�取不同数据作为反馈�??????????????????-
+PointStruct Start_Point = {.x = 2.68f, .y = 9.7f, .angle = 0.0f};//3区调试用�?????????????????
+PointStruct Watch_Point = {.x = 3.15f, .y = 9.7f, .angle = 0.0f};//3区调试用�?????????????????
+//定义环类型，用于�?????????�取不同数据作为反馈�???????????????????????-
 
 /* USER CODE END Variables */
 osThreadId Debug_TaskHandle;
@@ -79,6 +79,7 @@ osThreadId ClawTaskHandle;
 osThreadId SuctionTaskHandle;
 osThreadId VisionComTaskHandle;
 osThreadId CloseLoopTaskHandle;
+osThreadId InitTaskHandle;
 osMessageQId NRF_RX_QueueHandle;
 osMessageQId VisionData_QueueHandle;
 osMessageQId ControlQueueHandle;
@@ -95,6 +96,7 @@ void claw(void const * argument);
 void suction(void const * argument);
 void visioncom(void const * argument);
 void closeloop(void const * argument);
+void init(void const * argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -159,12 +161,16 @@ void MX_FREERTOS_Init(void) {
   SuctionTaskHandle = osThreadCreate(osThread(SuctionTask), NULL);
 
   /* definition and creation of VisionComTask */
-  osThreadDef(VisionComTask, visioncom, osPriorityNormal, 0, 2048);
+  osThreadDef(VisionComTask, visioncom, osPriorityNormal, 0, 4096);
   VisionComTaskHandle = osThreadCreate(osThread(VisionComTask), NULL);
 
   /* definition and creation of CloseLoopTask */
   osThreadDef(CloseLoopTask, closeloop, osPriorityNormal, 0, 2048);
   CloseLoopTaskHandle = osThreadCreate(osThread(CloseLoopTask), NULL);
+
+  /* definition and creation of InitTask */
+  osThreadDef(InitTask, init, osPriorityRealtime, 0, 1024);
+  InitTaskHandle = osThreadCreate(osThread(InitTask), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
     /* add threads, ... */
@@ -184,30 +190,12 @@ void DebugTask(void const * argument)
 {
   /* USER CODE BEGIN DebugTask */
     /** 等待NRF校准 **/
-    //包含部分初始化内�??????????????
+    //包含部分初始化内�???????????????????
 //    while (NRF24L01_Check()) {
 //        printf("no\n");
 //    }
     //NRF24L01_RX_Mode();
-    PID_Set(&Wheels[0], 7.2f, 0.1f, 1.0f, 10000);
-    PID_Set(&Wheels[1], 7.2f, 0.1f, 1.0f, 10000);
-    PID_Set(&Wheels[2], 7.2f, 0.1f, 1.0f, 10000);
-    PID_Set(&Wheels[3], 7.2f, 0.1f, 1.0f, 10000);
 
-    PID_Set(&Slope_Speed_t, 4.7f, 0.08f, 0.2f, 10000);
-    PID_Set(&Slope_Position_t, 2.2f, 0, 0.0f, 0);
-    PID_Set(&Toggle_Speed_t, 7.2f, 0.5f, 2.0f, 10000);
-    PID_Set(&Toggle_Position_t, 0.8f, 0, 0.8f, 0);
-
-    PID_Set(&Translation_PID, 1.80f, 0.0f, 0.8f, 0.0f);
-    PID_Set(&Turn_PID, 0.035f, 0.0f, 0.2f, 0.0f);
-
-    PID_Set(&VisionRun1, 2.1f, 0.000f, 0.f, 0.0f);//激进PID
-    PID_Set(&VisionRun2, 1.5f, 0.0000f, 0.f, 0.0f);//保守PID
-    PID_Set(&DT35_Run, 0.01f, 0.0f, 0.0f, 0.0f);
-
-    PID_Set(&VisionPID_X, 0.0020f, 0.0f, 0.001f, 0.0f);
-    PID_Set(&Chassis_GetBall_PID, 1.05f, 0.0f, 0.3f, 0.0f);
     /* Infinite loop */
     for (;;) {
         //printf("%.2f %.2f %.2f\n", DT35_Data.DT35_2, DT35_Data.DT35_3,DT35_Data.DT35_1);
@@ -215,26 +203,27 @@ void DebugTask(void const * argument)
 //        printf("%.3f %.3f\n", LiDar.locx, LiDar.locy);
         //printf("%f %f\n",MutiPos_x,MutiPos_y);
 //        printf("%s\n", USART5_Buffer);
-        //printf("%f\n", LiDar.yaw);
+//        printf("%f\n", LiDar.yaw);
         //printf("%.2f,%.2f,%.2f,%.4f\n",locater.pos_x,locater.pos_y,locater.angle,locater.Tof_dis);
-        //printf("%x",USART5_Buffer[1]);
+        //printf("%s",USART2_Buffer);
         //
-         //printf("%f %f %f\n",TOF_dis1,MutiPos_x,MutiPos_y);
+          //printf("%f %f %f\n",TOF_dis1,MutiPos_x,MutiPos_y);
         //printf("%f\n",LiDar.yaw );
-        //printf("%f\n",TOF_dis1 );
-        osDelay(100);
+        //printf("TOF: %f\n",TOF_dis1 );
+        //printf("%d",Camp);
+        osDelay(1000);
     }
   /* USER CODE END DebugTask */
 }
 
 /* USER CODE BEGIN Header_NRFTask */
 /**
-* @brief 此函数用于接收遥控器的数�?????????????????????
+* @brief 此函数用于接收遥控器的数�??????????????????????????
 * @param argument: Not used
 * @retval None
 */
 /* USER CODE END Header_NRFTask */
-void NRFTask(void const * argument)//现在是串口屏任务
+void NRFTask(void const * argument)
 {
   /* USER CODE BEGIN NRFTask */
     /** 定义存储数据变量 **/
@@ -242,13 +231,12 @@ void NRFTask(void const * argument)//现在是串口屏任务
 //    static RemoteRXSturct RemoteRX;//用于存遥控器传来的数
 //    uint8_t cmd;
 //    int16_t suctionSpeed = 0;
-    uint8_t Screen_Buffer;
 
     /* Infinite loop */
     for (;;) {
 //        if (NRF24L01_RxPacket(rc_data) == 0)  //接收遥控器数据，若收到返0，若没收到返1
 //        {
-//            /** 读取左右摇杆值，限制�?????????????????????-128~128 **/
+//            /** 读取左右摇杆值，限制�??????????????????????????-128~128 **/
 //            RemoteRX.lx = (int16_t) -(rc_data[1] - 128);
 //            RemoteRX.ly = (int16_t) -(rc_data[2] - 128);
 //            RemoteRX.rx = (int16_t) -(rc_data[3] - 128);
@@ -266,7 +254,7 @@ void NRFTask(void const * argument)//现在是串口屏任务
 //            if (RemoteRX.lx == -4) RemoteRX.lx = 0;
 //            if (RemoteRX.ly == -4) RemoteRX.ly = 0;
 //
-//            /**将NRF数据更新到四轮全�??????????????????变量�??????????????????**/
+//            /**将NRF数据更新到四轮全�???????????????????????变量�???????????????????????**/
 //            SGW2Wheels((float) RemoteRX.rx * 3 / 128, (float) RemoteRX.ry * 3 / 128, (float) RemoteRX.lx * 3 / 128, 0);
 //            printf("%d",RemoteRX.command);
 //            /** 对遥控器按键命令进行响应 **/
@@ -306,19 +294,6 @@ void NRFTask(void const * argument)//现在是串口屏任务
 //
 //        }
         //printf("detecting\n");
-        Read_Screen_CMD(&Screen_Buffer);
-        if(Screen_Buffer == BLUE){
-            Camp = BLUE;
-        }
-        if(Screen_Buffer == RED){
-            Camp = RED;
-        }
-        if(Screen_Buffer == START){
-            uint8_t QueueBuffer;
-            osDelay(500);
-            QueueBuffer = 0;
-            xQueueSend(VisionData_QueueHandle, &QueueBuffer, 100);
-        }
         LED0_Flashing;
         osDelay(500);
     }
@@ -370,6 +345,7 @@ void chassis(void const * argument)
                         target_point.y = ControlQueueBuf.data[1];
                         target_point.angle = ControlQueueBuf.data[2];
                         AlignStatus = (int) ControlQueueBuf.data[3];
+                        printf("GoPoint: %f %f\n",target_point.x,target_point.y);
                         //Sheild_Flag = 1;
                         break;
                     case CloseLoop_Mid360AndDT35:
@@ -381,7 +357,6 @@ void chassis(void const * argument)
                         last_cmd = 0;
                         break;
                     case CloseLoop_DT35:
-                        printf("CLDT35_GET");
                         CloseLoopStatus = CloseLoop_DT35;
                         target_point.x = ControlQueueBuf.data[0];
                         target_point.y = ControlQueueBuf.data[1];
@@ -438,7 +413,7 @@ void chassis(void const * argument)
                             xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
                             ControlMsgInit(&ControlQueueBuf);
                             StartPointNumber = 1;
-                            printf("1ok");
+                            printf("1ok\n");
                         }
                     }
                     /** 横向 **/
@@ -453,7 +428,7 @@ void chassis(void const * argument)
                                 xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
                                 ControlMsgInit(&ControlQueueBuf);
                                 StartPointNumber = 2;
-                                printf("2ok");
+                                printf("2ok\n");
                             }
                     }
                     /**纵向 **/
@@ -479,22 +454,21 @@ void chassis(void const * argument)
                             xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
                             ControlMsgInit(&ControlQueueBuf);
                             StartPointNumber = 3;
-                            printf("3ok");
+                            printf("3ok\n");
                         }
                     }
                 }
                 if (CloseLoopStatus == CloseLoop_MID360) {
                     Chassis_Move_OfVision(&target_point,&Chassis_GetBall_PID,2.5f);
-                    //printf("%f %f\n",MutiPos_x,MutiPos_y);
                     if (Distance_Calc(target_point,MutiPos_x,MutiPos_y) < 0.3f &&
                         fabsf(LiDar.yaw - target_point.angle) < 3) {
-                        printf("send1normal\n");
                         //printf("%f",LiDar.yaw );
                         //Sheild_Flag = 0;
                         Vision_Send(0xCC);
                         ControlMsgSet(&ControlQueueBuf, CHASSIS, CHASSIS_STOP, 0, 0, 0, 0);
                         xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
                         ControlMsgInit(&ControlQueueBuf);
+                        printf("send1normal\n");
                     }
                 }
                 else if (CloseLoopStatus == CloseLoop_Mid360AndDT35) {
@@ -511,16 +485,13 @@ void chassis(void const * argument)
                 }
                 else if (CloseLoopStatus == CloseLoop_DT35) {
                     Chassis_Move_OfDT35(&target_point);
-                    //printf("InDT\n");
-//                    printf("%f %f",DT35_Data.back,DT35_Data.Right);
-                    //Chassis_Move_OfDT35(&target_point);
-                    //printf("%f\n",Distance_Calc(target_point, DT35_Data.DT35_1, DT35_Data.DT35_2));
-                    if (Distance_Calc(target_point, DT35_Data.DT35_1, DT35_Data.DT35_3) < 5.0f) {
+                    if (Distance_Calc(target_point, DT35_CloseBall, DT35_Forward) < 5.0f) {
                         ControlMsgSet(&ControlQueueBuf, CLAW, CLAW_OPEN, 0, 0, 0, 0);
                         xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
                         ControlMsgSet(&ControlQueueBuf, CHASSIS, CHASSIS_STOP, 0, 0, 0, 0);
                         xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
                         osDelay(500);
+                        printf("DT35_SendPoint :%f %f",Watch_Point.x,Watch_Point.y);
                         ControlMsgSet(&ControlQueueBuf, CHASSIS, CloseLoop_MID360, Watch_Point.x, Watch_Point.y,
                                       Watch_Point.angle, 0);
                         xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
@@ -543,15 +514,18 @@ void chassis(void const * argument)
                     /** 对球闭环 **/
                 else if (CloseLoopStatus == CloseLoop_Ball) {
                     if(AlignStatus == 1) {
+                        float go_speed;
                         float Speed_xy = -PID_Realise(&VisionPID_X, 0, offset_x, 1.0f, 3,1);
                         float omega = PID_Realise(&Turn_PID, 0, LiDar.yaw, 0.5f, 0.5f,1);
                         float Speed_y = Speed_xy;
-                        SGW2Wheels(-0.1f, Speed_y, omega, 0);
                         if (fabsf(offset_x) < 30) {
-                            ControlMsgSet(&ControlQueueBuf, CHASSIS, GoForwardSlowly, 0, 0, 0, 0);
-                            xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
-                            ControlMsgInit(&ControlQueueBuf);
+                            go_speed = 0.5f;
                         }
+                        else
+                        {
+                            go_speed = 0.3f;
+                        }
+                        SGW2Wheels(-go_speed, Speed_y, omega, 0);
                     }
                     else if (AlignStatus == 5){
                         float go_speed;
@@ -613,7 +587,6 @@ void claw(void const * argument)
                         //printf("open");
                         break;
                     case CLAW_CLOSE:
-                        printf("close");
                         HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_RESET);
                         break;
                     case Toggle_Up:
@@ -694,16 +667,17 @@ void visioncom(void const * argument)
 {
   /* USER CODE BEGIN visioncom */
     VisionStruct visiondata;
-    uint8_t status;//用于小状态切�????????????
-    float v_x, v_y;
+    uint8_t status;//用于小状态切�?????????????????
+    float pos_x;
+    float pos_y;
     ControlMsgStruct ControlQueueBuf;
     /* Infinite loop */
     for (;;) {
         if (xQueueReceive(VisionData_QueueHandle, &visiondata, 0) == pdTRUE) {
             if (Sheild_Flag == 0) {
                 if (visiondata.flag == 0) {
-                    //并不是从1�????????????3，在3区调试用
-                    printf("0\n");
+                    //并不是从1�?????????????????3，在3区调试用
+                    printf("START\n");
                     ControlMsgSet(&ControlQueueBuf, CHASSIS, CloseLoop_START, Run1to3_Points[0].x, Run1to3_Points[0].y,
                                   0, 0);
 //                    ControlMsgSet(&ControlQueueBuf, CHASSIS, CloseLoop_MID360, Start_Point.x, Start_Point.y,
@@ -725,7 +699,9 @@ void visioncom(void const * argument)
                 }
                     /** 跑球的点，中间区 **/
                 else if (visiondata.flag == 1) {
-                    printf("1\n");
+                    printf("Go1Area\n");
+                    printf("RecPoint: %f %f\n",-pos_y + MutiPos_x,pos_x + MutiPos_y);
+                    //printf("%f %f\n",pos_x,pos_y);
                     ControlMsgSet(&ControlQueueBuf, SUCTION, SUCTION_ON, 0, 0, 0, 0);
                     xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
                     ControlMsgSet(&ControlQueueBuf, CLAW, CLAW_OPEN, 0, 0, 0, 0);
@@ -734,8 +710,8 @@ void visioncom(void const * argument)
                     xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
                     //printf("%f %f",-visiondata.vision_y / 1000.0f + MutiPos_x,visiondata.vision_x / 1000.0f + MutiPos_y);
                     ControlMsgSet(&ControlQueueBuf, CHASSIS, CloseLoop_MID360,
-                                  -visiondata.vision_y / 1000.0f + MutiPos_x,
-                                  visiondata.vision_x / 1000.0f + MutiPos_y, 0, 1);
+                                  -visiondata.vision_y/1000 + MutiPos_x,
+                                  visiondata.vision_x/1000 + MutiPos_y, 0, 1);
                     xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
                     ControlMsgSet(&ControlQueueBuf, CHASSIS, CHASSIS_RUN, 0, 0, 0, 0);
                     xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
@@ -747,7 +723,7 @@ void visioncom(void const * argument)
                 }
                     /** 跑球的点，左边区 **/
                 else if (visiondata.flag == 5) {
-                    printf("5\n");
+                    printf("Go5Area\n");
                     ControlMsgSet(&ControlQueueBuf, SUCTION, SUCTION_ON, 0, 0, 0, 0);
                     xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
                     ControlMsgSet(&ControlQueueBuf, CLAW, CLAW_OPEN, 0, 0, 0, 0);
@@ -755,8 +731,8 @@ void visioncom(void const * argument)
                     ControlMsgSet(&ControlQueueBuf, CLAW, Toggle_Down, 0, 0, 0, 0);
                     xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
                     ControlMsgSet(&ControlQueueBuf, CHASSIS, CloseLoop_MID360,
-                                  -visiondata.vision_y / 1000.0f + MutiPos_x,
-                                  visiondata.vision_x / 1000.0f + MutiPos_y, offset_angle, 5);
+                                  -visiondata.vision_y/1000 + MutiPos_x,
+                                  visiondata.vision_x/1000 + MutiPos_y, offset_angle, 5);
                     xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
                     ControlMsgSet(&ControlQueueBuf, CHASSIS, CHASSIS_RUN, 0, 0, 0, 0);
                     xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
@@ -766,7 +742,8 @@ void visioncom(void const * argument)
                     xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
                     ControlMsgInit(&ControlQueueBuf);
                 } else if (visiondata.flag == 6) {
-                    printf("6\n");
+                    printf("Go6Area\n");
+                    printf("%f %f",pos_x,pos_y);
                     ControlMsgSet(&ControlQueueBuf, SUCTION, SUCTION_ON, 0, 0, 0, 0);
                     xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
                     ControlMsgSet(&ControlQueueBuf, CLAW, CLAW_OPEN, 0, 0, 0, 0);
@@ -774,8 +751,8 @@ void visioncom(void const * argument)
                     ControlMsgSet(&ControlQueueBuf, CLAW, Toggle_Down, 0, 0, 0, 0);
                     xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
                     ControlMsgSet(&ControlQueueBuf, CHASSIS, CloseLoop_MID360,
-                                  -visiondata.vision_y / 1000.0f +MutiPos_x,
-                                  visiondata.vision_x / 1000.0f + MutiPos_y, -offset_angle, 6);
+                                  -visiondata.vision_y/1000 +MutiPos_x,
+                                  visiondata.vision_x/1000+ MutiPos_y, -offset_angle, 6);
                     xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
                     ControlMsgSet(&ControlQueueBuf, CHASSIS, CHASSIS_RUN, 0, 0, 0, 0);
                     xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
@@ -799,7 +776,7 @@ void visioncom(void const * argument)
                     } else if (visiondata.vision_y == 1) {
                         if(TOF_dis1 < 180.f) {
                             /** 正确的球即将进入车内 **/
-                            printf("rightball\n");
+                            printf("RightBallWillIn\n");
 //                  ControlMsgSet(&ControlQueueBuf,CHASSIS,CloseLoop_MID360,Start_Point.x,Start_Point.y,Start_Point.angle,0);
 //                  xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
 //                  ControlMsgSet(&ControlQueueBuf,CHASSIS,CHASSIS_RUN,0,0,0,0);
@@ -826,8 +803,8 @@ void visioncom(void const * argument)
                     }
                 } else if (visiondata.flag == 3) {
                     if (visiondata.vision_y == 2) {
-                        /** 停车把球排出�???????????? **/
-                        printf("3,2\n");
+                        /** 停车把球排出�????????????????? **/
+                        printf("WrongBallStop\n");
                         ControlMsgSet(&ControlQueueBuf, CHASSIS, CHASSIS_STOP, 0, 0, 0, 0);
                         xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
                         ControlMsgSet(&ControlQueueBuf, SUCTION, StopVESC, 0, 0, 0, 0);
@@ -851,7 +828,7 @@ void visioncom(void const * argument)
                         ControlMsgInit(&ControlQueueBuf);
                     } else if (visiondata.vision_y == 6) {
                         /** 夹球 **/
-                        printf("3,6\n");
+                        printf("RightBallGetIt\n");
 //                      ControlMsgSet(&ControlQueueBuf,CHASSIS,CHASSIS_STOP,0,0,0,0);
 //                      xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
 //                      ControlMsgSet(&ControlQueueBuf,SUCTION,Slope_OFF,0,0,0,0);
@@ -876,7 +853,7 @@ void visioncom(void const * argument)
                         /** 后�??再次找球 **/
 //                        ControlMsgSet(&ControlQueueBuf, CHASSIS, GoForwardSlowly, 0, 0, 0, 0);
 //                        xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
-                        printf("3,3\n");
+                        printf("NoBallGoBack\n");
                         osDelay(1000);
                         ControlMsgSet(&ControlQueueBuf, CHASSIS, CloseLoop_MID360, Watch_Point.x, Watch_Point.y,
                                       Watch_Point.angle, 0);
@@ -895,7 +872,7 @@ void visioncom(void const * argument)
                     }
                 }
                 else if (visiondata.flag == 4) {
-                    printf("put");
+                    printf("put\n");
                     ControlMsgSet(&ControlQueueBuf, CHASSIS, CloseLoop_Mid360AndDT35,
                                   Frame_Points[(int) (visiondata.vision_x - 1)].x,
                                   Frame_Points[(int) (visiondata.vision_x - 1)].y, 0, visiondata.vision_x);
@@ -926,7 +903,7 @@ void closeloop(void const * argument)
   /* USER CODE BEGIN closeloop */
     /* Infinite loop */
     for (;;) {
-        /** 沟槽的大疆，不能分开单独控制�?????????个ID下的4个电�????????? **/
+        /** 沟槽的大疆，不能分开单独控制�??????????????个ID下的4个电�?????????????? **/
         /** 四轮闭环**/
         //SGW2Wheels(0.f,0.5f,0,0);
         Wheels_VelOut[0] = (int16_t) PID_Realise(&Wheels[0], -Wheels_vel[0], Motor_Info[0].speed, M3508_CURRENT_MAX, 5,1);
@@ -981,6 +958,81 @@ void closeloop(void const * argument)
         osDelay(1);
     }
   /* USER CODE END closeloop */
+}
+
+/* USER CODE BEGIN Header_init */
+/**
+* @brief 初始化任务，用于启动车，用后即毁
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_init */
+void init(void const * argument)
+{
+  /* USER CODE BEGIN init */
+  /* Infinite loop */
+    uint8_t Screen_Buffer;
+    vTaskSuspend(NRF_TaskHandle);
+    vTaskSuspend(Debug_TaskHandle);
+    vTaskSuspend(ChassisTaskHandle);
+    vTaskSuspend(ClawTaskHandle);
+    vTaskSuspend(SuctionTaskHandle);
+    vTaskSuspend(VisionComTaskHandle);
+    vTaskSuspend(CloseLoopTaskHandle);
+    PID_Set(&Wheels[0], 7.2f, 0.1f, 1.0f, 10000,0);
+    PID_Set(&Wheels[1], 7.2f, 0.1f, 1.0f, 10000,0);
+    PID_Set(&Wheels[2], 7.2f, 0.1f, 1.0f, 10000,0);
+    PID_Set(&Wheels[3], 7.2f, 0.1f, 1.0f, 10000,0);
+
+    PID_Set(&Slope_Speed_t, 4.7f, 0.08f, 0.2f, 10000,0);
+    PID_Set(&Slope_Position_t, 2.2f, 0, 0.0f, 0,0);
+    PID_Set(&Toggle_Speed_t, 7.2f, 0.5f, 2.0f, 10000,0);
+    PID_Set(&Toggle_Position_t, 0.8f, 0, 0.8f, 0,0);
+
+    PID_Set(&Translation_PID, 1.80f, 0.0f, 0.8f, 0.0f,0);
+    PID_Set(&Turn_PID, 0.035f, 0.0f, 0.2f, 0.0f,0);
+
+    PID_Set(&VisionRun1, 2.1f, 0.000f, 0.f, 0.0f,1.f);//�?????进PID
+    PID_Set(&VisionRun2, 1.5f, 0.0000f, 0.f, 0.0f,1.f);//保守PID
+    PID_Set(&DT35_Run, 0.01f, 0.0f, 0.0f, 0.0f,0.01f);
+
+    PID_Set(&VisionPID_X, 0.0025f, 0.0f, 0.002f, 0.0f,0.0006f);
+    PID_Set(&Chassis_GetBall_PID, 1.05f, 0.0f, 0.3f, 0.0f,1.f);
+  for(;;)
+  {
+      Read_Screen_CMD(&Screen_Buffer);
+      if(Screen_Buffer == BLUE){
+          Camp = BLUE;
+      }
+      if(Screen_Buffer == RED){
+          Camp = RED;
+      }
+      if(Screen_Buffer == START) {
+          if(Camp == RED){
+              Vision_Send(0xAA);
+              offset_angle = 45;
+          }
+          if(Camp == BLUE){
+              Vision_Send(0xBB);
+              offset_angle = -45;
+          }
+
+          uint8_t QueueBuffer;
+          osDelay(3000);
+          QueueBuffer = 0;
+          xQueueSend(VisionData_QueueHandle, &QueueBuffer, 100);
+          vTaskResume(NRF_TaskHandle);
+          vTaskResume(Debug_TaskHandle);
+          vTaskResume(ChassisTaskHandle);
+          vTaskResume(ClawTaskHandle);
+          vTaskResume(SuctionTaskHandle);
+          vTaskResume(VisionComTaskHandle);
+          vTaskResume(CloseLoopTaskHandle);
+          vTaskDelete(InitTaskHandle);
+      }
+      osDelay(100);
+  }
+  /* USER CODE END init */
 }
 
 /* Private application code --------------------------------------------------*/

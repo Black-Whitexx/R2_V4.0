@@ -16,6 +16,7 @@
 #include "main.h"
 extern PID_t VisionRun2,DT35_Run;
 extern uint8_t Camp;
+extern float DT35_Forward,DT35_CloseBall;
 PID_t Wheels[4];//轮子PID结构体
 float Wheels_vel[4];//轮子转速
 extern float MutiPos_x,MutiPos_y;
@@ -134,7 +135,7 @@ void Chassis_Move_OfVision(PointStruct *target_point,PID_t *pid,float max)
     else if(dis<=ki_gain_threshold){
         ki_gain = 1 - dis/ki_gain_threshold;
     }
-    vel = PID_Realise(pid, 0, -dis, 2.f, 0.01f,ki_gain);
+    vel = PID_Realise(pid, 0, -dis, 1.5f, 0.01f,ki_gain);
     //速度向量取绝对值
     arm_abs_f32(&vel, &vel, 1);
     //计算角速度
@@ -153,19 +154,11 @@ void Chassis_Move_OfVision(PointStruct *target_point,PID_t *pid,float max)
  */
 void Chassis_Move_OfDT35(PointStruct *target_point)
 {
-    float forward = 0;
-    if(Camp == RED){
-        forward = DT35_Data.DT35_3;
-    }
-    else if(Camp == BLUE){
-        forward = DT35_Data.DT35_2;
-    }
-    float close_ball = DT35_Data.DT35_1;
     float xSpeed = 0.0f,ySpeed = 0.0f;
     float dis = 0.0f;//当前点与目标点的距离
     float vel = 0.0f, omega = 0.0f;//速度,角速度
-    float err_y = (target_point->y - forward);//x差值
-    float err_x = (target_point->x - close_ball);//y差值
+    float err_y = (target_point->y - DT35_Forward);//x差值
+    float err_x = (target_point->x - DT35_CloseBall);//y差值
     float delta_angle = (target_point->angle - LiDar.yaw);//角度差值
     float max_out = 0.0f,allErr_x = 0.0f,allErr_y = 0.0f;
     float ki_gain_threshold =1.5f ;
@@ -190,7 +183,7 @@ void Chassis_Move_OfDT35(PointStruct *target_point)
     else if(dis<=ki_gain_threshold){
         ki_gain = 1 - dis/ki_gain_threshold;
     }
-    vel = PID_Realise(&DT35_Run, 0, -dis, 2.5f, 0.01f,ki_gain);
+    vel = PID_Realise(&DT35_Run, 0, -dis, 1.5f, 0.01f,ki_gain);
     //速度向量取绝对值
     arm_abs_f32(&vel, &vel, 1);
     //计算角速度

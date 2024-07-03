@@ -178,7 +178,7 @@ void Error_Handler(void);
 #define SetDefault 1
 
 //视觉命令宏定义
-#define START 0
+#define START 7
 #define GoPoint 1
 #define RightBall 2
 #define BallIn 3
@@ -186,8 +186,8 @@ void Error_Handler(void);
 #define GoPoint_Left 5
 #define GoPoint_Right 6
 //阵营
-#define RED 0
-#define BLUE 1
+#define RED 1
+#define BLUE 2
 typedef struct {
     uint16_t Device;
     uint16_t Command;

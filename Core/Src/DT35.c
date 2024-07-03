@@ -10,7 +10,9 @@
 #include "DT35.h"
 #include "Chassis.h"
 #include "PID.h"
-
+#include "main.h"
+extern uint8_t Camp;
+float DT35_Forward,DT35_CloseBall;
 DT35_Struct DT35_Data;
 PID_t DT35_Run;
 PointStruct DT32_Points;
@@ -30,4 +32,11 @@ void DT35_Rec(uint8_t *data,DT35_Struct *DT35_data)
     DT35_data->DT35_3 = (float)(data[5] << 24 | data[6] << 16 | data[7] << 8 | data[8] ) / 10000;
     DT35_data->DT35_1 = (float)(data[9] << 24 | data[10] << 16 | data[11] << 8 | data[12] ) / 10000;
 //    printf("%f,%f,%f\n",DT35_data->forward,DT35_data->Left,DT35_data->Right);
+    if(Camp == RED){
+        DT35_Forward = DT35_Data.DT35_3;
+    }
+    else if(Camp == BLUE){
+        DT35_Forward = DT35_Data.DT35_2;
+    }
+    DT35_CloseBall = DT35_Data.DT35_1;
 }
