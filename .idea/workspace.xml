@@ -21,11 +21,22 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="a84bb48c-cfe0-481c-829d-87f33a41beef" name="Changes" comment="7.3 没找到问题，暂时放着了">
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_2024_7_3_17_42_[Changes]/shelved.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_2024_7_3_17_42_[Changes]1/shelved.patch" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_2024_7_3_17_42__Changes_.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_2024_7_3_17_42__Changes_1.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.mxproject" beforeDir="false" afterPath="$PROJECT_DIR$/.mxproject" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Core/Inc/PID.h" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Inc/PID.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Core/Inc/iwdg.h" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Core/Inc/stm32g4xx_hal_conf.h" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Inc/stm32g4xx_hal_conf.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Core/Src/MID360.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/MID360.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Core/Src/PID.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/PID.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Core/Src/app_freertos.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/app_freertos.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Core/Src/iwdg.c" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Core/Src/main.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/main.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_hal_iwdg.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Drivers/STM32G4xx_HAL_Driver/Inc/stm32g4xx_ll_iwdg.h" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Drivers/STM32G4xx_HAL_Driver/Src/stm32g4xx_hal_iwdg.c" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/R2_Master_V3.ioc" beforeDir="false" afterPath="$PROJECT_DIR$/R2_Master_V3.ioc" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -74,7 +85,7 @@
     "RunOnceActivity.readMode.enableVisualFormatting": "true",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
-    "git-widget-placeholder": "76c4b27d",
+    "git-widget-placeholder": "40033f49",
     "last_opened_file_path": "E:/RC/R2_Code/R2_Master_V4",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -286,7 +297,15 @@
       <option name="project" value="LOCAL" />
       <updated>1720000164813</updated>
     </task>
-    <option name="localTasksCounter" value="18" />
+    <task id="LOCAL-00018" summary="7.3 没找到问题，暂时放着了">
+      <option name="closed" value="true" />
+      <created>1720004047217</created>
+      <option name="number" value="00018" />
+      <option name="presentableId" value="LOCAL-00018" />
+      <option name="project" value="LOCAL" />
+      <updated>1720004047217</updated>
+    </task>
+    <option name="localTasksCounter" value="19" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

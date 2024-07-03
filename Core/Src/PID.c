@@ -16,7 +16,7 @@ PID_t Slope_Speed_t,Slope_Position_t,Toggle_Speed_t,Toggle_Position_t,Chassis_Ge
   * @brief  PID参数设置，全是float，去除了积分分离，感觉有点冗余而且不会用
   * @param  *PID 要设置的目标PID结构体地址
   */
-void PID_Set(PID_t *PID, float kp, float ki, float kd, float integral_limit,float FB_Gain)
+void PID_Set(PID_t *PID, float kp, float ki, float kd, float integral_limit)
 {
     PID->integral_limit = integral_limit;
     PID->Kp = kp;
@@ -32,7 +32,6 @@ void PID_Set(PID_t *PID, float kp, float ki, float kd, float integral_limit,floa
     PID->i_out = 0;
     PID->d_out = 0;
     PID->PID_total_out = 0;
-    PID->FB_Gain = FB_Gain;
 }
 
 /**
@@ -48,8 +47,6 @@ float PID_Realise(PID_t *PID, float target, float current, float max_output, flo
     PID->target = target;
     PID->current = current;
     PID->err = (PID->target - PID->current);
-    PID->FB_Now = target;
-    PID->FB_Error= PID->FB_Now - PID->FB_Last;
     //输入死区控制
     if(fabsf(PID->err) < DeadZone)
         PID->err = 0;
@@ -71,10 +68,10 @@ float PID_Realise(PID_t *PID, float target, float current, float max_output, flo
     PID->i_out = PID->Ki * PID->integral;
     PID->d_out = PID->Kd * PID->differentiation;
 
-    PID->PID_total_out = PID->p_out + PID->i_out * ki_gain + PID->d_out + PID->FB_Gain * PID->FB_Error;
+    PID->PID_total_out = PID->p_out + PID->i_out * ki_gain + PID->d_out;
 
     PID->err_last = PID->err;
-    PID->FB_Last = target;
+
     //输出限幅控制
     if(PID->PID_total_out > max_output)//输出限幅 正向
         PID->PID_total_out = max_output;
