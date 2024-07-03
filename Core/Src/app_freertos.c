@@ -67,9 +67,9 @@ extern float DT35_Forward,DT35_CloseBall;
 uint8_t Camp = RED;
 
 //extern locater_def locater;
-PointStruct Start_Point = {.x = 2.68f, .y = 9.7f, .angle = 0.0f};//3区调试用�?????????????????
-PointStruct Watch_Point = {.x = 3.15f, .y = 9.7f, .angle = 0.0f};//3区调试用�?????????????????
-//定义环类型，用于�?????????�取不同数据作为反馈�???????????????????????-
+PointStruct Start_Point = {.x = 2.68f, .y = 9.7f, .angle = 0.0f};//3区调试用�?????????????????
+PointStruct Watch_Point = {.x = 3.15f, .y = 9.7f, .angle = 0.0f};//3区调试用�?????????????????
+//定义环类型，用于�?????????�取不同数据作为反馈�???????????????????????-
 
 /* USER CODE END Variables */
 osThreadId Debug_TaskHandle;
@@ -190,7 +190,7 @@ void DebugTask(void const * argument)
 {
   /* USER CODE BEGIN DebugTask */
     /** 等待NRF校准 **/
-    //包含部分初始化内�???????????????????
+    //包含部分初始化内�???????????????????
 //    while (NRF24L01_Check()) {
 //        printf("no\n");
 //    }
@@ -218,7 +218,7 @@ void DebugTask(void const * argument)
 
 /* USER CODE BEGIN Header_NRFTask */
 /**
-* @brief 此函数用于接收遥控器的数�??????????????????????????
+* @brief 此函数用于接收遥控器的数�??????????????????????????
 * @param argument: Not used
 * @retval None
 */
@@ -236,7 +236,7 @@ void NRFTask(void const * argument)
     for (;;) {
 //        if (NRF24L01_RxPacket(rc_data) == 0)  //接收遥控器数据，若收到返0，若没收到返1
 //        {
-//            /** 读取左右摇杆值，限制�??????????????????????????-128~128 **/
+//            /** 读取左右摇杆值，限制�??????????????????????????-128~128 **/
 //            RemoteRX.lx = (int16_t) -(rc_data[1] - 128);
 //            RemoteRX.ly = (int16_t) -(rc_data[2] - 128);
 //            RemoteRX.rx = (int16_t) -(rc_data[3] - 128);
@@ -254,7 +254,7 @@ void NRFTask(void const * argument)
 //            if (RemoteRX.lx == -4) RemoteRX.lx = 0;
 //            if (RemoteRX.ly == -4) RemoteRX.ly = 0;
 //
-//            /**将NRF数据更新到四轮全�???????????????????????变量�???????????????????????**/
+//            /**将NRF数据更新到四轮全�???????????????????????变量�???????????????????????**/
 //            SGW2Wheels((float) RemoteRX.rx * 3 / 128, (float) RemoteRX.ry * 3 / 128, (float) RemoteRX.lx * 3 / 128, 0);
 //            printf("%d",RemoteRX.command);
 //            /** 对遥控器按键命令进行响应 **/
@@ -491,7 +491,6 @@ void chassis(void const * argument)
                         ControlMsgSet(&ControlQueueBuf, CHASSIS, CHASSIS_STOP, 0, 0, 0, 0);
                         xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
                         osDelay(500);
-                        printf("DT35_SendPoint :%f %f",Watch_Point.x,Watch_Point.y);
                         ControlMsgSet(&ControlQueueBuf, CHASSIS, CloseLoop_MID360, Watch_Point.x, Watch_Point.y,
                                       Watch_Point.angle, 0);
                         xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
@@ -667,7 +666,7 @@ void visioncom(void const * argument)
 {
   /* USER CODE BEGIN visioncom */
     VisionStruct visiondata;
-    uint8_t status;//用于小状态切�?????????????????
+    uint8_t status;//用于小状态切�?????????????????
     float pos_x;
     float pos_y;
     ControlMsgStruct ControlQueueBuf;
@@ -676,7 +675,7 @@ void visioncom(void const * argument)
         if (xQueueReceive(VisionData_QueueHandle, &visiondata, 0) == pdTRUE) {
             if (Sheild_Flag == 0) {
                 if (visiondata.flag == 0) {
-                    //并不是从1�?????????????????3，在3区调试用
+                    //并不是从1�?????????????????3，在3区调试用
                     printf("START\n");
                     ControlMsgSet(&ControlQueueBuf, CHASSIS, CloseLoop_START, Run1to3_Points[0].x, Run1to3_Points[0].y,
                                   0, 0);
@@ -803,7 +802,7 @@ void visioncom(void const * argument)
                     }
                 } else if (visiondata.flag == 3) {
                     if (visiondata.vision_y == 2) {
-                        /** 停车把球排出�????????????????? **/
+                        /** 停车把球排出�????????????????? **/
                         printf("WrongBallStop\n");
                         ControlMsgSet(&ControlQueueBuf, CHASSIS, CHASSIS_STOP, 0, 0, 0, 0);
                         xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
@@ -903,7 +902,7 @@ void closeloop(void const * argument)
   /* USER CODE BEGIN closeloop */
     /* Infinite loop */
     for (;;) {
-        /** 沟槽的大疆，不能分开单独控制�??????????????个ID下的4个电�?????????????? **/
+        /** 沟槽的大疆，不能分开单独控制�??????????????个ID下的4个电�?????????????? **/
         /** 四轮闭环**/
         //SGW2Wheels(0.f,0.5f,0,0);
         Wheels_VelOut[0] = (int16_t) PID_Realise(&Wheels[0], -Wheels_vel[0], Motor_Info[0].speed, M3508_CURRENT_MAX, 5,1);
@@ -992,7 +991,7 @@ void init(void const * argument)
     PID_Set(&Translation_PID, 1.80f, 0.0f, 0.8f, 0.0f,0);
     PID_Set(&Turn_PID, 0.035f, 0.0f, 0.2f, 0.0f,0);
 
-    PID_Set(&VisionRun1, 2.1f, 0.000f, 0.f, 0.0f,1.f);//�?????进PID
+    PID_Set(&VisionRun1, 2.1f, 0.000f, 0.f, 0.0f,1.f);//�?????进PID
     PID_Set(&VisionRun2, 1.5f, 0.0000f, 0.f, 0.0f,1.f);//保守PID
     PID_Set(&DT35_Run, 0.01f, 0.0f, 0.0f, 0.0f,0.01f);
 
