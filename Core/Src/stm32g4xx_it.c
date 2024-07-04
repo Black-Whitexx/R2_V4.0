@@ -428,7 +428,7 @@ void UART5_IRQHandler(void)
     __HAL_UART_CLEAR_IDLEFLAG(&huart5);                     //清除空闲中断标志（否则会�???????????????????直不断进入中断）
     HAL_UART_DMAStop(&huart5);                        //停止DMA接收
 
-    locatorAndToF_Data_Rec(USART5_Buffer, &locater,&TOF_dis1);
+    locatorAndToF_Data_Rec(USART5_Buffer, &locater,&TOF_dis1,&TOF_dis2);
     //printf("%.2f,%.2f,%.2f,%.4f\n",locater.pos_x,locater.pos_y,locater.angle,locater.Tof_dis);
 
     HAL_UART_Receive_DMA(&huart5, USART5_Buffer, 255);   //重启串口接收中断，开始DMA传输

@@ -7,7 +7,7 @@
 #include "main.h"
 
 extern float TOF_Dis[10];
-extern float TOF_dis1;
+extern float TOF_dis1,TOF_dis2;
 
 void TOF(uint8_t *data,float *dis);
 

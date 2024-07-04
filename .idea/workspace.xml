@@ -22,9 +22,15 @@
   <component name="ChangeListManager">
     <list default="true" id="a84bb48c-cfe0-481c-829d-87f33a41beef" name="Changes" comment="7.4 避障">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Core/Src/Chassis.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/Chassis.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Core/Src/Vision.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/Vision.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.mxproject" beforeDir="false" afterPath="$PROJECT_DIR$/.mxproject" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Core/Inc/Locator.h" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Inc/Locator.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Core/Inc/VL53-100.h" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Inc/VL53-100.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Core/Src/Locator.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/Locator.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Core/Src/VL53-100.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/VL53-100.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Core/Src/app_freertos.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/app_freertos.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Core/Src/stm32g4xx_it.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/stm32g4xx_it.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Core/Src/usart.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/usart.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/R2_Master_V3.ioc" beforeDir="false" afterPath="$PROJECT_DIR$/R2_Master_V3.ioc" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -72,7 +78,7 @@
     "RunOnceActivity.readMode.enableVisualFormatting": "true",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
-    "git-widget-placeholder": "f062d02f",
+    "git-widget-placeholder": "e094f024",
     "last_opened_file_path": "E:/RC/R2_Code/R2_Master_V4",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -325,7 +331,15 @@
       <option name="project" value="LOCAL" />
       <updated>1720068637500</updated>
     </task>
-    <option name="localTasksCounter" value="23" />
+    <task id="LOCAL-00023" summary="7.4 避障">
+      <option name="closed" value="true" />
+      <created>1720078581911</created>
+      <option name="number" value="00023" />
+      <option name="presentableId" value="LOCAL-00023" />
+      <option name="project" value="LOCAL" />
+      <updated>1720078581911</updated>
+    </task>
+    <option name="localTasksCounter" value="24" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

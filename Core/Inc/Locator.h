@@ -39,12 +39,12 @@ typedef struct
 
 typedef union
 {
-    uint8_t data_8[16];
-    int32_t data_32[4];
-    float data_f[4];
+    uint8_t data_8[20];
+    int32_t data_32[5];
+    float data_f[5];
 }loc_Receive_Union;
 
 
 
-void locatorAndToF_Data_Rec(uint8_t *data, locater_def *loc,float *TOF_Distance);
+void locatorAndToF_Data_Rec(const uint8_t *data, locater_def *loc,float *TOF_Distance1,float *TOF_Distance2);
 #endif //R2_MASTER_V3_LOCATOR_H
