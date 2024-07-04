@@ -796,6 +796,8 @@ void visioncom(void const * argument)
 //                        }
                     } else if (visiondata.vision_y == 1) {
                         printf("Vision:RightBallWillIn\n");
+                        ControlMsgSet(&ControlQueueBuf, SUCTION, Slope_OFF, 0, 0, 0, 0);
+                        xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
                         while(TOF_dis1 > 250){
                             osDelay(1);
                         }
@@ -813,9 +815,7 @@ void visioncom(void const * argument)
                             xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
                             ControlMsgSet(&ControlQueueBuf, CLAW, CLAW_OPEN, 0, 0, 0, 0);
                             xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
-                            ControlMsgSet(&ControlQueueBuf, SUCTION, Slope_OFF, 0, 0, 0, 0);
-                            xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
-                            osDelay(200);
+                            osDelay(100);
                             ControlMsgSet(&ControlQueueBuf, CLAW, Toggle_Down, 0, 0, 0, 0);
                             xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
                             osDelay(50);
