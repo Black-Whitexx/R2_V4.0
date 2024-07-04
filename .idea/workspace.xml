@@ -20,17 +20,9 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a84bb48c-cfe0-481c-829d-87f33a41beef" name="Changes" comment="7.4 避障">
+    <list default="true" id="a84bb48c-cfe0-481c-829d-87f33a41beef" name="Changes" comment="7.4  避球">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.mxproject" beforeDir="false" afterPath="$PROJECT_DIR$/.mxproject" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Core/Inc/Locator.h" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Inc/Locator.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Core/Inc/VL53-100.h" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Inc/VL53-100.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Core/Src/Locator.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/Locator.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Core/Src/VL53-100.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/VL53-100.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Core/Src/app_freertos.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/app_freertos.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Core/Src/stm32g4xx_it.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/stm32g4xx_it.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Core/Src/usart.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/usart.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/R2_Master_V3.ioc" beforeDir="false" afterPath="$PROJECT_DIR$/R2_Master_V3.ioc" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -78,7 +70,7 @@
     "RunOnceActivity.readMode.enableVisualFormatting": "true",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
-    "git-widget-placeholder": "e094f024",
+    "git-widget-placeholder": "03b2b3eb",
     "last_opened_file_path": "E:/RC/R2_Code/R2_Master_V4",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -339,7 +331,23 @@
       <option name="project" value="LOCAL" />
       <updated>1720078581911</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="7.4  避球">
+      <option name="closed" value="true" />
+      <created>1720094883467</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1720094883467</updated>
+    </task>
+    <task id="LOCAL-00025" summary="7.4  避球">
+      <option name="closed" value="true" />
+      <created>1720100771529</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1720100771529</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -371,6 +379,7 @@
     <MESSAGE value="7.3 版本回退后的版本，这版稳定" />
     <MESSAGE value="7.3 调节PID" />
     <MESSAGE value="7.4 避障" />
-    <option name="LAST_COMMIT_MESSAGE" value="7.4 避障" />
+    <MESSAGE value="7.4  避球" />
+    <option name="LAST_COMMIT_MESSAGE" value="7.4  避球" />
   </component>
 </project>

@@ -360,7 +360,6 @@ void chassis(void const * argument)
                         number = (int)ControlQueueBuf.data[3];
                         break;
                     case CloseLoop_DT35:
-                        printf("CLDT35_GET\n");
                         CloseLoopStatus = CloseLoop_DT35;
                         target_point.x = ControlQueueBuf.data[0];
                         target_point.y = ControlQueueBuf.data[1];
@@ -478,7 +477,7 @@ void chassis(void const * argument)
                         ControlMsgSet(&ControlQueueBuf, CHASSIS, CHASSIS_STOP, 0, 0, 0, 0);
                         xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
                         ControlMsgInit(&ControlQueueBuf);
-                        printf("send1normal\n");
+                        printf("RunOK");
                     }
                 }
                 else if (CloseLoopStatus == CloseLoop_Mid360AndDT35) {
@@ -499,6 +498,7 @@ void chassis(void const * argument)
                     Chassis_Move_OfDT35(&target_point);
                     if (Distance_Calc(target_point, DT35_CloseBall, DT35_Forward) < 5.0f ) {
                         if(TOF_dis2 > 100.f) {
+                            printf("PutBall");
                             ControlMsgSet(&ControlQueueBuf, CLAW, CLAW_OPEN, 0, 0, 0, 0);
                             xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
                             ControlMsgSet(&ControlQueueBuf, CHASSIS, CHASSIS_STOP, 0, 0, 0, 0);
@@ -521,7 +521,6 @@ void chassis(void const * argument)
                             xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
                             ControlMsgInit(&ControlQueueBuf);
                             Vision_Send(0xCC);
-                            printf("DT35send1\n");
                         }
                         else
                         {
@@ -796,9 +795,12 @@ void visioncom(void const * argument)
 //                            ControlMsgInit(&ControlQueueBuf);
 //                        }
                     } else if (visiondata.vision_y == 1) {
-                        if(TOF_dis1 < 250.f) {
+                        printf("Vision:RightBallWillIn\n");
+                        while(TOF_dis1 > 250){
+                            osDelay(1);
+                        }
                             /** 正确的球即将进入车内 **/
-                            printf("RightBallWillIn\n");
+                            printf("TOF:RightBallWillIn\n");
 //                  ControlMsgSet(&ControlQueueBuf,CHASSIS,CloseLoop_MID360,Start_Point.x,Start_Point.y,Start_Point.angle,0);
 //                  xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
 //                  ControlMsgSet(&ControlQueueBuf,CHASSIS,CHASSIS_RUN,0,0,0,0);
@@ -813,6 +815,7 @@ void visioncom(void const * argument)
                             xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
                             ControlMsgSet(&ControlQueueBuf, SUCTION, Slope_OFF, 0, 0, 0, 0);
                             xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
+                            osDelay(200);
                             ControlMsgSet(&ControlQueueBuf, CLAW, Toggle_Down, 0, 0, 0, 0);
                             xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
                             osDelay(50);
@@ -821,7 +824,7 @@ void visioncom(void const * argument)
                             ControlMsgSet(&ControlQueueBuf, SUCTION, StopVESC, 0, 0, 0, 0);
                             xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
                             ControlMsgInit(&ControlQueueBuf);
-                        }
+
                     }
                 } else if (visiondata.flag == 3) {
                     if (visiondata.vision_y == 2) {
@@ -853,17 +856,15 @@ void visioncom(void const * argument)
                         printf("RightBallGetIt\n");
 //                      ControlMsgSet(&ControlQueueBuf,CHASSIS,CHASSIS_STOP,0,0,0,0);
 //                      xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
-//                      ControlMsgSet(&ControlQueueBuf,SUCTION,Slope_OFF,0,0,0,0);
-//                      xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
+                      ControlMsgSet(&ControlQueueBuf,SUCTION,Slope_OFF,0,0,0,0);
+                      xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
 //                      ControlMsgSet(&ControlQueueBuf,CLAW,Toggle_Down,0,0,0,0);
 //                      xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
 //                      ControlMsgSet(&ControlQueueBuf,CLAW,CLAW_OPEN,0,0,0,0);
 //                      xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
-//                      osDelay(1000);
-                        osDelay(200);
+                      osDelay(200);
                         ControlMsgSet(&ControlQueueBuf, CLAW, CLAW_CLOSE, 0, 0, 0, 0);
                         xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
-                        osDelay(100);
                         ControlMsgSet(&ControlQueueBuf, SUCTION, StopVESC, 0, 0, 0, 0);
                         xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
                         osDelay(200);
@@ -895,7 +896,7 @@ void visioncom(void const * argument)
                 }
                 else if (visiondata.flag == 4) {
                     if(visiondata.vision_y == 0 && visiondata.vision_x != 0) {
-                        printf("Put");
+                        printf("GoToBasket");
                         ControlMsgSet(&ControlQueueBuf, CHASSIS, CloseLoop_Mid360AndDT35,
                                       Frame_Points[(int) (visiondata.vision_x - 1)].x,
                                       Frame_Points[(int) (visiondata.vision_x - 1)].y, 0, visiondata.vision_x);
@@ -919,13 +920,13 @@ void visioncom(void const * argument)
                 }
                 else if(visiondata.flag == 7){
                     if(fabsf(visiondata.vision_x) <= 500 ){
-                        printf("Avoid\n");
+                        //printf("Avoid\n");
                         ControlMsgSet(&ControlQueueBuf, CHASSIS, CHASSIS_Aviodance,visiondata.vision_x , 0, 0, 0);
                         xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
                         ControlMsgInit(&ControlQueueBuf);
                     }
                     else{
-                        printf("AvoidOver\n");
+                        //printf("AvoidOver\n");
                         ControlMsgSet(&ControlQueueBuf, CHASSIS, CHASSIS_RUN, 0, 0, 0, 0);
                         xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
                         ControlMsgInit(&ControlQueueBuf);
@@ -1053,7 +1054,7 @@ void init(void const * argument)
   {
       Read_Screen_CMD(&Screen_Buffer);
       if(Screen_Buffer == BLUE){
-          Camp = RED;
+          Camp = BLUE;
       }
       if(Screen_Buffer == RED){
           Camp = RED;
