@@ -111,7 +111,11 @@ uint8_t Vision_State,VisionFlag,Color;
 //}
 void Vision_Send(uint8_t cmd)
 {
+    const uint8_t head = 0xCE;
+    const uint8_t tail = 0xEC;
+    HAL_UART_Transmit(&huart2,&head, sizeof(head),0xFFFFF);
     HAL_UART_Transmit(&huart2,&cmd, sizeof(cmd),0xFFFFF);
+    HAL_UART_Transmit(&huart2,&tail, sizeof(tail),0xFFFFF);
 }
 
 

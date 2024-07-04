@@ -20,10 +20,10 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a84bb48c-cfe0-481c-829d-87f33a41beef" name="Changes" comment="7.3 调节PID">
+    <list default="true" id="a84bb48c-cfe0-481c-829d-87f33a41beef" name="Changes" comment="7.4 避障">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Core/Inc/main.h" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Inc/main.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Core/Src/Chassis.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/Chassis.c" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Core/Src/Vision.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/Vision.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Core/Src/app_freertos.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/app_freertos.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -72,7 +72,7 @@
     "RunOnceActivity.readMode.enableVisualFormatting": "true",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
-    "git-widget-placeholder": "ad7f70f0",
+    "git-widget-placeholder": "f062d02f",
     "last_opened_file_path": "E:/RC/R2_Code/R2_Master_V4",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -317,7 +317,15 @@
       <option name="project" value="LOCAL" />
       <updated>1720057064697</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL-00022" summary="7.4 避障">
+      <option name="closed" value="true" />
+      <created>1720068637500</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1720068637500</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -348,6 +356,7 @@
     <MESSAGE value="7.3 没找到问题，暂时放着了" />
     <MESSAGE value="7.3 版本回退后的版本，这版稳定" />
     <MESSAGE value="7.3 调节PID" />
-    <option name="LAST_COMMIT_MESSAGE" value="7.3 调节PID" />
+    <MESSAGE value="7.4 避障" />
+    <option name="LAST_COMMIT_MESSAGE" value="7.4 避障" />
   </component>
 </project>

@@ -336,6 +336,7 @@ void chassis(void const * argument)
                     case CHASSIS_Aviodance:
                         Interrupt_Flag = 2;
                         offset_x = ControlQueueBuf.data[0];
+                        break;
                     case CloseLoop_START:
                         //printf("STart");
                         CloseLoopStatus = CloseLoop_START;
@@ -398,10 +399,10 @@ void chassis(void const * argument)
         }
         else if(Interrupt_Flag == 2){
             if(offset_x > 0){
-                SGW2Wheels(0.3f,0.5f,0,0);
+                SGW2Wheels(0.f,1.5f,0,0);
             }
             else{
-                SGW2Wheels(0.3f,-0.5f,0,0);
+                SGW2Wheels(0.f,-1.5f,0,0);
             }
         }
         else {
@@ -474,7 +475,7 @@ void chassis(void const * argument)
                         fabsf(LiDar.yaw - target_point.angle) < 3) {
                         //printf("%f",LiDar.yaw );
                         //Sheild_Flag = 0;
-                        //Vision_Send(0xCC);
+                        Vision_Send(0xCC);
                         ControlMsgSet(&ControlQueueBuf, CHASSIS, CHASSIS_STOP, 0, 0, 0, 0);
                         xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
                         ControlMsgInit(&ControlQueueBuf);
@@ -501,23 +502,23 @@ void chassis(void const * argument)
                         ControlMsgSet(&ControlQueueBuf, CHASSIS, CHASSIS_STOP, 0, 0, 0, 0);
                         xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
                         osDelay(300);
-//                        ControlMsgSet(&ControlQueueBuf, CHASSIS, CloseLoop_MID360, Watch_Point.x, Watch_Point.y,
-//                                      Watch_Point.angle, 0);
+                        ControlMsgSet(&ControlQueueBuf, CHASSIS, CloseLoop_MID360, Watch_Point.x, Watch_Point.y,
+                                      Watch_Point.angle, 0);
+                        xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
+                        ControlMsgSet(&ControlQueueBuf, CHASSIS, CHASSIS_RUN, 0, 0, 0, 0);
+                        xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
+//                        ControlMsgSet(&ControlQueueBuf, CLAW, CLAW_CLOSE, 0, 0, 0, 0);
 //                        xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
-//                        ControlMsgSet(&ControlQueueBuf, CHASSIS, CHASSIS_RUN, 0, 0, 0, 0);
+//                        ControlMsgSet(&ControlQueueBuf, CLAW, Toggle_Mid, 0, 0, 0, 0);
 //                        xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
-////                        ControlMsgSet(&ControlQueueBuf, CLAW, CLAW_CLOSE, 0, 0, 0, 0);
-////                        xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
-////                        ControlMsgSet(&ControlQueueBuf, CLAW, Toggle_Mid, 0, 0, 0, 0);
-////                        xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
-//                        ControlMsgSet(&ControlQueueBuf, SUCTION, SUCTION_OFF, 0, 0, 0, 0);
-//                        xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
-//                        ControlMsgSet(&ControlQueueBuf, SUCTION, StopVESC, 0, 0, 0, 0);
-//                        xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
-//                        ControlMsgSet(&ControlQueueBuf, SUCTION, Slope_OFF, 0, 0, 0, 0);
-//                        xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
-//                        Vision_Send(0xCC);
-//                        printf("DT35send1\n");
+                        ControlMsgSet(&ControlQueueBuf, SUCTION, SUCTION_OFF, 0, 0, 0, 0);
+                        xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
+                        ControlMsgSet(&ControlQueueBuf, SUCTION, StopVESC, 0, 0, 0, 0);
+                        xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
+                        ControlMsgSet(&ControlQueueBuf, SUCTION, Slope_OFF, 0, 0, 0, 0);
+                        xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
+                        Vision_Send(0xCC);
+                        printf("DT35send1\n");
                     }
                 }
                     /** 对球闭环 **/
@@ -845,9 +846,10 @@ void visioncom(void const * argument)
 //                      xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
 //                      osDelay(1000);
                         osDelay(200);
-                        ControlMsgSet(&ControlQueueBuf, SUCTION, StopVESC, 0, 0, 0, 0);
-                        xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
                         ControlMsgSet(&ControlQueueBuf, CLAW, CLAW_CLOSE, 0, 0, 0, 0);
+                        xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
+                        osDelay(100);
+                        ControlMsgSet(&ControlQueueBuf, SUCTION, StopVESC, 0, 0, 0, 0);
                         xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
                         osDelay(200);
                         ControlMsgSet(&ControlQueueBuf, CLAW, Toggle_Up, 0, 0, 0, 0);
@@ -887,13 +889,14 @@ void visioncom(void const * argument)
                     ControlMsgInit(&ControlQueueBuf);
                 }
                 else if(visiondata.flag == 7){
-                    printf("Avoid");
                     if(fabsf(visiondata.vision_x) <= 500 ){
+                        printf("Avoid\n");
                         ControlMsgSet(&ControlQueueBuf, CHASSIS, CHASSIS_Aviodance,visiondata.vision_x , 0, 0, 0);
                         xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
                         ControlMsgInit(&ControlQueueBuf);
                     }
                     else{
+                        printf("AvoidOver\n");
                         ControlMsgSet(&ControlQueueBuf, CHASSIS, CHASSIS_RUN, 0, 0, 0, 0);
                         xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
                         ControlMsgInit(&ControlQueueBuf);
