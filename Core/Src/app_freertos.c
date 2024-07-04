@@ -493,23 +493,23 @@ void chassis(void const * argument)
                         ControlMsgSet(&ControlQueueBuf, CHASSIS, CHASSIS_STOP, 0, 0, 0, 0);
                         xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
                         osDelay(300);
-                        ControlMsgSet(&ControlQueueBuf, CHASSIS, CloseLoop_MID360, Watch_Point.x, Watch_Point.y,
-                                      Watch_Point.angle, 0);
-                        xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
-                        ControlMsgSet(&ControlQueueBuf, CHASSIS, CHASSIS_RUN, 0, 0, 0, 0);
-                        xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
-//                        ControlMsgSet(&ControlQueueBuf, CLAW, CLAW_CLOSE, 0, 0, 0, 0);
+//                        ControlMsgSet(&ControlQueueBuf, CHASSIS, CloseLoop_MID360, Watch_Point.x, Watch_Point.y,
+//                                      Watch_Point.angle, 0);
 //                        xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
-//                        ControlMsgSet(&ControlQueueBuf, CLAW, Toggle_Mid, 0, 0, 0, 0);
+//                        ControlMsgSet(&ControlQueueBuf, CHASSIS, CHASSIS_RUN, 0, 0, 0, 0);
 //                        xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
-                        ControlMsgSet(&ControlQueueBuf, SUCTION, SUCTION_OFF, 0, 0, 0, 0);
-                        xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
-                        ControlMsgSet(&ControlQueueBuf, SUCTION, StopVESC, 0, 0, 0, 0);
-                        xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
-                        ControlMsgSet(&ControlQueueBuf, SUCTION, Slope_OFF, 0, 0, 0, 0);
-                        xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
-                        Vision_Send(0xCC);
-                        printf("DT35send1\n");
+////                        ControlMsgSet(&ControlQueueBuf, CLAW, CLAW_CLOSE, 0, 0, 0, 0);
+////                        xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
+////                        ControlMsgSet(&ControlQueueBuf, CLAW, Toggle_Mid, 0, 0, 0, 0);
+////                        xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
+//                        ControlMsgSet(&ControlQueueBuf, SUCTION, SUCTION_OFF, 0, 0, 0, 0);
+//                        xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
+//                        ControlMsgSet(&ControlQueueBuf, SUCTION, StopVESC, 0, 0, 0, 0);
+//                        xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
+//                        ControlMsgSet(&ControlQueueBuf, SUCTION, Slope_OFF, 0, 0, 0, 0);
+//                        xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
+//                        Vision_Send(0xCC);
+//                        printf("DT35send1\n");
                     }
                 }
                     /** 对球闭环 **/
@@ -991,11 +991,11 @@ void init(void const * argument)
     PID_Set(&Turn_PID, 0.035f, 0.0f, 0.2f, 0.0f,0);
 
     PID_Set(&VisionRun1, 1.8f, 0.000f, 0.f, 0.0f,0.0f);//�???进PID
-    PID_Set(&VisionRun2, 2.f, 0.0000f, 0.f, 0.0f,0.01f);//保守PID
+    PID_Set(&VisionRun2, 2.f, 0.0000f, 0.f, 0.0f,0.1f);//保守PID
     PID_Set(&DT35_Run, 0.01f, 0.0f, 0.0f, 0.0f,0);
 
     PID_Set(&VisionPID_X, 0.0025f, 0.0f, 0.002f, 0.0f,0.0006f);
-    PID_Set(&Chassis_GetBall_PID, 0.8f, 0.0f, 0.f, 0.0f,0);
+    PID_Set(&Chassis_GetBall_PID, 2.f, 0.0f, 0.f, 0.0f,0.1f);
   for(;;)
   {
       Read_Screen_CMD(&Screen_Buffer);
@@ -1012,8 +1012,8 @@ void init(void const * argument)
       if(Screen_Buffer == RED){
           Camp = RED;
           osDelay(1000);
-          ControlMsgSet(&ControlQueueBuf, CHASSIS, CloseLoop_MID360, Start_Point.x, Start_Point.y,
-                        Watch_Point.angle, 0);
+          ControlMsgSet(&ControlQueueBuf, CHASSIS, CloseLoop_MID360, DT35_AimPoints[0].x, DT35_AimPoints[0].y,
+                        0, 0);
           xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
           ControlMsgSet(&ControlQueueBuf, CHASSIS, CHASSIS_RUN, 0, 0, 0, 0);
           xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);

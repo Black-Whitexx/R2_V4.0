@@ -20,12 +20,8 @@
     </configurations>
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="a84bb48c-cfe0-481c-829d-87f33a41beef" name="Changes" comment="7.3 版本回退后的版本，这版稳定">
+    <list default="true" id="a84bb48c-cfe0-481c-829d-87f33a41beef" name="Changes" comment="7.3 调节PID">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Core/Inc/PID.h" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Inc/PID.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Core/Inc/Screen.h" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Inc/Screen.h" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Core/Src/PID.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/PID.c" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Core/Src/Screen.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/Screen.c" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Core/Src/app_freertos.c" beforeDir="false" afterPath="$PROJECT_DIR$/Core/Src/app_freertos.c" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -74,7 +70,7 @@
     "RunOnceActivity.readMode.enableVisualFormatting": "true",
     "cf.first.check.clang-format": "false",
     "cidr.known.project.marker": "true",
-    "git-widget-placeholder": "88b8baa3",
+    "git-widget-placeholder": "d7b46cf8",
     "last_opened_file_path": "E:/RC/R2_Code/R2_Master_V4",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -302,7 +298,15 @@
       <option name="project" value="LOCAL" />
       <updated>1720007402529</updated>
     </task>
-    <option name="localTasksCounter" value="20" />
+    <task id="LOCAL-00020" summary="7.3 调节PID">
+      <option name="closed" value="true" />
+      <created>1720020475642</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1720020475642</updated>
+    </task>
+    <option name="localTasksCounter" value="21" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -332,6 +336,7 @@
     <MESSAGE value="6.30 完成红蓝区取球" />
     <MESSAGE value="7.3 没找到问题，暂时放着了" />
     <MESSAGE value="7.3 版本回退后的版本，这版稳定" />
-    <option name="LAST_COMMIT_MESSAGE" value="7.3 版本回退后的版本，这版稳定" />
+    <MESSAGE value="7.3 调节PID" />
+    <option name="LAST_COMMIT_MESSAGE" value="7.3 调节PID" />
   </component>
 </project>
