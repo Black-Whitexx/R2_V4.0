@@ -67,7 +67,7 @@ extern float DT35_Forward,DT35_CloseBall;
 uint8_t Camp = RED;
 
 //extern locater_def locater;
-PointStruct Start_Point = {.x = 0.88f, .y = 9.7f, .angle = 0.0f};//3区调试用�???????????????
+PointStruct Start_Point = {.x = 2.88f, .y = 9.7f, .angle = 0.0f};//3区调试用�???????????????
 PointStruct Watch_Point = {.x = 4.03f, .y = 9.7f, .angle = 0.0f};//3区调试用�???????????????
 //定义环类型，用于�???????�取不同数据作为反馈�?????????????????????-
 
@@ -201,7 +201,7 @@ void DebugTask(void const * argument)
         //printf("%.2f %.2f %.2f\n", DT35_Data.DT35_2, DT35_Data.DT35_3,DT35_Data.DT35_1);
 //        printf("%.2f %.2f \n", locater.pos_x, locater.pos_y);
 //        printf("%.3f %.3f\n", LiDar.locx, LiDar.locy);
-        printf("%f %f\n",MutiPos_x,MutiPos_y);
+        //printf("%f %f\n",MutiPos_x,MutiPos_y);
 //        printf("%s\n", USART5_Buffer);
 //        printf("%f\n", LiDar.yaw);
         //printf("%.2f,%.2f,%.2f,%.4f\n",locater.pos_x,locater.pos_y,locater.angle,locater.Tof_dis);
@@ -312,7 +312,7 @@ void chassis(void const * argument)
 {
   /* USER CODE BEGIN chassis */
     ControlMsgStruct ControlQueueBuf;
-    uint8_t Stop_Flag = 1;
+    uint8_t Interrupt_Flag = 1;
     uint8_t CloseLoopStatus = 0;
     PointStruct target_point = {0, 0, 0};
     float offset_x = 0;
@@ -328,11 +328,14 @@ void chassis(void const * argument)
                 xQueueReceive(ControlQueueHandle, &ControlQueueBuf, 0);
                 switch (ControlQueueBuf.Command) {
                     case CHASSIS_RUN:
-                        Stop_Flag = 0;
+                        Interrupt_Flag = 0;
                         break;
                     case CHASSIS_STOP:
-                        Stop_Flag = 1;
+                        Interrupt_Flag = 1;
                         break;
+                    case CHASSIS_Aviodance:
+                        Interrupt_Flag = 2;
+                        offset_x = ControlQueueBuf.data[0];
                     case CloseLoop_START:
                         //printf("STart");
                         CloseLoopStatus = CloseLoop_START;
@@ -364,11 +367,8 @@ void chassis(void const * argument)
                         target_point.angle = ControlQueueBuf.data[2];
                         break;
                     case CloseLoop_Ball:
-                        if(last_cmd == 0)
-                        {
                             CloseLoopStatus = CloseLoop_Ball;
                             offset_x = ControlQueueBuf.data[0];
-                        }
                         break;
 //                  case CloseLoop_Left:
 //                      CloseLoopStatus = CloseLoop_Left;
@@ -392,9 +392,17 @@ void chassis(void const * argument)
         }
         /** 判断程序**/
         /** 这一部分是奥里给 **/
-        if (Stop_Flag == 1) {
+        if (Interrupt_Flag == 1) {
             Car_Stop;
             //printf("stop");
+        }
+        else if(Interrupt_Flag == 2){
+            if(offset_x > 0){
+                SGW2Wheels(0.3f,0.5f,0,0);
+            }
+            else{
+                SGW2Wheels(0.3f,-0.5f,0,0);
+            }
         }
         else {
             if (!(target_point.x == 0 && target_point.y == 0)) {
@@ -878,6 +886,19 @@ void visioncom(void const * argument)
                     xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
                     ControlMsgInit(&ControlQueueBuf);
                 }
+                else if(visiondata.flag == 7){
+                    printf("Avoid");
+                    if(fabsf(visiondata.vision_x) <= 500 ){
+                        ControlMsgSet(&ControlQueueBuf, CHASSIS, CHASSIS_Aviodance,visiondata.vision_x , 0, 0, 0);
+                        xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
+                        ControlMsgInit(&ControlQueueBuf);
+                    }
+                    else{
+                        ControlMsgSet(&ControlQueueBuf, CHASSIS, CHASSIS_RUN, 0, 0, 0, 0);
+                        xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
+                        ControlMsgInit(&ControlQueueBuf);
+                    }
+                }
             } else {
                 //printf("disabled");
             }
@@ -971,12 +992,12 @@ void init(void const * argument)
     uint8_t Screen_Buffer;
     ControlMsgStruct ControlQueueBuf;
     vTaskSuspend(NRF_TaskHandle);
-    //vTaskSuspend(Debug_TaskHandle);
-    //vTaskSuspend(ChassisTaskHandle);
+    vTaskSuspend(Debug_TaskHandle);
+    vTaskSuspend(ChassisTaskHandle);
     vTaskSuspend(ClawTaskHandle);
     vTaskSuspend(SuctionTaskHandle);
     vTaskSuspend(VisionComTaskHandle);
-    //vTaskSuspend(CloseLoopTaskHandle);
+    vTaskSuspend(CloseLoopTaskHandle);
     PID_Set(&Wheels[0], 7.2f, 0.1f, 1.0f, 10000,0);
     PID_Set(&Wheels[1], 7.2f, 0.1f, 1.0f, 10000,0);
     PID_Set(&Wheels[2], 7.2f, 0.1f, 1.0f, 10000,0);
@@ -1000,47 +1021,33 @@ void init(void const * argument)
   {
       Read_Screen_CMD(&Screen_Buffer);
       if(Screen_Buffer == BLUE){
-          Camp = BLUE;
-          osDelay(1000);
-          ControlMsgSet(&ControlQueueBuf, CHASSIS, CloseLoop_MID360, Watch_Point.x, Watch_Point.y,
-                        Watch_Point.angle, 0);
-          xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
-          ControlMsgSet(&ControlQueueBuf, CHASSIS, CHASSIS_RUN, 0, 0, 0, 0);
-          xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
-          ControlMsgInit(&ControlQueueBuf);
+          Camp = RED;
       }
       if(Screen_Buffer == RED){
           Camp = RED;
-          osDelay(1000);
-          ControlMsgSet(&ControlQueueBuf, CHASSIS, CloseLoop_MID360, DT35_AimPoints[0].x, DT35_AimPoints[0].y,
-                        0, 0);
-          xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
-          ControlMsgSet(&ControlQueueBuf, CHASSIS, CHASSIS_RUN, 0, 0, 0, 0);
-          xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
-          ControlMsgInit(&ControlQueueBuf);
       }
       if(Screen_Buffer == START) {
           if(Camp == RED){
-              //Vision_Send(0xAA);
+              Vision_Send(0xAA);
               offset_angle = 45;
           }
           if(Camp == BLUE){
-              //Vision_Send(0xBB);
+              Vision_Send(0xBB);
               offset_angle = -45;
           }
 
           uint8_t QueueBuffer;
           osDelay(3000);
           QueueBuffer = 0;
-          //xQueueSend(VisionData_QueueHandle, &QueueBuffer, 100);
-          //vTaskResume(NRF_TaskHandle);
-          //vTaskResume(Debug_TaskHandle);
-          //vTaskResume(ChassisTaskHandle);
-          //vTaskResume(ClawTaskHandle);
-          //vTaskResume(SuctionTaskHandle);
-          //vTaskResume(VisionComTaskHandle);
-          //vTaskResume(CloseLoopTaskHandle);
-          //vTaskDelete(InitTaskHandle);
+          xQueueSend(VisionData_QueueHandle, &QueueBuffer, 100);
+          vTaskResume(NRF_TaskHandle);
+          vTaskResume(Debug_TaskHandle);
+          vTaskResume(ChassisTaskHandle);
+          vTaskResume(ClawTaskHandle);
+          vTaskResume(SuctionTaskHandle);
+          vTaskResume(VisionComTaskHandle);
+          vTaskResume(CloseLoopTaskHandle);
+          vTaskDelete(InitTaskHandle);
       }
       osDelay(100);
   }
