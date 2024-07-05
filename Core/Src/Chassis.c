@@ -135,7 +135,7 @@ void Chassis_Move_OfVision(PointStruct *target_point,PID_t *pid,float max)
     else if(dis<=ki_gain_threshold){
         ki_gain = 1 - dis/ki_gain_threshold;
     }
-    vel = PID_Realise(pid, 0, -dis, 1.5f, 0.01f,ki_gain);
+    vel = PID_Realise(pid, 0, -dis, 0.5f, 0.01f,ki_gain);
     //速度向量取绝对值
     arm_abs_f32(&vel, &vel, 1);
     //计算角速度
@@ -183,7 +183,7 @@ void Chassis_Move_OfDT35(PointStruct *target_point)
     else if(dis<=ki_gain_threshold){
         ki_gain = 1 - dis/ki_gain_threshold;
     }
-    vel = PID_Realise(&DT35_Run, 0, -dis, 1.5f, 0.01f,ki_gain);
+    vel = PID_Realise(&DT35_Run, 0, -dis, 0.5f, 0.01f,ki_gain);
     //速度向量取绝对值
     arm_abs_f32(&vel, &vel, 1);
     //计算角速度

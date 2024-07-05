@@ -74,9 +74,9 @@ uint8_t number = 0;
 uint8_t AlignStatus = 0;
 uint8_t StartPointNumber = 0;
 //extern locater_def locater;
-PointStruct Start_Point = {.x = 2.88f, .y = 9.7f, .angle = 0.0f};//3区调试用�?????????????????????
-PointStruct Watch_Point = {.x = 4.03f, .y = 9.7f, .angle = 0.0f};//3区调试用�?????????????????????
-//定义环类型，用于�?????????????�取不同数据作为反馈�???????????????????????????-
+PointStruct Start_Point = {.x = 2.88f, .y = 9.7f, .angle = 0.0f};//3区调试用�??????????????????????
+PointStruct Watch_Point = {.x = 4.03f, .y = 9.7f, .angle = 0.0f};//3区调试用�??????????????????????
+//定义环类型，用于�??????????????�取不同数据作为反馈�????????????????????????????-
 
 /* USER CODE END Variables */
 osThreadId Debug_TaskHandle;
@@ -149,21 +149,13 @@ void MX_FREERTOS_Init(void) {
   /* USER CODE END RTOS_QUEUES */
 
   /* Create the thread(s) */
-    /* definition and creation of ChassisTask */
-    osThreadDef(ChassisTask, chassis, osPriorityNormal, 0, 2048);
-    ChassisTaskHandle = osThreadCreate(osThread(ChassisTask), NULL);
-
-    /* definition and creation of CommunicateTask */
-    osThreadDef(CommunicateTask, communicate, osPriorityNormal, 0, 2048);
-    CommunicateTaskHandle = osThreadCreate(osThread(CommunicateTask), NULL);
-
-    /* definition and creation of JudgeTask */
-    osThreadDef(JudgeTask, judge, osPriorityNormal, 0, 2048);
-    JudgeTaskHandle = osThreadCreate(osThread(JudgeTask), NULL);
-
   /* definition and creation of Debug_Task */
   osThreadDef(Debug_Task, DebugTask, osPriorityNormal, 0, 512);
   Debug_TaskHandle = osThreadCreate(osThread(Debug_Task), NULL);
+
+  /* definition and creation of ChassisTask */
+  osThreadDef(ChassisTask, chassis, osPriorityNormal, 0, 2048);
+  ChassisTaskHandle = osThreadCreate(osThread(ChassisTask), NULL);
 
   /* definition and creation of ClawTask */
   osThreadDef(ClawTask, claw, osPriorityNormal, 0, 2048);
@@ -185,6 +177,14 @@ void MX_FREERTOS_Init(void) {
   osThreadDef(InitTask, init, osPriorityRealtime, 0, 512);
   InitTaskHandle = osThreadCreate(osThread(InitTask), NULL);
 
+  /* definition and creation of CommunicateTask */
+  osThreadDef(CommunicateTask, communicate, osPriorityNormal, 0, 2048);
+  CommunicateTaskHandle = osThreadCreate(osThread(CommunicateTask), NULL);
+
+  /* definition and creation of JudgeTask */
+  osThreadDef(JudgeTask, judge, osPriorityNormal, 0, 2048);
+  JudgeTaskHandle = osThreadCreate(osThread(JudgeTask), NULL);
+
   /* USER CODE BEGIN RTOS_THREADS */
     /* add threads, ... */
 
@@ -203,7 +203,7 @@ void DebugTask(void const * argument)
 {
   /* USER CODE BEGIN DebugTask */
     /** 等待NRF校准 **/
-    //包含部分初始化内�???????????????????????
+    //包含部分初始化内�????????????????????????
 //    while (NRF24L01_Check()) {
 //        printf("no\n");
 //    }
@@ -224,8 +224,10 @@ void DebugTask(void const * argument)
         //printf("%f\n",TOF_dis1);
         //printf("TOF: %f\n",TOF_dis1 );
         //printf("%d",Camp);
+        vTaskSuspendAll();
         printf("%f %f\n",target_point.x,target_point.y);
         LED0_Flashing;
+        xTaskResumeAll();
         osDelay(50);
     }
   /* USER CODE END DebugTask */
@@ -245,6 +247,7 @@ void chassis(void const * argument)
     VisionStruct visiondatabuf;
     /* Infinite loop */
     for (;;) {
+        vTaskSuspendAll();
         if (xQueuePeek(ControlQueueHandle, &ControlQueueBuf, 0) == pdTRUE) {
             if (ControlQueueBuf.Device == CHASSIS) {
                 xQueueReceive(ControlQueueHandle, &ControlQueueBuf, 0);
@@ -406,8 +409,8 @@ void chassis(void const * argument)
                 }
             }
         }
-        printf("Chassis\n");
-        osDelay(1);
+        xTaskResumeAll();
+        osDelay(10);
     }
   /* USER CODE END chassis */
 }
@@ -425,6 +428,7 @@ void claw(void const * argument)
     ControlMsgStruct ControlQueueBuf;
     /* Infinite loop */
     for (;;) {
+        vTaskSuspendAll();
         if (xQueuePeek(ControlQueueHandle, &ControlQueueBuf, 0) == pdTRUE) {
             if (ControlQueueBuf.Device == CLAW) {
                 xQueueReceive(ControlQueueHandle, &ControlQueueBuf, 0);
@@ -450,7 +454,7 @@ void claw(void const * argument)
                 }
             }
         }
-        printf("Claw\n");
+        xTaskResumeAll();
         osDelay(1);
     }
   /* USER CODE END claw */
@@ -469,6 +473,7 @@ void suction(void const * argument)
     ControlMsgStruct ControlQueueBuf;
     /* Infinite loop */
     for (;;) {
+        vTaskSuspendAll();
         if (xQueuePeek(ControlQueueHandle, &ControlQueueBuf, 0) == pdTRUE) {
             if (ControlQueueBuf.Device == SUCTION) {
                 xQueueReceive(ControlQueueHandle, &ControlQueueBuf, 0);
@@ -499,6 +504,7 @@ void suction(void const * argument)
                 }
             }
         }
+        xTaskResumeAll();
         osDelay(1);
     }
   /* USER CODE END suction */
@@ -515,16 +521,17 @@ void visioncom(void const * argument)
 {
   /* USER CODE BEGIN visioncom */
     VisionStruct visiondata;
-    uint8_t status;//用于小状态切�?????????????????????
+    uint8_t status;//用于小状态切�??????????????????????
     float pos_x;
     float pos_y;
     ControlMsgStruct ControlQueueBuf;
     /* Infinite loop */
     for (;;) {
+        vTaskSuspendAll();
         if (xQueueReceive(VisionData_QueueHandle, &visiondata, 0) == pdTRUE) {
             if (Sheild_Flag == 0) {
                 if (visiondata.flag == 0) {
-                    //并不是从1�?????????????????????3，在3区调试用
+                    //并不是从1�??????????????????????3，在3区调试用
                     printf("START\n");
                     ControlMsgSet(&ControlQueueBuf, CHASSIS, CloseLoop_START, Run1to3_Points[0].x, Run1to3_Points[0].y,
                                   0, 0);
@@ -652,7 +659,7 @@ void visioncom(void const * argument)
                     }
                 } else if (visiondata.flag == 3) {
                     if (visiondata.vision_y == 2) {
-                        /** 停车把球排出�????????????????????? **/
+                        /** 停车把球排出�?????????????????????? **/
                         printf("WrongBallStop\n");
                         ControlMsgSet(&ControlQueueBuf, CHASSIS, CHASSIS_STOP, 0, 0, 0, 0);
                         xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
@@ -758,6 +765,7 @@ void visioncom(void const * argument)
             } else {
                 //printf("disabled");
             }
+            xTaskResumeAll();
             osDelay(1);
         }
     }
@@ -776,7 +784,8 @@ void closeloop(void const * argument)
   /* USER CODE BEGIN closeloop */
     /* Infinite loop */
     for (;;) {
-        /** 沟槽的大疆，不能分开单独控制�??????????????????个ID下的4个电�?????????????????? **/
+        vTaskSuspendAll();
+        /** 沟槽的大疆，不能分开单独控制�???????????????????个ID下的4个电�??????????????????? **/
         /** 四轮闭环**/
         //SGW2Wheels(0.f,0.5f,0,0);
         Wheels_VelOut[0] = (int16_t) PID_Realise(&Wheels[0], -Wheels_vel[0], Motor_Info[0].speed, M3508_CURRENT_MAX, 5,1);
@@ -828,6 +837,7 @@ void closeloop(void const * argument)
         //printf("%f %f\n",locater.pos_x,MutiPos_x);
         LiDar_x_last = LiDar_x;
         LiDar_y_last = LiDar_y;
+        xTaskResumeAll();
         osDelay(1);
     }
   /* USER CODE END closeloop */
@@ -867,7 +877,7 @@ void init(void const * argument)
     PID_Set(&Translation_PID, 1.80f, 0.0f, 0.8f, 0.0f,0);
     PID_Set(&Turn_PID, 0.035f, 0.0f, 0.2f, 0.0f,0);
 
-    PID_Set(&VisionRun1, 1.8f, 0.000f, 0.f, 0.0f,0.0f);//�?????????进PID
+    PID_Set(&VisionRun1, 1.8f, 0.000f, 0.f, 0.0f,0.0f);//�??????????进PID
     PID_Set(&VisionRun2, 2.f, 0.0000f, 0.f, 0.0f,0.1f);//保守PID
     PID_Set(&DT35_Run, 0.01f, 0.0f, 0.0f, 0.0f,0);
 
@@ -897,16 +907,16 @@ void init(void const * argument)
           QueueBuffer = 0;
           xQueueSend(VisionData_QueueHandle, &QueueBuffer, 100);
           //vTaskResume(CommunicateTaskHandle);
-          vTaskResume(JudgeTaskHandle);
           vTaskResume(Debug_TaskHandle);
           vTaskResume(ChassisTaskHandle);
           vTaskResume(ClawTaskHandle);
           vTaskResume(SuctionTaskHandle);
           vTaskResume(VisionComTaskHandle);
           vTaskResume(CloseLoopTaskHandle);
-          vTaskDelete(InitTaskHandle);
+          vTaskResume(JudgeTaskHandle);
+          vTaskSuspend(InitTaskHandle);
       }
-      osDelay(100);
+      osDelay(1);
   }
   /* USER CODE END init */
 }
@@ -924,13 +934,15 @@ void communicate(void const * argument)
   /* Infinite loop */
   for(;;)
   {
+      vTaskSuspendAll();
       RaDar_Data_Rec(USART2_Buffer, &LiDar, &Vision_Data);
       Unpack_Screen_CMD(USART3_Buffer);
       if( USART4_Buffer[0] == 0x06)
       {
-          DT35_Rec(USART4_Buffer,&DT35_Data);          //瀵笵T35鐨勬暟鎹繘琛岃В�????????
+          DT35_Rec(USART4_Buffer,&DT35_Data);          //瀵笵T35鐨勬暟鎹繘琛岃В�?????????
       }
       locatorAndToF_Data_Rec(USART5_Buffer, &locater,&TOF_dis1,&TOF_dis2);
+      xTaskResumeAll();
       osDelay(1);
   }
   /* USER CODE END communicate */
@@ -951,6 +963,7 @@ void judge(void const * argument)
   /* Infinite loop */
   for(;;)
   {
+      vTaskSuspendAll();
       if(Interrupt_Flag == 0) {
           if (!(target_point.x == 0 && target_point.y == 0)) {
               //printf("in\n");
@@ -1078,6 +1091,7 @@ void judge(void const * argument)
               }
           }
       }
+      xTaskResumeAll();
       osDelay(1);
   }
   /* USER CODE END judge */
