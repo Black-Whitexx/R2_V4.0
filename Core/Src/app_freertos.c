@@ -1013,7 +1013,7 @@ void judge(void const * argument)
                       fabsf(LiDar.yaw - target_point.angle) < 3) {
                       //printf("%f",LiDar.yaw );
                       //Sheild_Flag = 0;
-                      Vision_Send(0xCC);;
+                      Vision_Send(0xCC);
                       ControlMsgSet(&ControlQueueBuf, CHASSIS, CHASSIS_STOP, 0, 0, 0, 0);
                       xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
                       ControlMsgInit(&ControlQueueBuf);
@@ -1059,7 +1059,7 @@ void judge(void const * argument)
                           ControlMsgSet(&ControlQueueBuf, SUCTION, Slope_OFF, 0, 0, 0, 0);
                           xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
                           ControlMsgInit(&ControlQueueBuf);
-                          Vision_Send(0xCC);
+                          Vision_Send(0x99);
                       } else {
                           printf("Re-Put");
                           ControlMsgSet(&ControlQueueBuf, CHASSIS, CHASSIS_STOP, 0, 0, 0, 0);

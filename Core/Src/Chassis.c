@@ -27,11 +27,11 @@ uint8_t cnt;
 
 /** 用于存储比赛5个放球点 **/
 PointStruct Frame_Points[5]= {
-        {.x = 4.85f,.y = 11.20f,.angle = 0.0f},
-        {.x = 4.85f,.y = 10.45f,.angle = 0.0f},
-        {.x = 4.85f,.y = 9.70f,.angle = 0.0f},
-        {.x = 4.85f,.y = 8.95f,.angle = 0.0f},
-        {.x = 4.85f,.y = 8.20f,.angle = 0.0f}
+        {.x = 3.85f,.y = 11.20f,.angle = 0.0f},
+        {.x = 3.85f,.y = 10.45f,.angle = 0.0f},
+        {.x = 3.85f,.y = 9.70f,.angle = 0.0f},
+        {.x = 3.85f,.y = 8.95f,.angle = 0.0f},
+        {.x = 3.85f,.y = 8.20f,.angle = 0.0f}
 };
 /** 用于存储比赛开始从1区跑到三区的目标点,有五个点 **/
 PointStruct Run1to3_Points[3] = {
