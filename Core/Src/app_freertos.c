@@ -149,13 +149,21 @@ void MX_FREERTOS_Init(void) {
   /* USER CODE END RTOS_QUEUES */
 
   /* Create the thread(s) */
+    /* definition and creation of ChassisTask */
+    osThreadDef(ChassisTask, chassis, osPriorityNormal, 0, 2048);
+    ChassisTaskHandle = osThreadCreate(osThread(ChassisTask), NULL);
+
+    /* definition and creation of CommunicateTask */
+    osThreadDef(CommunicateTask, communicate, osPriorityNormal, 0, 2048);
+    CommunicateTaskHandle = osThreadCreate(osThread(CommunicateTask), NULL);
+
+    /* definition and creation of JudgeTask */
+    osThreadDef(JudgeTask, judge, osPriorityNormal, 0, 2048);
+    JudgeTaskHandle = osThreadCreate(osThread(JudgeTask), NULL);
+
   /* definition and creation of Debug_Task */
   osThreadDef(Debug_Task, DebugTask, osPriorityNormal, 0, 512);
   Debug_TaskHandle = osThreadCreate(osThread(Debug_Task), NULL);
-
-  /* definition and creation of ChassisTask */
-  osThreadDef(ChassisTask, chassis, osPriorityNormal, 0, 2048);
-  ChassisTaskHandle = osThreadCreate(osThread(ChassisTask), NULL);
 
   /* definition and creation of ClawTask */
   osThreadDef(ClawTask, claw, osPriorityNormal, 0, 2048);
@@ -176,14 +184,6 @@ void MX_FREERTOS_Init(void) {
   /* definition and creation of InitTask */
   osThreadDef(InitTask, init, osPriorityRealtime, 0, 512);
   InitTaskHandle = osThreadCreate(osThread(InitTask), NULL);
-
-  /* definition and creation of CommunicateTask */
-  osThreadDef(CommunicateTask, communicate, osPriorityNormal, 0, 2048);
-  CommunicateTaskHandle = osThreadCreate(osThread(CommunicateTask), NULL);
-
-  /* definition and creation of JudgeTask */
-  osThreadDef(JudgeTask, judge, osPriorityNormal, 0, 2048);
-  JudgeTaskHandle = osThreadCreate(osThread(JudgeTask), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
     /* add threads, ... */
@@ -224,8 +224,9 @@ void DebugTask(void const * argument)
         //printf("%f\n",TOF_dis1);
         //printf("TOF: %f\n",TOF_dis1 );
         //printf("%d",Camp);
+        printf("%f %f\n",target_point.x,target_point.y);
         LED0_Flashing;
-        osDelay(500);
+        osDelay(50);
     }
   /* USER CODE END DebugTask */
 }
@@ -348,7 +349,6 @@ void chassis(void const * argument)
                 }
                 if (CloseLoopStatus == CloseLoop_MID360) {
                     Chassis_Move_OfVision(&target_point,&Chassis_GetBall_PID,3.f);
-                    //printf("%f %f\n",target_point.x,target_point.y);
                 }
                 else if (CloseLoopStatus == CloseLoop_Mid360AndDT35) {
                     Chassis_Move_OfVision(&target_point,&VisionRun2,3.f);
@@ -406,6 +406,7 @@ void chassis(void const * argument)
                 }
             }
         }
+        printf("Chassis\n");
         osDelay(1);
     }
   /* USER CODE END chassis */
@@ -449,6 +450,7 @@ void claw(void const * argument)
                 }
             }
         }
+        printf("Claw\n");
         osDelay(1);
     }
   /* USER CODE END claw */
@@ -551,6 +553,8 @@ void visioncom(void const * argument)
                     ControlMsgSet(&ControlQueueBuf, CLAW, CLAW_OPEN, 0, 0, 0, 0);
                     xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
                     ControlMsgSet(&ControlQueueBuf, CLAW, Toggle_Mid, 0, 0, 0, 0);
+                    xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
+                    ControlMsgSet(&ControlQueueBuf, CHASSIS, CHASSIS_STOP, 0, 0, 0, 0);
                     xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
                     //printf("%f %f",-visiondata.vision_y / 1000.0f + MutiPos_x,visiondata.vision_x / 1000.0f + MutiPos_y);
                     ControlMsgSet(&ControlQueueBuf, CHASSIS, CloseLoop_MID360,
@@ -682,7 +686,6 @@ void visioncom(void const * argument)
 //                      xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
 //                      ControlMsgSet(&ControlQueueBuf,CLAW,CLAW_OPEN,0,0,0,0);
 //                      xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
-                      osDelay(200);
                         ControlMsgSet(&ControlQueueBuf, CLAW, CLAW_CLOSE, 0, 0, 0, 0);
                         xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
                         ControlMsgSet(&ControlQueueBuf, SUCTION, StopVESC, 0, 0, 0, 0);
@@ -1017,7 +1020,7 @@ void judge(void const * argument)
                       ControlMsgSet(&ControlQueueBuf, CHASSIS, CHASSIS_STOP, 0, 0, 0, 0);
                       xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
                       ControlMsgInit(&ControlQueueBuf);
-                      printf("RunOK");
+                      printf("RunOK\n");
                   }
               } else if (CloseLoopStatus == CloseLoop_Mid360AndDT35) {
                   if (fabsf(target_point.x - LiDar.locx) < 1.f &&
