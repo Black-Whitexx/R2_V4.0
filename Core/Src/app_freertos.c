@@ -65,21 +65,29 @@ float Locator_Addup[2];
 float offset_angle = 0;
 extern float DT35_Forward,DT35_CloseBall;
 uint8_t Camp = RED;
-
+uint8_t Interrupt_Flag = 1;
+uint8_t CloseLoopStatus = 0;
+PointStruct target_point = {0, 0, 0};
+float offset_x = 0;
+uint8_t QueueBuffer = 0;
+uint8_t number = 0;
+uint8_t AlignStatus = 0;
+uint8_t StartPointNumber = 0;
 //extern locater_def locater;
-PointStruct Start_Point = {.x = 2.88f, .y = 9.7f, .angle = 0.0f};//3区调试用�????????????????
-PointStruct Watch_Point = {.x = 4.03f, .y = 9.7f, .angle = 0.0f};//3区调试用�????????????????
-//定义环类型，用于�????????�取不同数据作为反馈�??????????????????????-
+PointStruct Start_Point = {.x = 2.88f, .y = 9.7f, .angle = 0.0f};//3区调试用�?????????????????????
+PointStruct Watch_Point = {.x = 4.03f, .y = 9.7f, .angle = 0.0f};//3区调试用�?????????????????????
+//定义环类型，用于�?????????????�取不同数据作为反馈�???????????????????????????-
 
 /* USER CODE END Variables */
 osThreadId Debug_TaskHandle;
-osThreadId NRF_TaskHandle;
 osThreadId ChassisTaskHandle;
 osThreadId ClawTaskHandle;
 osThreadId SuctionTaskHandle;
 osThreadId VisionComTaskHandle;
 osThreadId CloseLoopTaskHandle;
 osThreadId InitTaskHandle;
+osThreadId CommunicateTaskHandle;
+osThreadId JudgeTaskHandle;
 osMessageQId NRF_RX_QueueHandle;
 osMessageQId VisionData_QueueHandle;
 osMessageQId ControlQueueHandle;
@@ -90,13 +98,14 @@ osMessageQId ControlQueueHandle;
 /* USER CODE END FunctionPrototypes */
 
 void DebugTask(void const * argument);
-void NRFTask(void const * argument);
 void chassis(void const * argument);
 void claw(void const * argument);
 void suction(void const * argument);
 void visioncom(void const * argument);
 void closeloop(void const * argument);
 void init(void const * argument);
+void communicate(void const * argument);
+void judge(void const * argument);
 
 void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
 
@@ -132,7 +141,7 @@ void MX_FREERTOS_Init(void) {
   VisionData_QueueHandle = osMessageCreate(osMessageQ(VisionData_Queue), NULL);
 
   /* definition and creation of ControlQueue */
-  osMessageQDef(ControlQueue, 8, ControlMsgStruct);
+  osMessageQDef(ControlQueue, 16, ControlMsgStruct);
   ControlQueueHandle = osMessageCreate(osMessageQ(ControlQueue), NULL);
 
   /* USER CODE BEGIN RTOS_QUEUES */
@@ -141,12 +150,8 @@ void MX_FREERTOS_Init(void) {
 
   /* Create the thread(s) */
   /* definition and creation of Debug_Task */
-  osThreadDef(Debug_Task, DebugTask, osPriorityNormal, 0, 1024);
+  osThreadDef(Debug_Task, DebugTask, osPriorityNormal, 0, 512);
   Debug_TaskHandle = osThreadCreate(osThread(Debug_Task), NULL);
-
-  /* definition and creation of NRF_Task */
-  osThreadDef(NRF_Task, NRFTask, osPriorityNormal, 0, 1024);
-  NRF_TaskHandle = osThreadCreate(osThread(NRF_Task), NULL);
 
   /* definition and creation of ChassisTask */
   osThreadDef(ChassisTask, chassis, osPriorityNormal, 0, 2048);
@@ -169,8 +174,16 @@ void MX_FREERTOS_Init(void) {
   CloseLoopTaskHandle = osThreadCreate(osThread(CloseLoopTask), NULL);
 
   /* definition and creation of InitTask */
-  osThreadDef(InitTask, init, osPriorityRealtime, 0, 1024);
+  osThreadDef(InitTask, init, osPriorityRealtime, 0, 512);
   InitTaskHandle = osThreadCreate(osThread(InitTask), NULL);
+
+  /* definition and creation of CommunicateTask */
+  osThreadDef(CommunicateTask, communicate, osPriorityNormal, 0, 2048);
+  CommunicateTaskHandle = osThreadCreate(osThread(CommunicateTask), NULL);
+
+  /* definition and creation of JudgeTask */
+  osThreadDef(JudgeTask, judge, osPriorityNormal, 0, 2048);
+  JudgeTaskHandle = osThreadCreate(osThread(JudgeTask), NULL);
 
   /* USER CODE BEGIN RTOS_THREADS */
     /* add threads, ... */
@@ -190,7 +203,7 @@ void DebugTask(void const * argument)
 {
   /* USER CODE BEGIN DebugTask */
     /** 等待NRF校准 **/
-    //包含部分初始化内�??????????????????
+    //包含部分初始化内�???????????????????????
 //    while (NRF24L01_Check()) {
 //        printf("no\n");
 //    }
@@ -198,107 +211,23 @@ void DebugTask(void const * argument)
 
     /* Infinite loop */
     for (;;) {
-        //printf("%.2f %.2f %.2f\n", DT35_Data.DT35_2, DT35_Data.DT35_3,DT35_Data.DT35_1);
-//        printf("%.2f %.2f \n", locater.pos_x, locater.pos_y);
+//        printf("%.2f %.2f %.2f\n", DT35_Data.DT35_2, DT35_Data.DT35_3,DT35_Data.DT35_1);
+        //printf("%.2f %.2f \n", locater.pos_x, locater.pos_y);
 //        printf("%.3f %.3f\n", LiDar.locx, LiDar.locy);
         //printf("%f %f\n",MutiPos_x,MutiPos_y);
 //        printf("%s\n", USART5_Buffer);
 //        printf("%f\n", LiDar.yaw);
-        //printf("%.2f,%.2f,%.2f,%.4f\n",locater.pos_x,locater.pos_y,locater.angle,locater.Tof_dis);
+        //printf("%.2f,%.2f,%.2f,%.4f,%.4f\n",locater.pos_x,locater.pos_y,LiDar.yaw,TOF_dis1,TOF_dis2);
         //printf("%s",USART2_Buffer);
         //
-         //printf("%f %f %f %f\n",TOF_dis2,TOF_dis1,MutiPos_x,MutiPos_y);
+         //printf("%f %f\n",MutiPos_x,MutiPos_y);
         //printf("%f\n",TOF_dis1);
         //printf("TOF: %f\n",TOF_dis1 );
         //printf("%d",Camp);
-
-        osDelay(50);
-    }
-  /* USER CODE END DebugTask */
-}
-
-/* USER CODE BEGIN Header_NRFTask */
-/**
-* @brief 此函数用于接收遥控器的数�?????????????????????????
-* @param argument: Not used
-* @retval None
-*/
-/* USER CODE END Header_NRFTask */
-void NRFTask(void const * argument)
-{
-  /* USER CODE BEGIN NRFTask */
-    /** 定义存储数据变量 **/
-//    static uint8_t rc_data[RX_PLOAD_WIDTH] = {0};//接收数组缓冲
-//    static RemoteRXSturct RemoteRX;//用于存遥控器传来的数
-//    uint8_t cmd;
-//    int16_t suctionSpeed = 0;
-
-    /* Infinite loop */
-    for (;;) {
-//        if (NRF24L01_RxPacket(rc_data) == 0)  //接收遥控器数据，若收到返0，若没收到返1
-//        {
-//            /** 读取左右摇杆值，限制�?????????????????????????-128~128 **/
-//            RemoteRX.lx = (int16_t) -(rc_data[1] - 128);
-//            RemoteRX.ly = (int16_t) -(rc_data[2] - 128);
-//            RemoteRX.rx = (int16_t) -(rc_data[3] - 128);
-//            RemoteRX.ry = (int16_t) -(rc_data[4] - 128);
-//            /** 接收遥控器按键命 **/
-//            RemoteRX.command = rc_data[5];
-//            /** 设置摇杆值的死区 **/
-//            if (abs(RemoteRX.rx) < 2) RemoteRX.rx = 0;
-//            if (abs(RemoteRX.ry) < 2) RemoteRX.ry = 0;
-//            if (abs(RemoteRX.lx) < 2) RemoteRX.lx = 0;
-//            if (abs(RemoteRX.ly) < 2) RemoteRX.ly = 0;
-//            /** 对遥控器进行滤波，原因是遥控器有莫名其妙的电平跳 **/
-//            if (RemoteRX.rx == -5) RemoteRX.rx = 0;
-//            if (RemoteRX.ry == -4) RemoteRX.ry = 0;
-//            if (RemoteRX.lx == -4) RemoteRX.lx = 0;
-//            if (RemoteRX.ly == -4) RemoteRX.ly = 0;
-//
-//            /**将NRF数据更新到四轮全�??????????????????????变量�??????????????????????**/
-//            SGW2Wheels((float) RemoteRX.rx * 3 / 128, (float) RemoteRX.ry * 3 / 128, (float) RemoteRX.lx * 3 / 128, 0);
-//            printf("%d",RemoteRX.command);
-//            /** 对遥控器按键命令进行响应 **/
-//            switch (RemoteRX.command) {
-//                case Left_Up_Up:
-//                    break;
-//                case Left_Up:
-//                    printf("start");
-//                    QueueBuffer = 0;
-//                    xQueueSend(VisionData_QueueHandle, &QueueBuffer, 100);
-//                    break;
-//                case Right_Up:
-//
-//                    break;
-//                case Right_Down:
-//
-//                    break;
-//                case Right_Right:
-//
-//                    break;
-//                case Left_Left:
-//
-//                    break;
-//                case Left_Right:
-//
-//                    break;
-//                case Right_Left:
-//
-//                    break;
-//                case Right_Up_Up:
-//                    break;
-//                default:
-//                    break;
-//            }
-//        printf("%d,%d\n",RemoteRX.command,RemoteRX.ly);/** 用于调试遥控器按 **/
-//            RemoteRX.command = 0; //重置命令
-//
-//        }
-        //printf("detecting\n");
         LED0_Flashing;
         osDelay(500);
     }
-  /* USER CODE END NRFTask */
+  /* USER CODE END DebugTask */
 }
 
 /* USER CODE BEGIN Header_chassis */
@@ -312,15 +241,7 @@ void chassis(void const * argument)
 {
   /* USER CODE BEGIN chassis */
     ControlMsgStruct ControlQueueBuf;
-    uint8_t Interrupt_Flag = 1;
-    uint8_t CloseLoopStatus = 0;
-    PointStruct target_point = {0, 0, 0};
-    float offset_x = 0;
-    uint8_t QueueBuffer = 0;
-    uint8_t number = 0;
-    uint8_t AlignStatus = 0,last_cmd = 0;
     VisionStruct visiondatabuf;
-    uint8_t StartPointNumber = 0;
     /* Infinite loop */
     for (;;) {
         if (xQueuePeek(ControlQueueHandle, &ControlQueueBuf, 0) == pdTRUE) {
@@ -413,127 +334,28 @@ void chassis(void const * argument)
                     if(StartPointNumber == 0) {
                         //printf("detecting1\n");
                         Chassis_Move_OfVision(&target_point,&VisionRun1,2.5f);
-                        if (fabsf(target_point.y-MutiPos_y) < 0.05f) {
-                            ControlMsgSet(&ControlQueueBuf, CHASSIS, CloseLoop_START, Run1to3_Points[1].x,
-                                          Run1to3_Points[1].y, 0, 0);
-                            xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
-                            ControlMsgSet(&ControlQueueBuf, CHASSIS, CHASSIS_RUN, 0, 0, 0, 0);
-                            xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
-                            ControlMsgInit(&ControlQueueBuf);
-                            StartPointNumber = 1;
-                            printf("1ok");
-                        }
                     }
                     /** 横向 **/
                     else if(StartPointNumber == 1) {
                         //printf("%f %f",target_point.x,target_point.y);
                         Chassis_Move_OfVision(&target_point,&VisionRun1,2.5f);
-                            if (fabsf(target_point.x-MutiPos_x) < 0.1f ) {
-                                ControlMsgSet(&ControlQueueBuf, CHASSIS, CloseLoop_START, Run1to3_Points[2].x,
-                                              Run1to3_Points[2].y, 0, 0);
-                                xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
-                                ControlMsgSet(&ControlQueueBuf, CHASSIS, CHASSIS_RUN, 0, 0, 0, 0);
-                                xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
-                                ControlMsgInit(&ControlQueueBuf);
-                                StartPointNumber = 2;
-                                printf("2ok");
-                            }
                     }
                     /**纵向 **/
                     else if(StartPointNumber == 2) {
                         Chassis_Move_OfVision(&target_point,&VisionRun1,3.f);
                         //printf("%f %f",target_point.x,target_point.y);
-                        if ((target_point.y -MutiPos_y) < 0.1f &&
-                            fabsf(LiDar.yaw - target_point.angle) < 3) {
-                            ControlMsgSet(&ControlQueueBuf, CHASSIS, CloseLoop_MID360, Start_Point.x,
-                                          Start_Point.y, 0, 0);
-                            xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
-                            ControlMsgSet(&ControlQueueBuf, CHASSIS, CHASSIS_RUN, 0, 0, 0, 0);
-                            xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
-                            ControlMsgSet(&ControlQueueBuf, CLAW, CLAW_CLOSE, 0, 0, 0, 0);
-                            xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
-                            ControlMsgSet(&ControlQueueBuf, CLAW, Toggle_Mid, 0, 0, 0, 0);
-                            xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
-                            ControlMsgSet(&ControlQueueBuf, SUCTION, SUCTION_ON, 0, 0, 0, 0);
-                            xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
-                            ControlMsgSet(&ControlQueueBuf, SUCTION, StopVESC, 0, 0, 0, 0);
-                            xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
-                            ControlMsgSet(&ControlQueueBuf, SUCTION, Slope_OFF, 0, 0, 0, 0);
-                            xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
-                            ControlMsgInit(&ControlQueueBuf);
-                            StartPointNumber = 3;
-                            printf("3ok");
-                        }
                     }
                 }
                 if (CloseLoopStatus == CloseLoop_MID360) {
                     Chassis_Move_OfVision(&target_point,&Chassis_GetBall_PID,3.f);
-                    //printf("%f %f\n",MutiPos_x,MutiPos_y);
-                    if (Distance_Calc(target_point,MutiPos_x,MutiPos_y) < 0.3f &&
-                        fabsf(LiDar.yaw - target_point.angle) < 3) {
-                        //printf("%f",LiDar.yaw );
-                        //Sheild_Flag = 0;
-                        Vision_Send(0xCC);
-                        ControlMsgSet(&ControlQueueBuf, CHASSIS, CHASSIS_STOP, 0, 0, 0, 0);
-                        xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
-                        ControlMsgInit(&ControlQueueBuf);
-                        printf("RunOK");
-                    }
+                    //printf("%f %f\n",target_point.x,target_point.y);
                 }
                 else if (CloseLoopStatus == CloseLoop_Mid360AndDT35) {
                     Chassis_Move_OfVision(&target_point,&VisionRun2,3.f);
                     //printf("MAD");
-                    if (fabsf(target_point.x - LiDar.locx) < 1.f &&
-                        fabsf(LiDar.yaw - target_point.angle) < 3.f) {
-                        if(number>0) {
-                            ControlMsgSet(&ControlQueueBuf, CHASSIS, CloseLoop_DT35, DT35_AimPoints[number - 1].x,
-                                          DT35_AimPoints[number - 1].y, 0, 0);
-                            xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
-                            ControlMsgInit(&ControlQueueBuf);
-                            printf("MID2DT,ok\n");
-                        }
-                    }
                 }
                 else if (CloseLoopStatus == CloseLoop_DT35) {
                     Chassis_Move_OfDT35(&target_point);
-                    if (Distance_Calc(target_point, DT35_CloseBall, DT35_Forward) < 5.0f ) {
-                        if(TOF_dis2 > 100.f) {
-                            printf("PutBall");
-                            ControlMsgSet(&ControlQueueBuf, CLAW, CLAW_OPEN, 0, 0, 0, 0);
-                            xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
-                            ControlMsgSet(&ControlQueueBuf, CHASSIS, CHASSIS_STOP, 0, 0, 0, 0);
-                            xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
-                            osDelay(300);
-                            ControlMsgSet(&ControlQueueBuf, CHASSIS, CloseLoop_MID360, Watch_Point.x, Watch_Point.y,
-                                          Watch_Point.angle, 0);
-                            xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
-                            ControlMsgSet(&ControlQueueBuf, CHASSIS, CHASSIS_RUN, 0, 0, 0, 0);
-                            xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
-//                        ControlMsgSet(&ControlQueueBuf, CLAW, CLAW_CLOSE, 0, 0, 0, 0);
-//                        xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
-//                        ControlMsgSet(&ControlQueueBuf, CLAW, Toggle_Mid, 0, 0, 0, 0);
-//                        xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
-                            ControlMsgSet(&ControlQueueBuf, SUCTION, SUCTION_OFF, 0, 0, 0, 0);
-                            xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
-                            ControlMsgSet(&ControlQueueBuf, SUCTION, StopVESC, 0, 0, 0, 0);
-                            xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
-                            ControlMsgSet(&ControlQueueBuf, SUCTION, Slope_OFF, 0, 0, 0, 0);
-                            xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
-                            ControlMsgInit(&ControlQueueBuf);
-                            Vision_Send(0xCC);
-                        }
-                        else
-                        {
-                            printf("Re-Put");
-                            ControlMsgSet(&ControlQueueBuf, CHASSIS, CHASSIS_STOP, 0, 0, 0, 0);
-                            xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
-                            ControlMsgSet(&ControlQueueBuf, CLAW, Toggle_Mid, 0, 0, 0, 0);
-                            xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
-                            ControlMsgInit(&ControlQueueBuf);
-                            osDelay(500);
-                            Vision_Send(0xEE);
-                        }
-                    }
                 }
                     /** 对球闭环 **/
                 else if (CloseLoopStatus == CloseLoop_Ball) {
@@ -691,7 +513,7 @@ void visioncom(void const * argument)
 {
   /* USER CODE BEGIN visioncom */
     VisionStruct visiondata;
-    uint8_t status;//用于小状态切�????????????????
+    uint8_t status;//用于小状态切�?????????????????????
     float pos_x;
     float pos_y;
     ControlMsgStruct ControlQueueBuf;
@@ -700,7 +522,7 @@ void visioncom(void const * argument)
         if (xQueueReceive(VisionData_QueueHandle, &visiondata, 0) == pdTRUE) {
             if (Sheild_Flag == 0) {
                 if (visiondata.flag == 0) {
-                    //并不是从1�????????????????3，在3区调试用
+                    //并不是从1�?????????????????????3，在3区调试用
                     printf("START\n");
                     ControlMsgSet(&ControlQueueBuf, CHASSIS, CloseLoop_START, Run1to3_Points[0].x, Run1to3_Points[0].y,
                                   0, 0);
@@ -798,37 +620,35 @@ void visioncom(void const * argument)
                         printf("Vision:RightBallWillIn\n");
                         ControlMsgSet(&ControlQueueBuf, SUCTION, Slope_OFF, 0, 0, 0, 0);
                         xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
-                        while(TOF_dis1 > 250){
-                            osDelay(1);
-                        }
-                            /** 正确的球即将进入车内 **/
-                            printf("TOF:RightBallWillIn\n");
+                        ControlMsgSet(&ControlQueueBuf, CHASSIS, CloseLoop_MID360, Watch_Point.x, Watch_Point.y,
+                                      Watch_Point.angle, 0);
+                        xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
+                       if(TOF_dis1 < 280) {
+                           /** 正确的球即将进入车内 **/
+                           printf("TOF:RightBallWillIn\n");
 //                  ControlMsgSet(&ControlQueueBuf,CHASSIS,CloseLoop_MID360,Start_Point.x,Start_Point.y,Start_Point.angle,0);
 //                  xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
 //                  ControlMsgSet(&ControlQueueBuf,CHASSIS,CHASSIS_RUN,0,0,0,0);
 //                      xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
-                            Vision_Send(0xDD);
-                            ControlMsgSet(&ControlQueueBuf, CHASSIS, CloseLoop_MID360, Watch_Point.x, Watch_Point.y,
-                                          Watch_Point.angle, 0);
-                            xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
-                            ControlMsgSet(&ControlQueueBuf, CHASSIS, CHASSIS_RUN, 0, 0, 0, 0);
-                            xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
-                            ControlMsgSet(&ControlQueueBuf, CLAW, CLAW_OPEN, 0, 0, 0, 0);
-                            xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
-                            osDelay(100);
-                            ControlMsgSet(&ControlQueueBuf, CLAW, Toggle_Down, 0, 0, 0, 0);
-                            xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
-                            osDelay(50);
-                            ControlMsgSet(&ControlQueueBuf, SUCTION, SUCTION_OFF, 0, 0, 0, 0);
-                            xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
-                            ControlMsgSet(&ControlQueueBuf, SUCTION, StopVESC, 0, 0, 0, 0);
-                            xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
-                            ControlMsgInit(&ControlQueueBuf);
-
+                           Vision_Send(0xDD);
+                           ControlMsgSet(&ControlQueueBuf, CHASSIS, CHASSIS_RUN, 0, 0, 0, 0);
+                           xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
+                           ControlMsgSet(&ControlQueueBuf, CLAW, CLAW_OPEN, 0, 0, 0, 0);
+                           xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
+                           osDelay(100);
+                           ControlMsgSet(&ControlQueueBuf, CLAW, Toggle_Down, 0, 0, 0, 0);
+                           xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
+                           osDelay(50);
+                           ControlMsgSet(&ControlQueueBuf, SUCTION, SUCTION_OFF, 0, 0, 0, 0);
+                           xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
+                           ControlMsgSet(&ControlQueueBuf, SUCTION, StopVESC, 0, 0, 0, 0);
+                           xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
+                           ControlMsgInit(&ControlQueueBuf);
+                       }
                     }
                 } else if (visiondata.flag == 3) {
                     if (visiondata.vision_y == 2) {
-                        /** 停车把球排出�???????????????? **/
+                        /** 停车把球排出�????????????????????? **/
                         printf("WrongBallStop\n");
                         ControlMsgSet(&ControlQueueBuf, CHASSIS, CHASSIS_STOP, 0, 0, 0, 0);
                         xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
@@ -896,7 +716,7 @@ void visioncom(void const * argument)
                 }
                 else if (visiondata.flag == 4) {
                     if(visiondata.vision_y == 0 && visiondata.vision_x != 0) {
-                        printf("GoToBasket");
+                        printf("GoToBasket\n");
                         ControlMsgSet(&ControlQueueBuf, CHASSIS, CloseLoop_Mid360AndDT35,
                                       Frame_Points[(int) (visiondata.vision_x - 1)].x,
                                       Frame_Points[(int) (visiondata.vision_x - 1)].y, 0, visiondata.vision_x);
@@ -906,7 +726,7 @@ void visioncom(void const * argument)
                         ControlMsgInit(&ControlQueueBuf);
                     }
                     else if(visiondata.vision_x == 0 && visiondata.vision_y != 0){
-                        printf("Re-put");
+                        printf("Re-put\n");
                         ControlMsgSet(&ControlQueueBuf, CLAW, Toggle_Up, 0, 0, 0, 0);
                         xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
                         ControlMsgSet(&ControlQueueBuf, CHASSIS, CloseLoop_DT35,
@@ -935,7 +755,6 @@ void visioncom(void const * argument)
             } else {
                 //printf("disabled");
             }
-
             osDelay(1);
         }
     }
@@ -954,7 +773,7 @@ void closeloop(void const * argument)
   /* USER CODE BEGIN closeloop */
     /* Infinite loop */
     for (;;) {
-        /** 沟槽的大疆，不能分开单独控制�?????????????个ID下的4个电�????????????? **/
+        /** 沟槽的大疆，不能分开单独控制�??????????????????个ID下的4个电�?????????????????? **/
         /** 四轮闭环**/
         //SGW2Wheels(0.f,0.5f,0,0);
         Wheels_VelOut[0] = (int16_t) PID_Realise(&Wheels[0], -Wheels_vel[0], Motor_Info[0].speed, M3508_CURRENT_MAX, 5,1);
@@ -1024,7 +843,8 @@ void init(void const * argument)
   /* Infinite loop */
     uint8_t Screen_Buffer;
     ControlMsgStruct ControlQueueBuf;
-    vTaskSuspend(NRF_TaskHandle);
+    //vTaskSuspend(CommunicateTaskHandle);
+    vTaskSuspend(JudgeTaskHandle);
     vTaskSuspend(Debug_TaskHandle);
     vTaskSuspend(ChassisTaskHandle);
     vTaskSuspend(ClawTaskHandle);
@@ -1044,7 +864,7 @@ void init(void const * argument)
     PID_Set(&Translation_PID, 1.80f, 0.0f, 0.8f, 0.0f,0);
     PID_Set(&Turn_PID, 0.035f, 0.0f, 0.2f, 0.0f,0);
 
-    PID_Set(&VisionRun1, 1.8f, 0.000f, 0.f, 0.0f,0.0f);//�????进PID
+    PID_Set(&VisionRun1, 1.8f, 0.000f, 0.f, 0.0f,0.0f);//�?????????进PID
     PID_Set(&VisionRun2, 2.f, 0.0000f, 0.f, 0.0f,0.1f);//保守PID
     PID_Set(&DT35_Run, 0.01f, 0.0f, 0.0f, 0.0f,0);
 
@@ -1073,7 +893,8 @@ void init(void const * argument)
           osDelay(3000);
           QueueBuffer = 0;
           xQueueSend(VisionData_QueueHandle, &QueueBuffer, 100);
-          vTaskResume(NRF_TaskHandle);
+          //vTaskResume(CommunicateTaskHandle);
+          vTaskResume(JudgeTaskHandle);
           vTaskResume(Debug_TaskHandle);
           vTaskResume(ChassisTaskHandle);
           vTaskResume(ClawTaskHandle);
@@ -1085,6 +906,178 @@ void init(void const * argument)
       osDelay(100);
   }
   /* USER CODE END init */
+}
+
+/* USER CODE BEGIN Header_communicate */
+/**
+* @brief Function implementing the CommunicateTask thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_communicate */
+void communicate(void const * argument)
+{
+  /* USER CODE BEGIN communicate */
+  /* Infinite loop */
+  for(;;)
+  {
+      RaDar_Data_Rec(USART2_Buffer, &LiDar, &Vision_Data);
+      Unpack_Screen_CMD(USART3_Buffer);
+      if( USART4_Buffer[0] == 0x06)
+      {
+          DT35_Rec(USART4_Buffer,&DT35_Data);          //瀵笵T35鐨勬暟鎹繘琛岃В�????????
+      }
+      locatorAndToF_Data_Rec(USART5_Buffer, &locater,&TOF_dis1,&TOF_dis2);
+      osDelay(1);
+  }
+  /* USER CODE END communicate */
+}
+
+/* USER CODE BEGIN Header_judge */
+/**
+* @brief Function implementing the JudgeTask thread.
+* @param argument: Not used
+* @retval None
+*/
+/* USER CODE END Header_judge */
+void judge(void const * argument)
+{
+  /* USER CODE BEGIN judge */
+    ControlMsgStruct ControlQueueBuf;
+    VisionStruct visiondatabuf;
+  /* Infinite loop */
+  for(;;)
+  {
+      if(Interrupt_Flag == 0) {
+          if (!(target_point.x == 0 && target_point.y == 0)) {
+              //printf("in\n");
+              //printf("%d",CloseLoopStatus);
+              if (CloseLoopStatus == CloseLoop_START) {
+                  //printf("startrunning");
+                  /** 纵向 **/
+                  if (StartPointNumber == 0) {
+                      //printf("detecting1\n");
+                      if (fabsf(target_point.y - MutiPos_y) < 0.1f) {
+                          ControlMsgSet(&ControlQueueBuf, CHASSIS, CloseLoop_START, Run1to3_Points[1].x,
+                                        Run1to3_Points[1].y, 0, 0);
+                          xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
+                          ControlMsgSet(&ControlQueueBuf, CHASSIS, CHASSIS_RUN, 0, 0, 0, 0);
+                          xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
+                          ControlMsgInit(&ControlQueueBuf);
+                          StartPointNumber = 1;
+                          printf("1ok");
+                      }
+                  }
+                      /** 横向 **/
+                  else if (StartPointNumber == 1) {
+                      //printf("%f %f",target_point.x,target_point.y);
+                      if (fabsf(target_point.x - MutiPos_x) < 0.1f) {
+                          ControlMsgSet(&ControlQueueBuf, CHASSIS, CloseLoop_START, Run1to3_Points[2].x,
+                                        Run1to3_Points[2].y, 0, 0);
+                          xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
+                          ControlMsgSet(&ControlQueueBuf, CHASSIS, CHASSIS_RUN, 0, 0, 0, 0);
+                          xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
+                          ControlMsgInit(&ControlQueueBuf);
+                          StartPointNumber = 2;
+                          printf("2ok");
+                      }
+                  }
+                      /**纵向 **/
+                  else if (StartPointNumber == 2) {
+                      //printf("%f %f",target_point.x,target_point.y);
+                      if ((target_point.y - MutiPos_y) < 0.1f &&
+                          fabsf(LiDar.yaw - target_point.angle) < 3) {
+                          ControlMsgSet(&ControlQueueBuf, CHASSIS, CloseLoop_MID360, Start_Point.x,
+                                        Start_Point.y, 0, 0);
+                          xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
+                          ControlMsgSet(&ControlQueueBuf, CHASSIS, CHASSIS_RUN, 0, 0, 0, 0);
+                          xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
+                          ControlMsgSet(&ControlQueueBuf, CLAW, CLAW_CLOSE, 0, 0, 0, 0);
+                          xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
+                          ControlMsgSet(&ControlQueueBuf, CLAW, Toggle_Mid, 0, 0, 0, 0);
+                          xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
+                          ControlMsgSet(&ControlQueueBuf, SUCTION, SUCTION_ON, 0, 0, 0, 0);
+                          xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
+                          ControlMsgSet(&ControlQueueBuf, SUCTION, StopVESC, 0, 0, 0, 0);
+                          xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
+                          ControlMsgSet(&ControlQueueBuf, SUCTION, Slope_OFF, 0, 0, 0, 0);
+                          xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
+                          ControlMsgInit(&ControlQueueBuf);
+                          StartPointNumber = 3;
+                          printf("3ok");
+                      }
+                  }
+              }
+              if (CloseLoopStatus == CloseLoop_MID360) {
+                  if (Distance_Calc(target_point, MutiPos_x, MutiPos_y) < 0.3f &&
+                      fabsf(LiDar.yaw - target_point.angle) < 3) {
+                      //printf("%f",LiDar.yaw );
+                      //Sheild_Flag = 0;
+                      Vision_Send(0xCC);;
+                      ControlMsgSet(&ControlQueueBuf, CHASSIS, CHASSIS_STOP, 0, 0, 0, 0);
+                      xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
+                      ControlMsgInit(&ControlQueueBuf);
+                      printf("RunOK");
+                  }
+              } else if (CloseLoopStatus == CloseLoop_Mid360AndDT35) {
+                  if (fabsf(target_point.x - LiDar.locx) < 1.f &&
+                      fabsf(LiDar.yaw - target_point.angle) < 3.f) {
+                      if (number > 0) {
+                          ControlMsgSet(&ControlQueueBuf, CHASSIS, CloseLoop_DT35, DT35_AimPoints[number - 1].x,
+                                        DT35_AimPoints[number - 1].y, 0, 0);
+                          xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
+                          ControlMsgInit(&ControlQueueBuf);
+                          printf("MID2DT,ok\n");
+                      } else {
+                          ControlMsgSet(&ControlQueueBuf, CHASSIS, CHASSIS_STOP, 0, 0, 0, 0);
+                          xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
+                          ControlMsgInit(&ControlQueueBuf);
+                      }
+                  }
+              } else if (CloseLoopStatus == CloseLoop_DT35) {
+                  if (Distance_Calc(target_point, DT35_CloseBall, DT35_Forward) < 5.0f) {
+                      if (TOF_dis2 > 100.f) {
+                          printf("PutBall");
+                          ControlMsgSet(&ControlQueueBuf, CLAW, CLAW_OPEN, 0, 0, 0, 0);
+                          xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
+                          ControlMsgSet(&ControlQueueBuf, CHASSIS, CHASSIS_STOP, 0, 0, 0, 0);
+                          xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
+                          osDelay(500);
+                          ControlMsgSet(&ControlQueueBuf, CHASSIS, CloseLoop_MID360, Watch_Point.x, Watch_Point.y,
+                                        Watch_Point.angle, 0);
+                          xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
+                          ControlMsgSet(&ControlQueueBuf, CHASSIS, CHASSIS_RUN, 0, 0, 0, 0);
+                          xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
+//                        ControlMsgSet(&ControlQueueBuf, CLAW, CLAW_CLOSE, 0, 0, 0, 0);
+//                        xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
+//                        ControlMsgSet(&ControlQueueBuf, CLAW, Toggle_Mid, 0, 0, 0, 0);
+//                        xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
+                          ControlMsgSet(&ControlQueueBuf, SUCTION, SUCTION_OFF, 0, 0, 0, 0);
+                          xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
+                          ControlMsgSet(&ControlQueueBuf, SUCTION, StopVESC, 0, 0, 0, 0);
+                          xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
+                          ControlMsgSet(&ControlQueueBuf, SUCTION, Slope_OFF, 0, 0, 0, 0);
+                          xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
+                          ControlMsgInit(&ControlQueueBuf);
+                          Vision_Send(0xCC);
+                      } else {
+                          printf("Re-Put");
+                          ControlMsgSet(&ControlQueueBuf, CHASSIS, CHASSIS_STOP, 0, 0, 0, 0);
+                          xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
+                          ControlMsgSet(&ControlQueueBuf, CLAW, Toggle_Mid, 0, 0, 0, 0);
+                          xQueueSend(ControlQueueHandle, &ControlQueueBuf, 100);
+                          ControlMsgInit(&ControlQueueBuf);
+                          osDelay(500);
+                          Vision_Send(0xEE);
+                      }
+                  }
+
+              }
+          }
+      }
+      osDelay(1);
+  }
+  /* USER CODE END judge */
 }
 
 /* Private application code --------------------------------------------------*/
