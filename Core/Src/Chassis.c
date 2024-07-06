@@ -114,7 +114,7 @@ void Chassis_Move(PointStruct *target_point)
  * @brief 底盘跑点函数
  * @param target_point 目标点结构体
  */
-void Chassis_Move_OfVision(PointStruct *target_point,PID_t *pid,float max)
+void Chassis_Move_OfVision(PointStruct *target_point,PID_t *pid,float max,float min)
 {
     float xSpeed = 0.0f,ySpeed = 0.0f;
     float dis = 0.0f;//当前点与目标点的距离
@@ -135,11 +135,14 @@ void Chassis_Move_OfVision(PointStruct *target_point,PID_t *pid,float max)
     else if(dis<=ki_gain_threshold){
         ki_gain = 1 - dis/ki_gain_threshold;
     }
-    vel = PID_Realise(pid, 0, -dis, 0.5f, 0.01f,ki_gain);
+    vel = PID_Realise(pid, 0, -dis, 1.f, 0.01f,ki_gain);
+//    if(vel<min){
+//        vel = min;
+//    }
     //速度向量取绝对值
     arm_abs_f32(&vel, &vel, 1);
     //计算角速度
-    omega = PID_Realise(&Turn_PID, 0, -delta_angle, 1.2f, 0.1f,1);
+    omega = PID_Realise(&Turn_PID, 0, -delta_angle, 0.8f, 0.1f,1);
 
     //线速度分解为x和y的分量
     xSpeed = vel * arm_cos_f32(atan2f(err_y, err_x));
@@ -177,13 +180,13 @@ void Chassis_Move_OfDT35(PointStruct *target_point)
         //max_out = 0.1f;
     arm_sqrt_f32(err_x * err_x + err_y * err_y,&dis);
     //计算平动速度向量
-    if(dis>ki_gain_threshold){
-        ki_gain = 0;
-    }
-    else if(dis<=ki_gain_threshold){
-        ki_gain = 1 - dis/ki_gain_threshold;
-    }
-    vel = PID_Realise(&DT35_Run, 0, -dis, 0.5f, 0.01f,ki_gain);
+//    if(dis>ki_gain_threshold){
+//        ki_gain = 0;
+//    }
+//    else if(dis<=ki_gain_threshold){
+//        ki_gain = 1 - dis/ki_gain_threshold;
+//    }
+    vel = PID_Realise(&DT35_Run, 0, -dis, 1.f, 0.01f,ki_gain);
     //速度向量取绝对值
     arm_abs_f32(&vel, &vel, 1);
     //计算角速度

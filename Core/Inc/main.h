@@ -188,6 +188,23 @@ void Error_Handler(void);
 //’Û”™
 #define RED 1
 #define BLUE 2
+//∂®“Â
+#define CLAW_CLOSE_H HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_RESET);
+#define CLAW_OPEN_H HAL_GPIO_WritePin(GPIOD, GPIO_PIN_11, GPIO_PIN_SET);
+#define Toggle_Up_H Toggle_Pos = 3100;
+#define Toggle_Mid_H Toggle_Pos = 1500;
+#define Toggle_Down_H Toggle_Pos = 50;
+#define SUCTION_ON_H HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, GPIO_PIN_SET);
+
+#define SUCTION_OFF_H HAL_GPIO_WritePin(GPIOD, GPIO_PIN_12, GPIO_PIN_RESET);
+
+#define Slope_ON_H Slope_Pos = 1500;
+
+#define Slope_OFF_H Slope_Pos = 0;
+
+#define Slope_OUT_H Slope_Pos = 1500;
+#define OpenVESC_H VESC_Speed = -7000;
+#define StopVESC_H VESC_Speed = 0;
 typedef struct {
     uint16_t Device;
     uint16_t Command;

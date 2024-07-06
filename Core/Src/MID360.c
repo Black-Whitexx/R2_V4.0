@@ -20,6 +20,7 @@
 extern osMessageQId VisionData_QueueHandle;
 extern uint8_t Camp;
 RaDar_Data_t LiDar;
+extern uint8_t flag2;
 
 void  RaDar_Data_Rec(uint8_t* data,RaDar_Data_t* RaDar_data,VisionStruct* Vision_data)
 {
@@ -55,10 +56,10 @@ void  RaDar_Data_Rec(uint8_t* data,RaDar_Data_t* RaDar_data,VisionStruct* Vision
         Vision_data->flag = data[13];
         Vision_data->vision_x = (float)( data[17] | data[18] << 8 | data[19] << 16 | data[20] << 24 );
         Vision_data->vision_y = (float)( data[21] | data[22] << 8 | data[23] << 16 | data[24] << 24 );
-
+        if(Vision_data->flag == 3 && Vision_data->vision_y ==  1) flag2 == 1;
         if(Vision_data->flag)
         {
-            xQueueOverwriteFromISR(VisionData_QueueHandle,Vision_data,0);
+            xQueueSendFromISR(VisionData_QueueHandle,Vision_data,0);
         }
     }
 }
