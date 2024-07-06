@@ -404,7 +404,7 @@ void chassis(void const * argument)
                     if(StartPointNumber == 0) {
                         //printf("detecting1\n");
                         Chassis_Move_OfVision(&target_point,&VisionRun1,3.0f,0.5f);
-                        if (fabsf(target_point.y-MutiPos_y) < 0.5f) {
+                        if (fabsf(target_point.y-MutiPos_y) < 0.2f) {
 //                            ControlMsgSet(&ControlQueueBuf, CHASSIS, CloseLoop_START, Run1to3_Points[1].x,
 //                                          Run1to3_Points[1].y, 0, 0);
 //                            xQueueSend(ControlQueueHandle, &ControlQueueBuf, 0);
@@ -494,7 +494,7 @@ void chassis(void const * argument)
                 else if (CloseLoopStatus == CloseLoop_DT35) {
                     //Vision_Send(0x05);
                     Chassis_Move_OfDT35(&target_point);
-                    //Vision_Send(0x08);
+                    Vision_Send(0x08);
                     if (Distance_Calc(target_point, DT35_CloseBall, DT35_Forward) < 5.0f ) {
 //                        if(TOF_dis2 > 100.f) {
                         Vision_Send(0x03);
@@ -812,6 +812,7 @@ void visioncom(void const * argument)
                     if (visiondata.vision_y == 0) {
                         /** 对球 **/
 //                        printf("align");
+                        Interrupt_Flag = 0;
                         CloseLoopStatus = CloseLoop_Ball;
                         offset_x = visiondata.vision_x;
                     }
@@ -887,7 +888,7 @@ void visioncom(void const * argument)
                         CloseLoopStatus = CloseLoop_MID360;
                         target_point=Watch_Point;
                         Interrupt_Flag = 0;
-                        ControlMsgInit(&ControlQueueBuf);
+//                        ControlMsgInit(&ControlQueueBuf);
                     }
                     else if (visiondata.vision_y == 7) {
                         /** 继续吸球 **/
@@ -904,6 +905,7 @@ void visioncom(void const * argument)
 //                                      Frame_Points[(int) (visiondata.vision_x - 1)].y, 0, visiondata.vision_x);
 //                        xQueueSend(ControlQueueHandle, &ControlQueueBuf, 0);
                         CloseLoopStatus = CloseLoop_Mid360AndDT35;
+                        number = visiondata.vision_x;
                         target_point.x=Frame_Points[(int) (visiondata.vision_x - 1)].x;
                         target_point.y=Frame_Points[(int) (visiondata.vision_x - 1)].y;
                         Interrupt_Flag = 0;

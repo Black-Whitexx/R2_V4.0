@@ -135,7 +135,7 @@ void Chassis_Move_OfVision(PointStruct *target_point,PID_t *pid,float max,float 
     else if(dis<=ki_gain_threshold){
         ki_gain = 1 - dis/ki_gain_threshold;
     }
-    vel = PID_Realise(pid, 0, -dis, 1.f, 0.01f,ki_gain);
+    vel = PID_Realise(pid, 0, -dis, 0.5f, 0.01f,ki_gain);
 //    if(vel<min){
 //        vel = min;
 //    }
